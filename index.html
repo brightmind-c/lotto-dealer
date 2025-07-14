@@ -282,106 +282,140 @@
 
       clearThreeDigit();
     }
+  </script>
 
-    function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const day = document.getElementById('drawDay').value.padStart(2, '0');
-      const month = document.getElementById('drawMonth').value.padStart(2, '0');
-      const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
-      const drawDate = `${day}/${month}/${year}`;
+    // โหลด jsPDF และ AutoTable
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-      const pageWidth = doc.internal.pageSize.getWidth();
+  <script>
+  async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-      // ====== Helper ฟังก์ชันสำหรับวาดตาราง 10x10 ======
-      function draw2DigitTable(title, mode) {
-        doc.setFontSize(16);
-        doc.text(`งวดที่ ${drawDate}`, 20, 20);
-        doc.text(title, 20, 30);
+    const day = document.getElementById('drawDay').value.padStart(2, '0');
+    const month = document.getElementById('drawMonth').value.padStart(2, '0');
+    const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
+    const drawDate = `${day}/${month}/${year}`;
 
-        const cellSize = 18;
-        const startX = 20;
-        const startY = 40;
+    // 🔤 โหลดฟอนต์ไทย
+    const fontUrl = 'https://cdn.jsdelivr.net/gh/dharmakant/thai-fonts-base64/thsarabunnew-normal.js';
+    await new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = fontUrl;
+      script.onload = resolve;
+      document.head.appendChild(script);
+    });
+    doc.addFileToVFS('THSarabunNew.ttf', THSarabunNew);
+    doc.addFont('THSarabunNew.ttf', 'THSarabun', 'normal');
+    doc.setFont('THSarabun');
+    doc.setFontSize(16);
 
-        for (let row = 0; row < 10; row++) {
-          for (let col = 0; col < 10; col++) {
-            const number = `${row}${col}`;
-            const data = Array.from(document.querySelectorAll("#twoDigitTable tr")).filter(tr =>
-              tr.cells[0]?.innerText === number
-            );
-            let amount = '';
-            if (data.length > 0) {
-              const cellIndex = mode === "top" ? 1 : 2;
-              amount = data[0].cells[cellIndex]?.innerText || '';
-            }
+    // 🔢 รวมเลข 2 ตัว
+    const twoDigitRows = Array.from(document.querySelectorAll('#twoDigitTable tr')).map(row => {
+      const cells = row.querySelectorAll('td');
+      return [
+        cells[0]?.innerText.trim(),
+        cells[1]?.innerText.replace('฿', '').trim(),
+        cells[2]?.innerText.replace('฿', '').trim()
+      ];
+    });
 
-            const x = startX + col * cellSize;
-            const y = startY + row * cellSize;
+    const totalsTop = {}, totalsBottom = {};
+    twoDigitRows.forEach(([num, top, bottom]) => {
+      if (!num) return;
+      totalsTop[num] = (totalsTop[num] || 0) + parseInt(top || 0);
+      totalsBottom[num] = (totalsBottom[num] || 0) + parseInt(bottom || 0);
+    });
 
-            doc.rect(x, y, cellSize, cellSize);
-            if (amount) {
-              doc.setFontSize(10);
-              doc.text(number, x + 2, y + 7);
-              doc.text(amount, x + 2, y + 15);
-            }
-          }
+    // 🔢 รวมเลข 3 ตัว
+    const threeDigitRows = Array.from(document.querySelectorAll('#threeDigitTable tr')).map(row => {
+      const cells = row.querySelectorAll('td');
+      return [
+        cells[0]?.innerText.trim(),
+        cells[1]?.innerText.replace('฿', '').trim(),
+        cells[2]?.innerText.replace('฿', '').trim(),
+        cells[3]?.innerText.replace('฿', '').trim()
+      ];
+    });
+
+    const totals3 = {};
+    threeDigitRows.forEach(([num, top, bottom, tod]) => {
+      if (!num) return;
+      totals3[num] = totals3[num] || { top: 0, bottom: 0, tod: 0 };
+      totals3[num].top += parseInt(top || 0);
+      totals3[num].bottom += parseInt(bottom || 0);
+      totals3[num].tod += parseInt(tod || 0);
+    });
+
+    // 🧾 หน้า 1: 2 ตัวบน
+    doc.text(`งวดที่ ${drawDate}`, 15, 20);
+    doc.text('2 ตัวบน', 15, 30);
+    const topTable = buildGrid(totalsTop);
+    drawGrid(doc, topTable, 15, 35);
+
+    // 🧾 หน้า 2: 2 ตัวล่าง
+    doc.addPage();
+    doc.text(`งวดที่ ${drawDate}`, 15, 20);
+    doc.text('2 ตัวล่าง', 15, 30);
+    const bottomTable = buildGrid(totalsBottom);
+    drawGrid(doc, bottomTable, 15, 35);
+
+    // 🧾 หน้า 3: 3 ตัว
+    doc.addPage();
+    doc.text(`งวดที่ ${drawDate}`, 15, 20);
+    doc.text('3 ตัว', 15, 30);
+    const body = Object.entries(totals3)
+      .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+      .map(([num, val]) => [
+        num,
+        val.top ? `${val.top}฿` : '',
+        val.bottom ? `${val.bottom}฿` : '',
+        val.tod ? `${val.tod}฿` : ''
+      ]);
+    doc.autoTable({
+      head: [['เลข', 'เต็ง', 'ล่าง', 'โต๊ด']],
+      body,
+      startY: 35,
+      styles: { font: 'THSarabun', fontSize: 14, cellPadding: 3 }
+    });
+
+    doc.save(`โพยหวย_${day}-${month}-${year}.pdf`);
+  }
+
+  // 🧩 สร้างตาราง 10×10 จากยอดรวม
+  function buildGrid(totals) {
+    const grid = [];
+    for (let r = 0; r < 10; r++) {
+      const row = [];
+      for (let c = 0; c < 10; c++) {
+        const num = `${r}${c}`;
+        row.push(totals[num] ? `${num}\n${totals[num]}฿` : '');
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  // 📏 วาดตาราง 10×10 บน PDF
+  function drawGrid(doc, data, startX, startY) {
+    const cellW = 18, cellH = 18;
+    doc.setFontSize(10);
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        const x = startX + c * cellW;
+        const y = startY + r * cellH;
+        doc.rect(x, y, cellW, cellH);
+        const cell = data[r][c];
+        if (cell) {
+          const [num, val] = cell.split('\n');
+          doc.text(num, x + 2, y + 7);
+          doc.text(val, x + 2, y + 14);
         }
       }
-
-      // ====== Helper ฟังก์ชันสำหรับวาดตาราง 3 ตัว ======
-      function draw3DigitList() {
-        doc.setFontSize(16);
-        doc.text(`งวดที่ ${drawDate}`, 20, 20);
-        doc.text("3 ตัว", 20, 30);
-
-        const headers = ["เลข", "เต็ง", "ล่าง", "โต๊ด"];
-        const colWidths = [40, 40, 40, 40];
-        let y = 40;
-
-        // วาดหัวตาราง
-        headers.forEach((header, i) => {
-          doc.setFontSize(12);
-          doc.text(header, 20 + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 2, y);
-        });
-        y += 8;
-
-        // ดึงข้อมูลจาก HTML
-        const rows = Array.from(document.querySelectorAll("#threeDigitTable tr"))
-          .map(row => ({
-            number: row.cells[0]?.innerText || '',
-            top: row.cells[1]?.innerText || '',
-            bottom: row.cells[2]?.innerText || '',
-            tod: row.cells[3]?.innerText || ''
-          }))
-          .sort((a, b) => parseInt(a.number) - parseInt(b.number));
-
-        rows.forEach((r, idx) => {
-          if (y > 280) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.text(r.number, 22, y);
-          doc.text(r.top || '', 62, y);
-          doc.text(r.bottom || '', 102, y);
-          doc.text(r.tod || '', 142, y);
-          y += 8;
-        });
-      }
-
-      // === หน้าที่ 1: 2 ตัวบน ===
-      draw2DigitTable("2 ตัวบน", "top");
-
-      // === หน้าที่ 2: 2 ตัวล่าง ===
-      doc.addPage();
-      draw2DigitTable("2 ตัวล่าง", "bottom");
-
-      // === หน้าที่ 3: 3 ตัว ===
-      doc.addPage();
-      draw3DigitList();
-
-      doc.save(`โพยหวย_${day}-${month}-${year}.pdf`);
     }
-
+  }
   </script>
+
 </body>
 </html>
