@@ -158,6 +158,7 @@
   </table>
 
   <!-- งวดที่ -->
+  <h2>สร้างโพย</h2>
   <div class="form-section">
     <div class="form-group">
       <label><strong>งวดที่:</strong></label>
@@ -168,7 +169,7 @@
       <input type="text" id="drawYear" maxlength="2" placeholder="ปป">
     </div>
     <div>
-      <button onclick="generatePDF()">สร้างโพย</button>
+      <button onclick="generatePDF()">สร้างโพย pdf</button>
     </div>
   </div>
 
@@ -290,11 +291,97 @@
       const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
       const drawDate = `${day}/${month}/${year}`;
 
-      doc.setFontSize(16);
-      doc.text(`โพยหวย งวดที่ ${drawDate}`, 20, 20);
-      doc.text('(*หน้านี้เป็นตัวอย่าง ยังไม่ได้สร้างตารางเต็ม*)', 20, 35);
-      doc.save(`โพยหวย_${drawDate}.pdf`);
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      // ====== Helper ฟังก์ชันสำหรับวาดตาราง 10x10 ======
+      function draw2DigitTable(title, mode) {
+        doc.setFontSize(16);
+        doc.text(`งวดที่ ${drawDate}`, 20, 20);
+        doc.text(title, 20, 30);
+
+        const cellSize = 18;
+        const startX = 20;
+        const startY = 40;
+
+        for (let row = 0; row < 10; row++) {
+          for (let col = 0; col < 10; col++) {
+            const number = `${row}${col}`;
+            const data = Array.from(document.querySelectorAll("#twoDigitTable tr")).filter(tr =>
+              tr.cells[0]?.innerText === number
+            );
+            let amount = '';
+            if (data.length > 0) {
+              const cellIndex = mode === "top" ? 1 : 2;
+              amount = data[0].cells[cellIndex]?.innerText || '';
+            }
+
+            const x = startX + col * cellSize;
+            const y = startY + row * cellSize;
+
+            doc.rect(x, y, cellSize, cellSize);
+            if (amount) {
+              doc.setFontSize(10);
+              doc.text(number, x + 2, y + 7);
+              doc.text(amount, x + 2, y + 15);
+            }
+          }
+        }
+      }
+
+      // ====== Helper ฟังก์ชันสำหรับวาดตาราง 3 ตัว ======
+      function draw3DigitList() {
+        doc.setFontSize(16);
+        doc.text(`งวดที่ ${drawDate}`, 20, 20);
+        doc.text("3 ตัว", 20, 30);
+
+        const headers = ["เลข", "เต็ง", "ล่าง", "โต๊ด"];
+        const colWidths = [40, 40, 40, 40];
+        let y = 40;
+
+        // วาดหัวตาราง
+        headers.forEach((header, i) => {
+          doc.setFontSize(12);
+          doc.text(header, 20 + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 2, y);
+        });
+        y += 8;
+
+        // ดึงข้อมูลจาก HTML
+        const rows = Array.from(document.querySelectorAll("#threeDigitTable tr"))
+          .map(row => ({
+            number: row.cells[0]?.innerText || '',
+            top: row.cells[1]?.innerText || '',
+            bottom: row.cells[2]?.innerText || '',
+            tod: row.cells[3]?.innerText || ''
+          }))
+          .sort((a, b) => parseInt(a.number) - parseInt(b.number));
+
+        rows.forEach((r, idx) => {
+          if (y > 280) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.text(r.number, 22, y);
+          doc.text(r.top || '', 62, y);
+          doc.text(r.bottom || '', 102, y);
+          doc.text(r.tod || '', 142, y);
+          y += 8;
+        });
+      }
+
+      // === หน้าที่ 1: 2 ตัวบน ===
+      draw2DigitTable("2 ตัวบน", "top");
+
+      // === หน้าที่ 2: 2 ตัวล่าง ===
+      doc.addPage();
+      draw2DigitTable("2 ตัวล่าง", "bottom");
+
+      // === หน้าที่ 3: 3 ตัว ===
+      doc.addPage();
+      draw3DigitList();
+
+      doc.save(`โพยหวย_${day}-${month}-${year}.pdf`);
     }
+
   </script>
 </body>
 </html>
