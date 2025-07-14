@@ -2,110 +2,201 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>บันทึกเลขหวย</title>
+  <title>ระบบบันทึกหวย v02</title>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
-      background: #f2f2f2;
+      background: #f8f9fa;
       padding: 20px;
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
     }
-
-    h1 {
-      color: #333;
+    h2 {
+      margin-top: 40px;
     }
-
     label, input, select {
       font-size: 16px;
-      margin: 5px 0;
     }
-
-    input, select {
-      padding: 6px;
-      width: 150px;
+    input[type="text"], input[type="number"] {
+      width: 80px;
+      margin-right: 10px;
     }
-
+    .form-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
     button {
-      padding: 8px 15px;
+      padding: 6px 12px;
       font-size: 16px;
-      margin-top: 10px;
       background-color: #1e88e5;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-left: 10px;
     }
-
     table {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 10px;
       border-collapse: collapse;
     }
-
     th, td {
-      padding: 8px;
+      padding: 6px;
       border: 1px solid #ccc;
       text-align: center;
     }
-
     th {
       background-color: #e3f2fd;
     }
   </style>
 </head>
 <body>
-  <h1>ระบบบันทึกเลขหวย</h1>
+  <h1>ระบบบันทึกเลขหวย (v02)</h1>
 
-  <label>เลขที่แทง: </label>
-  <input type="text" id="number" maxlength="6" placeholder="เช่น 527"><br>
+  <!-- ===== Two-digit section ===== -->
+  <div class="form-section">
+    <h2>2 ตัว</h2>
+    <label>เลขแทง:</label>
+    <input type="text" id="twoDigitNumber" maxlength="2">
+    <label>จำนวนเงิน:</label>
+    <input type="number" id="twoDigitAmount" min="1" step="1">
+    <label><input type="checkbox" id="twoDigitTop"> บน</label>
+    <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
+    <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
+    <button onclick="addTwoDigit()">เพิ่มรายการ</button>
+  </div>
 
-  <label>ประเภท:</label>
-  <select id="type">
-    <option value="3 ตัวตรง">3 ตัวตรง</option>
-    <option value="3 ตัวโต๊ด">3 ตัวโต๊ด</option>
-    <option value="2 ตัวบน">2 ตัวบน</option>
-    <option value="2 ตัวล่าง">2 ตัวล่าง</option>
-  </select><br>
-
-  <label>จำนวนเงิน (บาท):</label>
-  <input type="number" id="amount" min="1" step="1"><br>
-
-  <button onclick="addEntry()">เพิ่มรายการ</button>
-
-  <h2>รายการที่บันทึก</h2>
   <table>
+    <caption><strong>รายการ 2 ตัว</strong></caption>
     <thead>
       <tr>
-        <th>เลข</th>
-        <th>ประเภท</th>
+        <th>เลขแทง</th>
         <th>จำนวนเงิน</th>
+        <th>บน</th>
+        <th>ล่าง</th>
       </tr>
     </thead>
-    <tbody id="entryTable">
-    </tbody>
+    <tbody id="twoDigitTable"></tbody>
+  </table>
+
+  <!-- ===== Three-digit section ===== -->
+  <div class="form-section">
+    <h2>3 ตัว</h2>
+    <label>เลขแทง:</label>
+    <input type="text" id="threeDigitNumber" maxlength="3">
+    <label>จำนวนเงิน:</label>
+    <input type="number" id="threeDigitAmount" min="1" step="1">
+    <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
+    <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
+    <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
+    <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
+    <button onclick="addThreeDigit()">เพิ่มรายการ</button>
+  </div>
+
+  <table>
+    <caption><strong>รายการ 3 ตัว</strong></caption>
+    <thead>
+      <tr>
+        <th>เลขแทง</th>
+        <th>จำนวนเงิน</th>
+        <th>เต็ง</th>
+        <th>ล่าง</th>
+        <th>โต๊ด</th>
+      </tr>
+    </thead>
+    <tbody id="threeDigitTable"></tbody>
   </table>
 
   <script>
-    function addEntry() {
-      const number = document.getElementById('number').value.trim();
-      const type = document.getElementById('type').value;
-      const amount = document.getElementById('amount').value.trim();
+    function addTwoDigit() {
+      const number = document.getElementById('twoDigitNumber').value.trim();
+      const amount = document.getElementById('twoDigitAmount').value.trim();
+      const top = document.getElementById('twoDigitTop').checked;
+      const bottom = document.getElementById('twoDigitBottom').checked;
+      const reverse = document.getElementById('twoDigitReverse').checked;
 
-      if (number === "" || isNaN(amount) || amount === "" || Number(amount) <= 0) {
-        alert("กรุณากรอกเลขและจำนวนเงินให้ถูกต้อง");
+      if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
+        alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
         return;
       }
 
-      const table = document.getElementById('entryTable');
-      const row = table.insertRow();
-      row.insertCell(0).innerText = number;
-      row.insertCell(1).innerText = type;
-      row.insertCell(2).innerText = amount + " บาท";
+      const numbers = new Set();
+      numbers.add(number);
+      if (reverse && number[0] !== number[1]) {
+        numbers.add(number[1] + number[0]);
+      }
 
-      // ล้างช่องกรอก
-      document.getElementById('number').value = "";
-      document.getElementById('amount').value = "";
+      const table = document.getElementById('twoDigitTable');
+      numbers.forEach(num => {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = num;
+        row.insertCell(1).innerText = amount + " บาท";
+        row.insertCell(2).innerText = top ? "✔" : "";
+        row.insertCell(3).innerText = bottom ? "✔" : "";
+      });
+
+      // ล้าง
+      document.getElementById('twoDigitNumber').value = "";
+      document.getElementById('twoDigitAmount').value = "";
+      document.getElementById('twoDigitTop').checked = false;
+      document.getElementById('twoDigitBottom').checked = false;
+      document.getElementById('twoDigitReverse').checked = false;
+    }
+
+    function addThreeDigit() {
+      const number = document.getElementById('threeDigitNumber').value.trim();
+      const amount = document.getElementById('threeDigitAmount').value.trim();
+      const top = document.getElementById('threeDigitTop').checked;
+      const bottom = document.getElementById('threeDigitBottom').checked;
+      const tod = document.getElementById('threeDigitTod').checked;
+      const reverse = document.getElementById('threeDigitReverse').checked;
+
+      if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tod)) {
+        alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
+        return;
+      }
+
+      const permutations = new Set();
+      permutations.add(number);
+
+      if (reverse) {
+        const chars = number.split('');
+        const uniquePerms = new Set();
+        const permute = (arr, m = []) => {
+          if (arr.length === 0) {
+            uniquePerms.add(m.join(''));
+          } else {
+            for (let i = 0; i < arr.length; i++) {
+              let curr = arr.slice();
+              let next = curr.splice(i, 1);
+              permute(curr.slice(), m.concat(next));
+            }
+          }
+        };
+        permute(chars);
+        uniquePerms.forEach(n => permutations.add(n));
+      }
+
+      const table = document.getElementById('threeDigitTable');
+      permutations.forEach(num => {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = num;
+        row.insertCell(1).innerText = amount + " บาท";
+        row.insertCell(2).innerText = top ? "✔" : "";
+        row.insertCell(3).innerText = bottom ? "✔" : "";
+        row.insertCell(4).innerText = tod ? "✔" : "";
+      });
+
+      // ล้าง
+      document.getElementById('threeDigitNumber').value = "";
+      document.getElementById('threeDigitAmount').value = "";
+      document.getElementById('threeDigitTop').checked = false;
+      document.getElementById('threeDigitBottom').checked = false;
+      document.getElementById('threeDigitTod').checked = false;
+      document.getElementById('threeDigitReverse').checked = false;
     }
   </script>
 </body>
