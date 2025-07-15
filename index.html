@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบบันทึกหวย v05.5</title>
+  <title>ระบบบันทึกหวย v05.6</title>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
@@ -162,6 +162,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/dharmakant/thai-fonts-base64/thsarabunnew-normal.js"></script>
+<script>
+  window.addEventListener("load", () => {
+    if (typeof THSarabunNew === 'undefined') {
+      alert("⚠️ โหลดฟอนต์ไม่สำเร็จ! กรุณาเชื่อมต่ออินเทอร์เน็ต หรือเปลี่ยน CDN ฟอนต์");
+    }
+  });
+</script>
 
 <script>
   function clearTwoDigit() {
