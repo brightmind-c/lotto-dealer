@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.18</h1>
+<h1>ระบบบันทึกเลขหวย v06.19</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -636,6 +636,8 @@ function draw3DigitList(doc, list, startY) {
   const cellWs = [15, 15, 15, 15, 15, 15];
   const colGap = 10;
 
+  doc.setFontSize(10);
+
   const colWidth = cellWs.reduce((a, b) => a + b, 0);
   const leftX = 15;
   const rightX = leftX + colWidth + colGap;
@@ -681,7 +683,7 @@ function draw3DigitList(doc, list, startY) {
       }
 
       doc.setTextColor(0);
-      doc.text(val, xPos + 2, y + 7);
+      doc.text(val, xPos + 2, y + cellH * 0.7);
       xPos += cellWs[i];
     });
   };
