@@ -232,8 +232,10 @@ function clearThreeDigit() {
 }
 
 function addTwoDigit() {
-  const number = document.getElementById('twoDigitNumber').value.trim();
-  const amount = parseInt(document.getElementById('twoDigitAmount').value.trim());
+  const numberInput = document.getElementById('twoDigitNumber');
+  const amountInput = document.getElementById('twoDigitAmount');
+  const number = numberInput.value.trim();
+  const amount = parseInt(amountInput.value.trim());
   const top = document.getElementById('twoDigitTop').checked;
   const bottom = document.getElementById('twoDigitBottom').checked;
   const reverse = document.getElementById('twoDigitReverse').checked;
@@ -258,13 +260,16 @@ function addTwoDigit() {
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
-  // ไม่ clear input และ checkbox
+  numberInput.value = '';
+  amountInput.value = '';
+  // คง checkbox เดิมไว้
 }
 
-// --- แก้ส่วน addThreeDigit ให้ไม่ล้าง input และ checkbox ---
 function addThreeDigit() {
-  const number = document.getElementById('threeDigitNumber').value.trim();
-  const amount = parseInt(document.getElementById('threeDigitAmount').value.trim());
+  const numberInput = document.getElementById('threeDigitNumber');
+  const amountInput = document.getElementById('threeDigitAmount');
+  const number = numberInput.value.trim();
+  const amount = parseInt(amountInput.value.trim());
   const top = document.getElementById('threeDigitTop').checked;
   const bottom = document.getElementById('threeDigitBottom').checked;
   const tod = document.getElementById('threeDigitTod').checked;
@@ -315,8 +320,11 @@ function addThreeDigit() {
     });
   }
 
-  // ไม่ clear input และ checkbox
+  numberInput.value = '';
+  amountInput.value = '';
+  // คง checkbox เดิมไว้
 }
+
 
 // Script ส่วนเสริมใหม่
 
@@ -341,15 +349,19 @@ function addSelf3Digit() {
 }
 
 function addBlocked2Digit() {
-  const num = document.getElementById('blocked2Input').value.trim();
+  const numInput = document.getElementById('blocked2Input');
+  const num = numInput.value.trim();
   const top = document.getElementById('blocked2Top').checked;
   const bottom = document.getElementById('blocked2Bottom').checked;
   const reverse = document.getElementById('blocked2Reverse').checked;
+
   if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+
   const table = document.getElementById('blocked2Table');
   const nums = new Set();
   nums.add(num);
   if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+
   nums.forEach(n => {
     const row = table.insertRow();
     row.insertCell(0).innerText = n;
@@ -357,22 +369,25 @@ function addBlocked2Digit() {
     row.insertCell(2).innerText = bottom ? '✔️' : '';
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
-  document.getElementById('blocked2Input').value = '';
-  document.getElementById('blocked2Top').checked = false;
-  document.getElementById('blocked2Bottom').checked = false;
-  document.getElementById('blocked2Reverse').checked = false;
+
+  numInput.value = '';
+  // คง checkbox เดิมไว้
 }
 
 function addSelf2Digit() {
-  const num = document.getElementById('self2Input').value.trim();
+  const numInput = document.getElementById('self2Input');
+  const num = numInput.value.trim();
   const top = document.getElementById('self2Top').checked;
   const bottom = document.getElementById('self2Bottom').checked;
   const reverse = document.getElementById('self2Reverse').checked;
+
   if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+
   const table = document.getElementById('self2Table');
   const nums = new Set();
   nums.add(num);
   if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+
   nums.forEach(n => {
     const row = table.insertRow();
     row.insertCell(0).innerText = n;
@@ -380,10 +395,9 @@ function addSelf2Digit() {
     row.insertCell(2).innerText = bottom ? '✔️' : '';
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
-  document.getElementById('self2Input').value = '';
-  document.getElementById('self2Top').checked = false;
-  document.getElementById('self2Bottom').checked = false;
-  document.getElementById('self2Reverse').checked = false;
+
+  numInput.value = '';
+  // คง checkbox เดิมไว้
 }
 
 // ของเดิม
