@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.15</h1>
+<h1>ระบบบันทึกเลขหวย v06.16</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -612,36 +612,86 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
 function draw3DigitList(doc, list, startY) {
   const cellH = 10;
   const headers = ["Num", "Top", "Bottom", "Tode", "Block", "Self"];
-  const cellWs = [15, 15, 15, 15, 15, 15]; // กว้างคอลัมน์
+  const cellWs = [15, 15, 15, 15, 15, 15];
+  const colGap = 10;
 
-  // วาดหัวตาราง
-  let x = 15;
-  headers.forEach((text, i) => {
-    doc.setFillColor(227, 242, 253);
-    doc.rect(x, startY, cellWs[i], cellH, 'F');
-    doc.setTextColor(0);
-    doc.text(text, x + 2, startY + 7);
-    x += cellWs[i];
-  });
+  const colWidth = cellWs.reduce((a, b) => a + b, 0);
+  const leftX = 15;
+  const rightX = leftX + colWidth + colGap;
+  const maxRowsPerCol = Math.floor((280 - startY) / cellH); // เหลือเผื่อ footer
 
-  // วาดข้อมูลแต่ละแถว
-  list.forEach((row, index) => {
-    let x = 15;
-    const y = startY + (index + 1) * cellH;
+  let rowCount = 0;
+  let colX = leftX;
+  let currentY = startY;
+
+  const drawHeader = (x, y) => {
+    let xPos = x;
+    headers.forEach((text, i) => {
+      doc.setFillColor(227, 242, 253); // สีฟ้าอ่อน
+      doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      doc.setTextColor(0);
+      doc.text(text, xPos + 2, y + 7);
+      xPos += cellWs[i];
+    });
+  };
+
+  const drawRow = (x, y, row) => {
+    let xPos = x;
     const values = [
       row.num,
       row.top > 0 ? row.top.toString() : '',
       row.bottom > 0 ? row.bottom.toString() : '',
       row.tod > 0 ? row.tod.toString() : '',
-      row.isBlocked ? 'yes' : '',
-      row.isSelf ? 'yes' : ''
+      '', // Block (สี)
+      ''  // Self  (สี)
     ];
 
     values.forEach((val, i) => {
-      doc.rect(x, y, cellWs[i], cellH);
-      doc.text(val, x + 2, y + 7);
-      x += cellWs[i];
+      // Block / Self สีพื้น
+      if (i === 4 && row.isBlocked) {
+        doc.setFillColor(255, 192, 192); // แดงอ่อน
+        doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      } else if (i === 5 && row.isSelf) {
+        doc.setFillColor(255, 246, 176); // เหลืองอ่อน
+        doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      } else {
+        doc.setDrawColor(0);
+        doc.rect(xPos, y, cellWs[i], cellH);
+      }
+
+      doc.setTextColor(0);
+      doc.text(val, xPos + 2, y + 7);
+      xPos += cellWs[i];
     });
+  };
+
+  // เริ่มวาด
+  drawHeader(colX, currentY);
+  currentY += cellH;
+
+  list.forEach((row, idx) => {
+    drawRow(colX, currentY, row);
+    currentY += cellH;
+    rowCount++;
+
+    if (rowCount >= maxRowsPerCol) {
+      if (colX === leftX) {
+        // ย้ายไปฝั่งขวา
+        colX = rightX;
+        currentY = startY;
+        drawHeader(colX, currentY);
+        currentY += cellH;
+        rowCount = 0;
+      } else {
+        // เต็มทั้งสองคอลัมน์ ➜ เพิ่มหน้าใหม่
+        doc.addPage();
+        colX = leftX;
+        currentY = startY;
+        drawHeader(colX, currentY);
+        currentY += cellH;
+        rowCount = 0;
+      }
+    }
   });
 }
 
