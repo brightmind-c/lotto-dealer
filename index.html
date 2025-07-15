@@ -83,7 +83,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v05.9</h1>
+<h1>ระบบบันทึกเลขหวย v05.10</h1>
 
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
@@ -331,7 +331,7 @@
   // ฟังก์ชันวาดตาราง 2 ตัว 10x10 ช่อง
   function draw2DigitGrid(doc, dataMap, startY) {
     const cellW = 18, cellH = 18;
-    const startX = 10; //ปรับตรงนี้
+    const startX = 0; //ปรับตรงนี้
     doc.setFontSize(10);
 
     /*
@@ -369,39 +369,65 @@
   // ฟังก์ชันวาดรายการ 3 ตัว แบบลิสต์
   function draw3DigitList(doc, list, startY) {
     doc.setFontSize(10);
-    const startX = 15;
+    const leftX = 15;
+    const rightX = 110; // ตำแหน่งคอลัมน์ขวา
     const lineHeight = 7;
-    const colWidths = [15, 15, 15, 15];
-    const headers = ["Number", "Top", "Bottom", "Tode"];
+    const colWidths = [20, 20, 20, 20];
+    const headers = ["Num", "Top", "Bottom", "Tode"];
 
-    // หัวตาราง
-    let x = startX;
-    headers.forEach((h, i) => {
-      doc.setFillColor(230, 242, 253);
-      doc.rect(x, startY, colWidths[i], lineHeight, "F");
-      doc.setDrawColor(0);
-      doc.rect(x, startY, colWidths[i], lineHeight);
-      doc.text(h, x + 3, startY + 5);
-      x += colWidths[i];
+    // รวมยอดเลขซ้ำ
+    const map = {};
+    list.forEach(row => {
+      if (!map[row.num]) map[row.num] = { top: 0, bottom: 0, tod: 0 };
+      map[row.num].top += row.top || 0;
+      map[row.num].bottom += row.bottom || 0;
+      map[row.num].tod += row.tod || 0;
     });
 
-    // ข้อมูลแต่ละแถว
-    let y = startY + lineHeight;
-    list.forEach(row => {
-      x = startX;
-      const cells = [row.num, row.top ? row.top + "B" : "", row.bottom ? row.bottom + "B" : "", row.tod ? row.tod + "B" : ""];
-      cells.forEach((cell, i) => {
+    // เรียงเลขจากน้อยไปมาก
+    const sorted = Object.keys(map).sort().map(num => ({
+      num,
+      top: map[num].top,
+      bottom: map[num].bottom,
+      tod: map[num].tod
+    }));
+
+    // เขียนหัวตารางทั้ง 2 คอลัมน์
+    function drawHeaders(x, y) {
+      headers.forEach((h, i) => {
+        doc.setFillColor(230, 242, 253);
+        doc.rect(x, y, colWidths[i], lineHeight, "F");
+        doc.setDrawColor(0);
         doc.rect(x, y, colWidths[i], lineHeight);
-        doc.text(cell.toString(), x + 3, y + 5);
-        x += colWidths[i];
+        doc.text(h, x + 3, y + 5);
+      });
+    }
+
+    let y = startY + lineHeight;
+    let x = leftX;
+    drawHeaders(x, startY);
+
+    sorted.forEach((row, idx) => {
+      // หาก y เกิน 270 และยังอยู่คอลัมน์ซ้าย ให้สลับไปขวา
+      if (y + lineHeight > 270 && x === leftX) {
+        x = rightX;
+        y = startY + lineHeight;
+        drawHeaders(x, startY);
+      } else if (y + lineHeight > 270 && x === rightX) {
+        doc.addPage();
+        x = leftX;
+        y = startY + lineHeight;
+        drawHeaders(x, startY);
+      }
+
+      const cells = [row.num, row.top ? row.top + "B" : "", row.bottom ? row.bottom + "B" : "", row.tod ? row.tod + "B" : ""];
+      let cx = x;
+      cells.forEach((cell, i) => {
+        doc.rect(cx, y, colWidths[i], lineHeight);
+        doc.text(cell.toString(), cx + 3, y + 5);
+        cx += colWidths[i];
       });
       y += lineHeight;
-
-      // ถ้าเกินหน้ากระดาษ ให้ขึ้นหน้าใหม่
-      if (y + lineHeight > 280) {
-        doc.addPage();
-        y = 15;
-      }
     });
   }
 
