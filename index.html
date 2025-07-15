@@ -83,7 +83,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v05.11</h1>
+<h1>ระบบบันทึกเลขหวย v05.10</h1>
 
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
@@ -376,21 +376,21 @@
     const headers = ["Num", "Top", "Bottom", "Tode"];
 
     // รวมยอดเลขซ้ำ
-    const threeMap = {};
-    threeList.forEach(({ num, top, bottom, tod }) => {
-      if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tod: 0 };
-      threeMap[num].top += top;
-      threeMap[num].bottom += bottom;
-      threeMap[num].tod += tod;
+    const map = {};
+    list.forEach(row => {
+      if (!map[row.num]) map[row.num] = { top: 0, bottom: 0, tod: 0 };
+      map[row.num].top += row.top || 0;
+      map[row.num].bottom += row.bottom || 0;
+      map[row.num].tod += row.tod || 0;
     });
 
     // เรียงเลขจากน้อยไปมาก
-    const sortedThreeList = Object.entries(threeMap)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([num, values]) => ({ num, ...values }));
-
-    // วาดลิสต์ 3 ตัว
-    draw3DigitList(doc, sortedThreeList, 35);
+    const sorted = Object.keys(map).sort().map(num => ({
+      num,
+      top: map[num].top,
+      bottom: map[num].bottom,
+      tod: map[num].tod
+    }));
 
     // เขียนหัวตารางทั้ง 2 คอลัมน์
     function drawHeaders(x, y) {
