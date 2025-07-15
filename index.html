@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.10</h1>
+<h1>ระบบบันทึกเลขหวย v06.11</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -609,60 +609,39 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   }
 }
 
-function draw3DigitList(doc, list, startY, blockedNums = [], selfNums = []) {
-  const colW = 15;      // ความกว้างแต่ละคอลัมน์
-  const rowH = 6;       // ความสูงแต่ละแถว
-  const colsPerGroup = 5; // num, top, bottom, tod, flags
-  const rowsPerColumn = Math.floor((280 - startY) / rowH);
-  const colsPerPage = 2;
+function draw3DigitList(doc, list, startY) {
+  const cellH = 10;
+  const headers = ["Num", "Top", "Bottom", "Tode", "Block", "Self"];
+  const cellWs = [15, 15, 15, 15, 15, 15]; // กว้างคอลัมน์
 
-  const startX = 10;
-
-  let col = 0, row = 0, colGroup = 0;
-
-  // Header
-  const drawHeader = (x, y) => {
-    doc.setFontSize(10);
+  // วาดหัวตาราง
+  let x = 15;
+  headers.forEach((text, i) => {
+    doc.setFillColor(227, 242, 253);
+    doc.rect(x, startY, cellWs[i], cellH, 'F');
     doc.setTextColor(0);
-    doc.text("เลข", x, y);
-    doc.text("บน", x + colW * 1, y);
-    doc.text("ล่าง", x + colW * 2, y);
-    doc.text("โต๊ด", x + colW * 3, y);
-    doc.text("อั้น", x + colW * 4, y);
-    doc.text("ซื้อ", x + colW * 5, y);
-  };
+    doc.text(text, x + 2, startY + 7);
+    x += cellWs[i];
+  });
 
-  drawHeader(startX, startY);
+  // วาดข้อมูลแต่ละแถว
+  list.forEach((row, index) => {
+    let x = 15;
+    const y = startY + (index + 1) * cellH;
+    const values = [
+      row.num,
+      row.top > 0 ? row.top.toString() : '',
+      row.bottom > 0 ? row.bottom.toString() : '',
+      row.tod > 0 ? row.tod.toString() : '',
+      row.isBlocked ? '✔' : '',
+      row.isSelf ? '✔' : ''
+    ];
 
-  doc.setFontSize(9);
-  list.forEach(({ num, top, bottom, tod }, index) => {
-    const x = startX + colGroup * colsPerGroup * colW;
-    const y = startY + 6 + row * rowH;
-
-    doc.text(num, x, y);
-    doc.text(top.toString(), x + colW * 1, y);
-    doc.text(bottom.toString(), x + colW * 2, y);
-    doc.text(tod.toString(), x + colW * 3, y);
-
-    // Check flags
-    const isBlocked = blockedNums.includes(num);
-    const isSelf = selfNums.includes(num);
-
-    if (isBlocked) doc.text("✔", x + colW * 4 + 4, y);
-    if (isSelf) doc.text("✔", x + colW * 5 + 4, y);
-
-    row++;
-    if (row >= rowsPerColumn) {
-      row = 0;
-      colGroup++;
-
-      // ขึ้นซีกขวา
-      if (colGroup >= colsPerPage) {
-        doc.addPage();
-        drawHeader(startX, startY);
-        colGroup = 0;
-      }
-    }
+    values.forEach((val, i) => {
+      doc.rect(x, y, cellWs[i], cellH);
+      doc.text(val, x + 2, y + 7);
+      x += cellWs[i];
+    });
   });
 }
 
