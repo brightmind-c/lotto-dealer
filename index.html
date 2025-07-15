@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.20</h1>
+<h1>Lotto Dealer v06.21</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -716,65 +716,58 @@ function draw3DigitList(doc, list, startY) {
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // ====== เลขอั้น 3 ตัว ======
-  const blocked3Input = document.getElementById('blocked3Input');
-  blocked3Input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addBlocked3Digit();
-  });
 
-  // ====== ซื้อเอง 3 ตัว ======
-  const self3Input = document.getElementById('self3Input');
-  self3Input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addSelf3Digit();
-  });
-
-  // ====== เลขอั้น 2 ตัว ======
-  const blocked2Input = document.getElementById('blocked2Input');
-  blocked2Input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addBlocked2Digit();
-  });
-
-  // ====== ซื้อเอง 2 ตัว ======
-  const self2Input = document.getElementById('self2Input');
-  self2Input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addSelf2Digit();
-  });
-
-  // ====== แทง 3 ตัว ======
-  const threeNumber = document.getElementById('threeDigitNumber');
-  const threeAmount = document.getElementById('threeDigitAmount');
-
-  threeNumber.addEventListener('keydown', e => {
+  // ========== 3 ตัว ==========
+  document.getElementById('threeDigitNumber').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      threeAmount.focus();
+      document.getElementById('threeDigitAmount').focus();
     }
   });
-  threeAmount.addEventListener('keydown', e => {
+
+  document.getElementById('threeDigitAmount').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       addThreeDigit();
     }
   });
 
-  // ====== แทง 2 ตัว ======
-  const twoNumber = document.getElementById('twoDigitNumber');
-  const twoAmount = document.getElementById('twoDigitAmount');
-
-  twoNumber.addEventListener('keydown', e => {
+  // ========== 2 ตัว ==========
+  document.getElementById('twoDigitNumber').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      twoAmount.focus();
+      document.getElementById('twoDigitAmount').focus();
     }
   });
-  twoAmount.addEventListener('keydown', e => {
+
+  document.getElementById('twoDigitAmount').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       addTwoDigit();
     }
   });
+
+  // ========== เลขอั้น/ซื้อเอง ==========
+  const bindEnter = (inputId, callbackFn) => {
+    const el = document.getElementById(inputId);
+    if (el) {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          callbackFn();
+        }
+      });
+    }
+  };
+
+  bindEnter('blocked3Input', addBlocked3Digit);
+  bindEnter('self3Input', addSelf3Digit);
+  bindEnter('blocked2Input', addBlocked2Digit);
+  bindEnter('self2Input', addSelf2Digit);
+
 });
 </script>
+
 
 </body>
 </html>
