@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.6</h1>
+<h1>ระบบบันทึกเลขหวย v06.7</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -422,10 +422,17 @@ async function generatePDF() {
     }
   });
 
+  // ข้อมูลเลขอั้น
   const blocked2List = getBlocked2Digits();
   const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
 
+  // ข้อมูลซื้อเอง
+  const self2List = getSelf2Digits();
+  const selfTop = self2List.filter(x => x.isTop).map(x => x.num);
+  const selfBottom = self2List.filter(x => x.isBottom).map(x => x.num);
+
+  // ข้อมูลเลข 3 ตัว
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -449,15 +456,18 @@ async function generatePDF() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([num, values]) => ({ num, ...values }));
 
+  // หน้า 1: 2 ตัวบน
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
-  draw2DigitGrid(doc, topMap, 35, highlightTop);
+  draw2DigitGrid(doc, topMap, 35, highlightTop, [], selfTop, []);
 
+  // หน้า 2: 2 ตัวล่าง
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 35, highlightBottom);
+  draw2DigitGrid(doc, bottomMap, 35, [], highlightBottom, [], selfBottom);
 
+  // หน้า 3: 3 ตัว
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("3 list number", 15, 28);
@@ -479,7 +489,20 @@ function getBlocked2Digits() {
   return list;
 }
 
-function draw2DigitGrid(doc, dataMap, startY, highlightList = []) {
+function getSelf2Digits() {
+  const list = [];
+  document.querySelectorAll('#self2Table tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const isTop = row.children[1]?.innerText.includes('✔');
+    const isBottom = row.children[2]?.innerText.includes('✔');
+    if (num) {
+      list.push({ num, isTop, isBottom });
+    }
+  });
+  return list;
+}
+
+function draw2DigitGrid(doc, dataMap, startY, highlightTopRed = [], highlightBottomRed = [], highlightTopYellow = [], highlightBottomYellow = []) {
   const cellW = 18, cellH = 18;
   const startX = 0;
   doc.setFontSize(10);
@@ -490,14 +513,31 @@ function draw2DigitGrid(doc, dataMap, startY, highlightList = []) {
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
-      // กล่องหลัก
+      const isRedTop = highlightTopRed.includes(num);
+      const isRedBottom = highlightBottomRed.includes(num);
+      const isYellowTop = highlightTopYellow.includes(num);
+      const isYellowBottom = highlightBottomYellow.includes(num);
+
+      // วาดกรอบ
+      doc.setDrawColor(0);
       doc.rect(x, y, cellW, cellH);
 
-      // ไฮไลต์เฉพาะครึ่งบน
-      const highlight = highlightList.includes(num);
-      if (highlight) {
+      if (isRedTop) {
         doc.setFillColor(255, 200, 200);
         doc.rect(x, y, cellW, cellH / 2, 'F');
+      }
+      if (isRedBottom) {
+        doc.setFillColor(255, 200, 200);
+        doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
+      }
+
+      if (isYellowTop) {
+        doc.setFillColor(255, 255, 150);
+        doc.rect(x, y, cellW, cellH / 2, 'F');
+      }
+      if (isYellowBottom) {
+        doc.setFillColor(255, 255, 150);
+        doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
       }
 
       doc.setTextColor(0);
@@ -506,6 +546,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightList = []) {
     }
   }
 }
+
 
 function draw3DigitList(doc, list, startY) {
   doc.setFontSize(10);
