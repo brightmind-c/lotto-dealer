@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบบันทึกหวย v05.8</title>
+  <title>ระบบบันทึกหวย</title>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
@@ -83,7 +83,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย</h1>
+<h1>ระบบบันทึกเลขหวย v05.9</h1>
 
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
@@ -331,7 +331,7 @@
   // ฟังก์ชันวาดตาราง 2 ตัว 10x10 ช่อง
   function draw2DigitGrid(doc, dataMap, startY) {
     const cellW = 18, cellH = 18;
-    const startX = 15;
+    const startX = 10; //ปรับตรงนี้
     doc.setFontSize(10);
 
     /*
@@ -371,8 +371,8 @@
     doc.setFontSize(10);
     const startX = 15;
     const lineHeight = 7;
-    const colWidths = [25, 25, 25, 25];
-    const headers = ["เลขแทง", "เต็ง", "ล่าง", "โต๊ด"];
+    const colWidths = [15, 15, 15, 15];
+    const headers = ["Number", "Top", "Bottom", "Tode"];
 
     // หัวตาราง
     let x = startX;
@@ -389,7 +389,7 @@
     let y = startY + lineHeight;
     list.forEach(row => {
       x = startX;
-      const cells = [row.num, row.top ? row.top + "฿" : "", row.bottom ? row.bottom + "฿" : "", row.tod ? row.tod + "฿" : ""];
+      const cells = [row.num, row.top ? row.top + "B" : "", row.bottom ? row.bottom + "B" : "", row.tod ? row.tod + "B" : ""];
       cells.forEach((cell, i) => {
         doc.rect(x, y, colWidths[i], lineHeight);
         doc.text(cell.toString(), x + 3, y + 5);
