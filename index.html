@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.21</h1>
+<h1>Lotto Dealer v06.22</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -713,61 +713,6 @@ function draw3DigitList(doc, list, startY) {
 }
 
 </script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  // ========== 3 ตัว ==========
-  document.getElementById('threeDigitNumber').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('threeDigitAmount').focus();
-    }
-  });
-
-  document.getElementById('threeDigitAmount').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addThreeDigit();
-    }
-  });
-
-  // ========== 2 ตัว ==========
-  document.getElementById('twoDigitNumber').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('twoDigitAmount').focus();
-    }
-  });
-
-  document.getElementById('twoDigitAmount').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTwoDigit();
-    }
-  });
-
-  // ========== เลขอั้น/ซื้อเอง ==========
-  const bindEnter = (inputId, callbackFn) => {
-    const el = document.getElementById(inputId);
-    if (el) {
-      el.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          callbackFn();
-        }
-      });
-    }
-  };
-
-  bindEnter('blocked3Input', addBlocked3Digit);
-  bindEnter('self3Input', addSelf3Digit);
-  bindEnter('blocked2Input', addBlocked2Digit);
-  bindEnter('self2Input', addSelf2Digit);
-
-});
-</script>
-
 
 </body>
 </html>
