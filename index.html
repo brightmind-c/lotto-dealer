@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบบันทึกหวย</title>
+  <title>Lotto Dealer</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.19</h1>
+<h1>Lotto Dealer v06.23</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -422,14 +422,14 @@ async function generatePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFont("Helvetica");
-  doc.setFontSize(14);
+  doc.setFontSize(10); // ให้ทุกหน้าใช้ฟอนต์เท่ากัน
 
   const day = document.getElementById('drawDay').value.padStart(2, '0');
   const month = document.getElementById('drawMonth').value.padStart(2, '0');
   const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
   const drawDate = `${day}/${month}/${year}`;
 
-  // Map สำหรับ 2 ตัว
+  // ✅ ดึงข้อมูล 2 ตัวแบบไม่กลับเลข
   const topMap = {}, bottomMap = {};
   document.querySelectorAll('#twoDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -441,31 +441,7 @@ async function generatePDF() {
     }
   });
 
-  // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
-  const getBlocked2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#blocked2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-  const getSelf2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#self2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-
-  const blocked2List = getBlocked2Digits();
-  const self2List = getSelf2Digits();
-
+  // ===== รายการอั้น / ซื้อเอง 2 ตัว
   const expand2Digit = (n) => {
     if (n.length !== 2) return [];
     const [a, b] = n.split('');
@@ -475,12 +451,14 @@ async function generatePDF() {
     return [...set];
   };
 
+  const blocked2List = getBlocked2Digits();
+  const self2List = getSelf2Digits();
   const highlightTop = blocked2List.flatMap(x => x.isTop ? expand2Digit(x.num) : []);
   const highlightBottom = blocked2List.flatMap(x => x.isBottom ? expand2Digit(x.num) : []);
   const highlightTopSelf = self2List.flatMap(x => x.isTop ? expand2Digit(x.num) : []);
   const highlightBottomSelf = self2List.flatMap(x => x.isBottom ? expand2Digit(x.num) : []);
 
-  // ====== 3 ตัว ======
+  // ===== รายการ 3 ตัว
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -529,25 +507,22 @@ async function generatePDF() {
       };
     });
 
-  // ===== Generate PDF Pages =====
-  doc.setFontSize(14);
+  // ===== สร้าง PDF =====
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
   draw2DigitGrid(doc, topMap, 35, highlightTop, highlightTopSelf);
 
   doc.addPage();
-  doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
   draw2DigitGrid(doc, bottomMap, 35, highlightBottom, highlightBottomSelf);
 
   doc.addPage();
-  doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("3 list number", 15, 28);
   draw3DigitList(doc, sortedThreeList, 35);
 
-  doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
+  doc.save(`Lotto-Dealer_${day}-${month}-${year}.pdf`);
 }
 
 
