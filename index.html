@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.8</h1>
+<h1>ระบบบันทึกเลขหวย v06.9</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -411,7 +411,7 @@ async function generatePDF() {
   const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
   const drawDate = `${day}/${month}/${year}`;
 
-  // ===== รวมเลขแทงทั้งหมด =====
+  // ===== ดึงข้อมูลเลขแทง 2 ตัว =====
   const topMap = {}, bottomMap = {};
   document.querySelectorAll('#twoDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -423,7 +423,7 @@ async function generatePDF() {
     }
   });
 
-  // ===== ดึงรายการเลขอั้น =====
+  // ===== ดึงรายการเลขอั้น 2 ตัว =====
   const blocked2List = [];
   document.querySelectorAll('#blocked2Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -431,10 +431,11 @@ async function generatePDF() {
     const isBottom = row.children[2]?.innerText.includes('✔');
     if (num) blocked2List.push({ num, isTop, isBottom });
   });
-  const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
-  const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
 
-  // ===== ดึงรายการซื้อเอง =====
+  const blockedTop = blocked2List.filter(x => x.isTop).map(x => x.num);
+  const blockedBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
+
+  // ===== ดึงรายการซื้อเอง 2 ตัว =====
   const self2List = [];
   document.querySelectorAll('#self2Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -442,6 +443,7 @@ async function generatePDF() {
     const isBottom = row.children[2]?.innerText.includes('✔');
     if (num) self2List.push({ num, isTop, isBottom });
   });
+
   const selfTop = self2List.filter(x => x.isTop).map(x => x.num);
   const selfBottom = self2List.filter(x => x.isBottom).map(x => x.num);
 
@@ -472,13 +474,13 @@ async function generatePDF() {
   // ===== หน้า 1: 2 ตัวบน =====
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
-  draw2DigitGrid(doc, topMap, 35, highlightTop, [], selfTop, []);
+  draw2DigitGrid(doc, topMap, 35, blockedTop, selfTop);
 
   // ===== หน้า 2: 2 ตัวล่าง =====
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 35, [], highlightBottom, [], selfBottom);
+  draw2DigitGrid(doc, bottomMap, 35, blockedBottom, selfBottom);
 
   // ===== หน้า 3: 3 ตัว =====
   doc.addPage();
@@ -486,7 +488,6 @@ async function generatePDF() {
   doc.text("3 list number", 15, 28);
   draw3DigitList(doc, sortedThreeList, 35);
 
-  // ===== บันทึกไฟล์ =====
   doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
 }
 
@@ -516,7 +517,7 @@ function getSelf2Digits() {
   return list;
 }
 
-function draw2DigitGrid(doc, dataMap, startY, topRed = [], bottomRed = [], topYellow = [], bottomYellow = []) {
+function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBottomList = []) {
   const cellW = 18, cellH = 18;
   const startX = 0;
   doc.setFontSize(10);
@@ -532,34 +533,21 @@ function draw2DigitGrid(doc, dataMap, startY, topRed = [], bottomRed = [], topYe
       doc.setDrawColor(0);
       doc.rect(x, y, cellW, cellH);
 
-      // ไฮไลต์แดงด้านบน
-      if (topRed.includes(num)) {
-        doc.setFillColor(255, 200, 200); // สีแดง
+      // ไฮไลต์แดง: ครึ่งบน (เลขอั้น)
+      if (highlightTopList.includes(num)) {
+        doc.setFillColor(255, 200, 200); // สีแดงอ่อน
         doc.rect(x, y, cellW, cellH / 2, 'F');
       }
 
-      // ไฮไลต์แดงด้านล่าง
-      if (bottomRed.includes(num)) {
-        doc.setFillColor(255, 200, 200); // สีแดง
+      // ไฮไลต์เหลือง: ครึ่งล่าง (ซื้อเอง)
+      if (highlightBottomList.includes(num)) {
+        doc.setFillColor(255, 255, 153); // สีเหลืองอ่อน
         doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
       }
 
-      // ไฮไลต์เหลืองด้านบน
-      if (topYellow.includes(num)) {
-        doc.setFillColor(255, 255, 150); // สีเหลือง
-        doc.rect(x, y, cellW, cellH / 2, 'F');
-      }
-
-      // ไฮไลต์เหลืองด้านล่าง
-      if (bottomYellow.includes(num)) {
-        doc.setFillColor(255, 255, 150); // สีเหลือง
-        doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
-      }
-
-      // เขียนข้อความ
       doc.setTextColor(0);
-      doc.text(num, x + 2, y + 7);     // ด้านบน: ตัวเลข
-      doc.text(val.toString(), x + 2, y + 14); // ด้านล่าง: เงิน
+      doc.text(num, x + 2, y + 7);
+      doc.text(val.toString(), x + 2, y + 14);
     }
   }
 }
