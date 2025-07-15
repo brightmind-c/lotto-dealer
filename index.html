@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ระบบบันทึกหวย</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
@@ -63,27 +64,11 @@
     th {
       background-color: #e3f2fd;
     }
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .draw-inputs input {
-      width: 50px;
-      text-align: center;
-    }
-    .draw-inputs {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
   </style>
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v05.10</h1>
+<h1>ระบบบันทึกเลขหวย v05.13</h1>
 
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
@@ -159,278 +144,227 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
 <script>
-  function clearTwoDigit() {
-    document.getElementById('twoDigitNumber').value = '';
-    document.getElementById('twoDigitAmount').value = '';
-    document.getElementById('twoDigitTop').checked = false;
-    document.getElementById('twoDigitBottom').checked = false;
-    document.getElementById('twoDigitReverse').checked = false;
+function clearTwoDigit() {
+  document.getElementById('twoDigitNumber').value = '';
+  document.getElementById('twoDigitAmount').value = '';
+  document.getElementById('twoDigitTop').checked = false;
+  document.getElementById('twoDigitBottom').checked = false;
+  document.getElementById('twoDigitReverse').checked = false;
+}
+
+function clearThreeDigit() {
+  document.getElementById('threeDigitNumber').value = '';
+  document.getElementById('threeDigitAmount').value = '';
+  document.getElementById('threeDigitTop').checked = false;
+  document.getElementById('threeDigitBottom').checked = false;
+  document.getElementById('threeDigitTod').checked = false;
+  document.getElementById('threeDigitReverse').checked = false;
+}
+
+function addTwoDigit() {
+  const number = document.getElementById('twoDigitNumber').value.trim();
+  const amount = parseInt(document.getElementById('twoDigitAmount').value.trim());
+  const top = document.getElementById('twoDigitTop').checked;
+  const bottom = document.getElementById('twoDigitBottom').checked;
+  const reverse = document.getElementById('twoDigitReverse').checked;
+
+  if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
+    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
+    return;
   }
 
-  function clearThreeDigit() {
-    document.getElementById('threeDigitNumber').value = '';
-    document.getElementById('threeDigitAmount').value = '';
-    document.getElementById('threeDigitTop').checked = false;
-    document.getElementById('threeDigitBottom').checked = false;
-    document.getElementById('threeDigitTod').checked = false;
-    document.getElementById('threeDigitReverse').checked = false;
+  const table = document.getElementById('twoDigitTable');
+  const nums = new Set();
+  nums.add(number);
+  if (reverse && number[0] !== number[1]) {
+    nums.add(number[1] + number[0]);
   }
 
-  function addTwoDigit() {
-    const number = document.getElementById('twoDigitNumber').value.trim();
-    const amount = parseInt(document.getElementById('twoDigitAmount').value.trim());
-    const top = document.getElementById('twoDigitTop').checked;
-    const bottom = document.getElementById('twoDigitBottom').checked;
-    const reverse = document.getElementById('twoDigitReverse').checked;
-
-    if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
-      alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
-      return;
-    }
-
-    const table = document.getElementById('twoDigitTable');
-    const nums = new Set();
-    nums.add(number);
-    if (reverse && number[0] !== number[1]) {
-      nums.add(number[1] + number[0]);
-    }
-
-    nums.forEach(num => {
-      const row = table.insertRow();
-      row.insertCell(0).innerText = num;
-      row.insertCell(1).innerText = top ? amount + "฿" : "";
-      row.insertCell(2).innerText = bottom ? amount + "฿" : "";
-      const del = row.insertCell(3);
-      del.innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-    });
-
-    clearTwoDigit();
-  }
-
-  function addThreeDigit() {
-    const number = document.getElementById('threeDigitNumber').value.trim();
-    const amount = parseInt(document.getElementById('threeDigitAmount').value.trim());
-    const top = document.getElementById('threeDigitTop').checked;
-    const bottom = document.getElementById('threeDigitBottom').checked;
-    const tod = document.getElementById('threeDigitTod').checked;
-    const reverse = document.getElementById('threeDigitReverse').checked;
-
-    if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tod)) {
-      alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
-      return;
-    }
-
-    const table = document.getElementById('threeDigitTable');
-    const added = new Set();
-
+  nums.forEach(num => {
     const row = table.insertRow();
-    row.insertCell(0).innerText = number;
+    row.insertCell(0).innerText = num;
     row.insertCell(1).innerText = top ? amount + "฿" : "";
     row.insertCell(2).innerText = bottom ? amount + "฿" : "";
-    row.insertCell(3).innerText = tod ? amount + "฿" : "";
-    row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-    added.add(number);
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  });
 
-    if (reverse && top) {
-      const chars = number.split('');
-      const perms = new Set();
+  clearTwoDigit();
+}
 
-      const permute = (arr, m = []) => {
-        if (arr.length === 0) {
-          const result = m.join('');
-          if (!added.has(result)) perms.add(result);
-        } else {
-          for (let i = 0; i < arr.length; i++) {
-            let curr = arr.slice();
-            let next = curr.splice(i, 1);
-            permute(curr.slice(), m.concat(next));
-          }
+function addThreeDigit() {
+  const number = document.getElementById('threeDigitNumber').value.trim();
+  const amount = parseInt(document.getElementById('threeDigitAmount').value.trim());
+  const top = document.getElementById('threeDigitTop').checked;
+  const bottom = document.getElementById('threeDigitBottom').checked;
+  const tod = document.getElementById('threeDigitTod').checked;
+  const reverse = document.getElementById('threeDigitReverse').checked;
+
+  if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tod)) {
+    alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
+    return;
+  }
+
+  const table = document.getElementById('threeDigitTable');
+  const added = new Set();
+
+  const row = table.insertRow();
+  row.insertCell(0).innerText = number;
+  row.insertCell(1).innerText = top ? amount + "฿" : "";
+  row.insertCell(2).innerText = bottom ? amount + "฿" : "";
+  row.insertCell(3).innerText = tod ? amount + "฿" : "";
+  row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  added.add(number);
+
+  if (reverse && top) {
+    const chars = number.split('');
+    const perms = new Set();
+
+    const permute = (arr, m = []) => {
+      if (arr.length === 0) {
+        const result = m.join('');
+        if (!added.has(result)) perms.add(result);
+      } else {
+        for (let i = 0; i < arr.length; i++) {
+          let curr = arr.slice();
+          let next = curr.splice(i, 1);
+          permute(curr.slice(), m.concat(next));
         }
-      };
+      }
+    };
 
-      permute(chars);
+    permute(chars);
 
-      perms.forEach(num => {
-        const r = table.insertRow();
-        r.insertCell(0).innerText = num;
-        r.insertCell(1).innerText = amount + "฿";
-        r.insertCell(2).innerText = "";
-        r.insertCell(3).innerText = "";
-        r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-      });
+    perms.forEach(num => {
+      const r = table.insertRow();
+      r.insertCell(0).innerText = num;
+      r.insertCell(1).innerText = amount + "฿";
+      r.insertCell(2).innerText = "";
+      r.insertCell(3).innerText = "";
+      r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    });
+  }
+
+  clearThreeDigit();
+}
+
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFont("Helvetica");
+  doc.setFontSize(14);
+
+  const day = document.getElementById('drawDay').value.padStart(2, '0');
+  const month = document.getElementById('drawMonth').value.padStart(2, '0');
+  const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
+  const drawDate = `${day}/${month}/${year}`;
+
+  const topMap = {}, bottomMap = {};
+  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
+    if (num) {
+      if (top > 0) topMap[num] = (topMap[num] || 0) + top;
+      if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
     }
+  });
 
-    clearThreeDigit();
-  }
+  const threeList = [];
+  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
+    const tod = parseInt(row.children[3]?.innerText.replace('฿', '') || '0');
+    if (num && (top > 0 || bottom > 0 || tod > 0)) {
+      threeList.push({ num, top, bottom, tod });
+    }
+  });
 
-  async function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const threeMap = {};
+  threeList.forEach(({ num, top, bottom, tod }) => {
+    if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tod: 0 };
+    threeMap[num].top += top;
+    threeMap[num].bottom += bottom;
+    threeMap[num].tod += tod;
+  });
 
-    // ใช้ฟอนต์มาตรฐาน Helvetica (หรือทดลองเปลี่ยนเป็น THSarabun ถ้ามี)
-    doc.setFont("Helvetica");
-    doc.setFontSize(16);
+  const sortedThreeList = Object.entries(threeMap)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([num, values]) => ({ num, ...values }));
 
-    // วันที่งวด
-    const day = document.getElementById('drawDay').value.padStart(2, '0');
-    const month = document.getElementById('drawMonth').value.padStart(2, '0');
-    const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
-    const drawDate = `${day}/${month}/${year}`;
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("2 top number", 15, 28);
+  draw2DigitGrid(doc, topMap, 35);
 
-    // เก็บข้อมูล 2 ตัวบน/ล่าง
-    const topMap = {}, bottomMap = {};
-    document.querySelectorAll('#twoDigitTable tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
-      const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
-      if (num) {
-        if (top > 0) topMap[num] = (topMap[num] || 0) + top;
-        if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
-      }
-    });
+  doc.addPage();
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("2 bottom number", 15, 28);
+  draw2DigitGrid(doc, bottomMap, 35);
 
-    // เก็บข้อมูล 3 ตัว
-    const threeList = [];
-    document.querySelectorAll('#threeDigitTable tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const top = row.children[1]?.innerText ? parseInt(row.children[1].innerText.replace('฿', '') || '0') : 0;
-      const bottom = row.children[2]?.innerText ? parseInt(row.children[2].innerText.replace('฿', '') || '0') : 0;
-      const tod = row.children[3]?.innerText ? parseInt(row.children[3].innerText.replace('฿', '') || '0') : 0;
-      if (num && (top > 0 || bottom > 0 || tod > 0)) {
-        threeList.push({ num, top, bottom, tod });
-      }
-    });
+  doc.addPage();
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("3 list number", 15, 28);
+  draw3DigitList(doc, sortedThreeList, 35);
 
-    // --- สร้าง pdf หน้าแรก 2 ตัวบน ---
-    doc.text(`Date: ${drawDate}`, 15, 20);
-    doc.setFontSize(14);
-    doc.text("2 top number", 15, 28);
-    draw2DigitGrid(doc, topMap, 35);
+  doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
+}
 
-    // --- หน้า 2: 2 ตัวล่าง ---
-    doc.addPage();
-    doc.text(`Date: ${drawDate}`, 15, 20);
-    doc.setFontSize(14);
-    doc.text("2 bottom number", 15, 28);
-    draw2DigitGrid(doc, bottomMap, 35);
-
-    // --- หน้า 3: 3 ตัวรายการ ---
-    doc.addPage();
-    doc.text(`Date: ${drawDate}`, 15, 20);
-    doc.setFontSize(14);
-    doc.text("3 list number", 15, 28);
-    draw3DigitList(doc, threeList, 35);
-
-    doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
-  }
-
-  // ฟังก์ชันวาดตาราง 2 ตัว 10x10 ช่อง
-  function draw2DigitGrid(doc, dataMap, startY) {
-    const cellW = 18, cellH = 18;
-    const startX = 0; //ปรับตรงนี้
-    doc.setFontSize(10);
-
-    /*
-    // หัวตารางหลักสิบ (แถวบน)
-    doc.setDrawColor(0);
-    doc.setFillColor(230, 242, 253);
-    doc.rect(startX, startY, cellW, cellH, "F");
-    doc.text("", startX + 2, startY + 12);
+function draw2DigitGrid(doc, dataMap, startY) {
+  const cellW = 18, cellH = 18;
+  const startX = 0;
+  doc.setFontSize(10);
+  for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
-      doc.rect(startX + (c+1)*cellW, startY, cellW, cellH, "F");
-      doc.text(c.toString(), startX + (c+1)*cellW + 6, startY + 12);
-    }
-
-    // หัวตารางหลักหน่วย (คอลัมน์ซ้าย)
-    for (let r = 0; r < 10; r++) {
-      doc.rect(startX, startY + (r+1)*cellH, cellW, cellH, "F");
-      doc.text(r.toString(), startX + 6, startY + (r+1)*cellH + 12);
-    }
-    */
-
-    // ตารางข้อมูลและกรอบ
-    for (let r = 0; r < 10; r++) {
-      for (let c = 0; c < 10; c++) {
-        const num = `${r}${c}`;
-        const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
-        const x = startX + (c+1)*cellW;
-        const y = startY + (r+1)*cellH;
-        doc.rect(x, y, cellW, cellH);
-        doc.text(num, x + 2, y + 7);
-        doc.text(val.toString(), x + 2, y + 14);
-      }
+      const num = `${r}${c}`;
+      const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
+      const x = startX + (c + 1) * cellW;
+      const y = startY + (r + 1) * cellH;
+      doc.rect(x, y, cellW, cellH);
+      doc.text(num, x + 2, y + 7);
+      doc.text(val.toString(), x + 2, y + 14);
     }
   }
+}
 
-  // ฟังก์ชันวาดรายการ 3 ตัว แบบลิสต์
-  function draw3DigitList(doc, list, startY) {
-    doc.setFontSize(10);
-    const leftX = 15;
-    const rightX = 110; // ตำแหน่งคอลัมน์ขวา
-    const lineHeight = 7;
-    const colWidths = [20, 20, 20, 20];
-    const headers = ["Num", "Top", "Bottom", "Tode"];
+function draw3DigitList(doc, list, startY) {
+  doc.setFontSize(10);
+  const startX = 15;
+  const lineHeight = 7;
+  const colWidths = [20, 20, 20, 20];
+  const headers = ["Num", "Top", "Bottom", "Tode"];
 
-    // รวมยอดเลขซ้ำ
-    const map = {};
-    list.forEach(row => {
-      if (!map[row.num]) map[row.num] = { top: 0, bottom: 0, tod: 0 };
-      map[row.num].top += row.top || 0;
-      map[row.num].bottom += row.bottom || 0;
-      map[row.num].tod += row.tod || 0;
+  let x = startX;
+  headers.forEach((h, i) => {
+    doc.setFillColor(230, 242, 253);
+    doc.rect(x, startY, colWidths[i], lineHeight, "F");
+    doc.setDrawColor(0);
+    doc.rect(x, startY, colWidths[i], lineHeight);
+    doc.text(h, x + 3, startY + 5);
+    x += colWidths[i];
+  });
+
+  let y = startY + lineHeight;
+  list.forEach(row => {
+    x = startX;
+    const cells = [
+      row.num,
+      row.top ? row.top + "B" : "",
+      row.bottom ? row.bottom + "B" : "",
+      row.tod ? row.tod + "B" : ""
+    ];
+    cells.forEach((cell, i) => {
+      doc.rect(x, y, colWidths[i], lineHeight);
+      doc.text(cell.toString(), x + 3, y + 5);
+      x += colWidths[i];
     });
-
-    // เรียงเลขจากน้อยไปมาก
-    const sorted = Object.keys(map).sort().map(num => ({
-      num,
-      top: map[num].top,
-      bottom: map[num].bottom,
-      tod: map[num].tod
-    }));
-
-    // เขียนหัวตารางทั้ง 2 คอลัมน์
-    function drawHeaders(x, y) {
-      headers.forEach((h, i) => {
-        doc.setFillColor(230, 242, 253);
-        doc.rect(x, y, colWidths[i], lineHeight, "F");
-        doc.setDrawColor(0);
-        doc.rect(x, y, colWidths[i], lineHeight);
-        doc.text(h, x + 3, y + 5);
-      });
+    y += lineHeight;
+    if (y + lineHeight > 280) {
+      doc.addPage();
+      y = 15;
     }
-
-    let y = startY + lineHeight;
-    let x = leftX;
-    drawHeaders(x, startY);
-
-    sorted.forEach((row, idx) => {
-      // หาก y เกิน 270 และยังอยู่คอลัมน์ซ้าย ให้สลับไปขวา
-      if (y + lineHeight > 270 && x === leftX) {
-        x = rightX;
-        y = startY + lineHeight;
-        drawHeaders(x, startY);
-      } else if (y + lineHeight > 270 && x === rightX) {
-        doc.addPage();
-        x = leftX;
-        y = startY + lineHeight;
-        drawHeaders(x, startY);
-      }
-
-      const cells = [row.num, row.top ? row.top + "B" : "", row.bottom ? row.bottom + "B" : "", row.tod ? row.tod + "B" : ""];
-      let cx = x;
-      cells.forEach((cell, i) => {
-        doc.rect(cx, y, colWidths[i], lineHeight);
-        doc.text(cell.toString(), cx + 3, y + 5);
-        cx += colWidths[i];
-      });
-      y += lineHeight;
-    });
-  }
-
+  });
+}
 </script>
 
 </body>
