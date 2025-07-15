@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบบันทึกหวย v04.2</title>
+  <title>ระบบบันทึกหวย</title>
   <style>
     body {
       font-family: 'Sarabun', sans-serif;
@@ -97,7 +97,7 @@
 </head>
 <body>
 
-  <h1>ระบบบันทึกเลขหวย (v04.2)</h1>
+  <h1>ระบบบันทึกเลขหวย</h1>
 
   <!-- ===== 3 ตัว input ===== -->
   <div class="form-section">
@@ -284,12 +284,12 @@
     }
   </script>
 
-    // โหลด jsPDF และ AutoTable
+  <!-- โหลด jsPDF และ AutoTable -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <script>
-  async function generatePDF() {
+    function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -298,90 +298,30 @@
     const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
     const drawDate = `${day}/${month}/${year}`;
 
-    // 🔤 โหลดฟอนต์ไทย
-    const fontUrl = 'https://cdn.jsdelivr.net/gh/dharmakant/thai-fonts-base64/thsarabunnew-normal.js';
-    await new Promise(resolve => {
-      const script = document.createElement('script');
-      script.src = fontUrl;
-      script.onload = resolve;
-      document.head.appendChild(script);
-    });
-    doc.addFileToVFS('THSarabunNew.ttf', THSarabunNew);
-    doc.addFont('THSarabunNew.ttf', 'THSarabun', 'normal');
-    doc.setFont('THSarabun');
+    doc.setFont('helvetica'); // ใช้ฟอนต์พื้นฐาน
     doc.setFontSize(16);
-
-    // 🔢 รวมเลข 2 ตัว
-    const twoDigitRows = Array.from(document.querySelectorAll('#twoDigitTable tr')).map(row => {
-      const cells = row.querySelectorAll('td');
-      return [
-        cells[0]?.innerText.trim(),
-        cells[1]?.innerText.replace('฿', '').trim(),
-        cells[2]?.innerText.replace('฿', '').trim()
-      ];
-    });
-
-    const totalsTop = {}, totalsBottom = {};
-    twoDigitRows.forEach(([num, top, bottom]) => {
-      if (!num) return;
-      totalsTop[num] = (totalsTop[num] || 0) + parseInt(top || 0);
-      totalsBottom[num] = (totalsBottom[num] || 0) + parseInt(bottom || 0);
-    });
-
-    // 🔢 รวมเลข 3 ตัว
-    const threeDigitRows = Array.from(document.querySelectorAll('#threeDigitTable tr')).map(row => {
-      const cells = row.querySelectorAll('td');
-      return [
-        cells[0]?.innerText.trim(),
-        cells[1]?.innerText.replace('฿', '').trim(),
-        cells[2]?.innerText.replace('฿', '').trim(),
-        cells[3]?.innerText.replace('฿', '').trim()
-      ];
-    });
-
-    const totals3 = {};
-    threeDigitRows.forEach(([num, top, bottom, tod]) => {
-      if (!num) return;
-      totals3[num] = totals3[num] || { top: 0, bottom: 0, tod: 0 };
-      totals3[num].top += parseInt(top || 0);
-      totals3[num].bottom += parseInt(bottom || 0);
-      totals3[num].tod += parseInt(tod || 0);
-    });
-
-    // 🧾 หน้า 1: 2 ตัวบน
     doc.text(`งวดที่ ${drawDate}`, 15, 20);
-    doc.text('2 ตัวบน', 15, 30);
-    const topTable = buildGrid(totalsTop);
-    drawGrid(doc, topTable, 15, 35);
+    doc.text("2 ตัวบน", 15, 30);
 
-    // 🧾 หน้า 2: 2 ตัวล่าง
-    doc.addPage();
-    doc.text(`งวดที่ ${drawDate}`, 15, 20);
-    doc.text('2 ตัวล่าง', 15, 30);
-    const bottomTable = buildGrid(totalsBottom);
-    drawGrid(doc, bottomTable, 15, 35);
+    const topTable = [];
+    const rows = document.querySelectorAll('#twoDigitTable tr');
+    rows.forEach(row => {
+      const num = row.children[0].innerText;
+      const top = row.children[1].innerText.replace('฿','');
+      if (num && top) {
+        topTable.push([num, top]);
+      }
+    });
 
-    // 🧾 หน้า 3: 3 ตัว
-    doc.addPage();
-    doc.text(`งวดที่ ${drawDate}`, 15, 20);
-    doc.text('3 ตัว', 15, 30);
-    const body = Object.entries(totals3)
-      .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
-      .map(([num, val]) => [
-        num,
-        val.top ? `${val.top}฿` : '',
-        val.bottom ? `${val.bottom}฿` : '',
-        val.tod ? `${val.tod}฿` : ''
-      ]);
     doc.autoTable({
-      head: [['เลข', 'เต็ง', 'ล่าง', 'โต๊ด']],
-      body,
-      startY: 35,
-      styles: { font: 'THSarabun', fontSize: 14, cellPadding: 3 }
+      head: [['เลข', 'ยอดบน']],
+      body: topTable,
+      startY: 40
     });
 
     doc.save(`โพยหวย_${day}-${month}-${year}.pdf`);
   }
+
 
   // 🧩 สร้างตาราง 10×10 จากยอดรวม
   function buildGrid(totals) {
