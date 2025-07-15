@@ -68,141 +68,445 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v05.14</h1>
+<h1>ระบบบันทึกเลขหวย v06.2</h1>
 
-<!-- ===== บล็อกใหม่: เลขอั้น 3 ตัว ===== -->
+<!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>เลขอั้น 3 ตัว</strong>
-    <input type="text" id="limited3digit" maxlength="3" placeholder="เลข">
-    <button onclick="addToList('limited3digit', 'limited3digitTable')">เพิ่มรายการ</button>
+    <input type="text" id="blocked3Input" maxlength="3" placeholder="เลข">
+    <button onclick="addBlocked3Digit()">เพิ่มรายการ</button>
   </div>
 </div>
 
-<!-- ===== บล็อกใหม่: ซื้อเอง 3 ตัว ===== -->
+<!-- ===== ซื้อเอง 3 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>ซื้อเอง 3 ตัว</strong>
-    <input type="text" id="selfbuy3digit" maxlength="3" placeholder="เลข">
-    <button onclick="addToList('selfbuy3digit', 'selfbuy3digitTable')">เพิ่มรายการ</button>
+    <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
+    <button onclick="addSelf3Digit()">เพิ่มรายการ</button>
   </div>
 </div>
 
-<!-- ===== บล็อกใหม่: เลขอั้น 2 ตัว ===== -->
+<!-- ===== เลขอั้น 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>เลขอั้น 2 ตัว</strong>
-    <input type="text" id="limited2digit" maxlength="2" placeholder="เลข">
-    <label><input type="checkbox" id="limited2top"> บน</label>
-    <label><input type="checkbox" id="limited2bottom"> ล่าง</label>
-    <label><input type="checkbox" id="limited2reverse"> กลับ</label>
-    <button onclick="addLimited2Digit()">เพิ่มรายการ</button>
+    <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
+    <label><input type="checkbox" id="blocked2Top"> บน</label>
+    <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
+    <button onclick="addBlocked2Digit()">เพิ่มรายการ</button>
   </div>
 </div>
 
-<!-- ===== บล็อกใหม่: ซื้อเอง 2 ตัว ===== -->
+<!-- ===== ซื้อเอง 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>ซื้อเอง 2 ตัว</strong>
-    <input type="text" id="selfbuy2digit" maxlength="2" placeholder="เลข">
-    <label><input type="checkbox" id="selfbuy2top"> บน</label>
-    <label><input type="checkbox" id="selfbuy2bottom"> ล่าง</label>
-    <label><input type="checkbox" id="selfbuy2reverse"> กลับ</label>
-    <button onclick="addSelfBuy2Digit()">เพิ่มรายการ</button>
+    <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
+    <label><input type="checkbox" id="self2Top"> บน</label>
+    <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="self2Reverse"> กลับ</label>
+    <button onclick="addSelf2Digit()">เพิ่มรายการ</button>
   </div>
 </div>
 
-<!-- ===== บล็อกเก่า: แทง 3 ตัว ===== -->
-<!-- (คงไว้เหมือนเดิม) -->
+<!-- ===== บล็อกเดิม: 3 ตัว / 2 ตัว ===== -->
 
-<!-- ===== บล็อกเก่า: แทง 2 ตัว ===== -->
-<!-- (คงไว้เหมือนเดิม) -->
+<!-- ===== 3 ตัว input ===== -->
+<div class="form-section">
+  <div class="form-group">
+    <strong>3 ตัว</strong>
+    <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
+    <input type="number" id="threeDigitAmount" min="1" placeholder="บาท">
+    <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
+    <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
+    <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
+    <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
+    <button onclick="addThreeDigit()">เพิ่มรายการ</button>
+    <button class="clear-btn" onclick="clearThreeDigit()">Clear</button>
+  </div>
+</div>
 
-<!-- ===== ตาราง: เลขอั้น 3 ตัว ===== -->
-<h2>เลขอั้น 3 ตัว</h2>
+<!-- ===== 2 ตัว input ===== -->
+<div class="form-section">
+  <div class="form-group">
+    <strong>2 ตัว</strong>
+    <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
+    <input type="number" id="twoDigitAmount" min="1" placeholder="บาท">
+    <label><input type="checkbox" id="twoDigitTop"> บน</label>
+    <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
+    <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
+    <button onclick="addTwoDigit()">เพิ่มรายการ</button>
+    <button class="clear-btn" onclick="clearTwoDigit()">Clear</button>
+  </div>
+</div>
+
+<!-- ===== ตารางรายการใหม่ทั้ง 4 แบบ ===== -->
+<h2>รายการเลขอั้น 3 ตัว</h2>
 <table>
-  <thead>
-    <tr><th>เลข</th><th>ลบ</th></tr>
-  </thead>
-  <tbody id="limited3digitTable"></tbody>
+  <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
+  <tbody id="blocked3Table"></tbody>
 </table>
 
-<!-- ===== ตาราง: ซื้อเอง 3 ตัว ===== -->
-<h2>ซื้อเอง 3 ตัว</h2>
+<h2>รายการซื้อเอง 3 ตัว</h2>
 <table>
-  <thead>
-    <tr><th>เลข</th><th>ลบ</th></tr>
-  </thead>
-  <tbody id="selfbuy3digitTable"></tbody>
+  <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
+  <tbody id="self3Table"></tbody>
 </table>
 
-<!-- ===== ตาราง: เลขอั้น 2 ตัว ===== -->
-<h2>เลขอั้น 2 ตัว</h2>
+<h2>รายการเลขอั้น 2 ตัว</h2>
 <table>
-  <thead>
-    <tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr>
-  </thead>
-  <tbody id="limited2digitTable"></tbody>
+  <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
+  <tbody id="blocked2Table"></tbody>
 </table>
 
-<!-- ===== ตาราง: ซื้อเอง 2 ตัว ===== -->
-<h2>ซื้อเอง 2 ตัว</h2>
+<h2>รายการซื้อเอง 2 ตัว</h2>
 <table>
-  <thead>
-    <tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr>
-  </thead>
-  <tbody id="selfbuy2digitTable"></tbody>
+  <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
+  <tbody id="self2Table"></tbody>
 </table>
 
-<!-- (ตารางแทง 3 ตัว และ 2 ตัว คงไว้เหมือนเดิม) -->
+<!-- ===== 3 ตัว table ===== -->
+<h2>รายการ 3 ตัว</h2>
+<table>
+  <thead>
+    <tr>
+      <th>เลขแทง</th>
+      <th>เต็ง</th>
+      <th>ล่าง</th>
+      <th>โต๊ด</th>
+      <th>ลบ</th>
+    </tr>
+  </thead>
+  <tbody id="threeDigitTable"></tbody>
+</table>
+
+<!-- ===== 2 ตัว table ===== -->
+<h2>รายการ 2 ตัว</h2>
+<table>
+  <thead>
+    <tr>
+      <th>เลขแทง</th>
+      <th>บน</th>
+      <th>ล่าง</th>
+      <th>ลบ</th>
+    </tr>
+  </thead>
+  <tbody id="twoDigitTable"></tbody>
+</table>
+
+<!-- งวดที่ -->
+<h2>สร้างโพย</h2>
+<div class="form-section">
+  <div class="form-group">
+    <label><strong>งวดที่:</strong></label>
+    <input type="text" id="drawDay" maxlength="2" placeholder="วว">
+    <span>/</span>
+    <input type="text" id="drawMonth" maxlength="2" placeholder="ดด">
+    <span>/</span>
+    <input type="text" id="drawYear" maxlength="2" placeholder="ปป">
+  </div>
+  <div>
+    <button onclick="generatePDF()">สร้างโพย pdf</button>
+  </div>
+</div>
 
 <script>
-function addToList(inputId, tableId) {
-  const val = document.getElementById(inputId).value.trim();
-  if (!val) return;
-  const table = document.getElementById(tableId);
+function clearTwoDigit() {
+  document.getElementById('twoDigitNumber').value = '';
+  document.getElementById('twoDigitAmount').value = '';
+  document.getElementById('twoDigitTop').checked = false;
+  document.getElementById('twoDigitBottom').checked = false;
+  document.getElementById('twoDigitReverse').checked = false;
+}
+
+function clearThreeDigit() {
+  document.getElementById('threeDigitNumber').value = '';
+  document.getElementById('threeDigitAmount').value = '';
+  document.getElementById('threeDigitTop').checked = false;
+  document.getElementById('threeDigitBottom').checked = false;
+  document.getElementById('threeDigitTod').checked = false;
+  document.getElementById('threeDigitReverse').checked = false;
+}
+
+function addTwoDigit() {
+  const number = document.getElementById('twoDigitNumber').value.trim();
+  const amount = parseInt(document.getElementById('twoDigitAmount').value.trim());
+  const top = document.getElementById('twoDigitTop').checked;
+  const bottom = document.getElementById('twoDigitBottom').checked;
+  const reverse = document.getElementById('twoDigitReverse').checked;
+
+  if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
+    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
+    return;
+  }
+
+  const table = document.getElementById('twoDigitTable');
+  const nums = new Set();
+  nums.add(number);
+  if (reverse && number[0] !== number[1]) {
+    nums.add(number[1] + number[0]);
+  }
+
+  nums.forEach(num => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = num;
+    row.insertCell(1).innerText = top ? amount + "฿" : "";
+    row.insertCell(2).innerText = bottom ? amount + "฿" : "";
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  });
+
+  clearTwoDigit();
+}
+
+function addThreeDigit() {
+  const number = document.getElementById('threeDigitNumber').value.trim();
+  const amount = parseInt(document.getElementById('threeDigitAmount').value.trim());
+  const top = document.getElementById('threeDigitTop').checked;
+  const bottom = document.getElementById('threeDigitBottom').checked;
+  const tod = document.getElementById('threeDigitTod').checked;
+  const reverse = document.getElementById('threeDigitReverse').checked;
+
+  if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tod)) {
+    alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
+    return;
+  }
+
+  const table = document.getElementById('threeDigitTable');
+  const added = new Set();
+
   const row = table.insertRow();
-  row.insertCell(0).innerText = val;
+  row.insertCell(0).innerText = number;
+  row.insertCell(1).innerText = top ? amount + "฿" : "";
+  row.insertCell(2).innerText = bottom ? amount + "฿" : "";
+  row.insertCell(3).innerText = tod ? amount + "฿" : "";
+  row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  added.add(number);
+
+  if (reverse && top) {
+    const chars = number.split('');
+    const perms = new Set();
+
+    const permute = (arr, m = []) => {
+      if (arr.length === 0) {
+        const result = m.join('');
+        if (!added.has(result)) perms.add(result);
+      } else {
+        for (let i = 0; i < arr.length; i++) {
+          let curr = arr.slice();
+          let next = curr.splice(i, 1);
+          permute(curr.slice(), m.concat(next));
+        }
+      }
+    };
+
+    permute(chars);
+
+    perms.forEach(num => {
+      const r = table.insertRow();
+      r.insertCell(0).innerText = num;
+      r.insertCell(1).innerText = amount + "฿";
+      r.insertCell(2).innerText = "";
+      r.insertCell(3).innerText = "";
+      r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    });
+  }
+
+  clearThreeDigit();
+}
+
+// Script ส่วนเสริมใหม่
+
+function addBlocked3Digit() {
+  const num = document.getElementById('blocked3Input').value.trim();
+  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
+  const table = document.getElementById('blocked3Table');
+  const row = table.insertRow();
+  row.insertCell(0).innerText = num;
   row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  document.getElementById(inputId).value = '';
+  document.getElementById('blocked3Input').value = '';
 }
 
-function addLimited2Digit() {
-  const val = document.getElementById('limited2digit').value.trim();
-  const top = document.getElementById('limited2top').checked;
-  const bottom = document.getElementById('limited2bottom').checked;
-  const reverse = document.getElementById('limited2reverse').checked;
-  if (!val || (!top && !bottom)) return;
-  const nums = new Set([val]);
-  if (reverse && val[0] !== val[1]) nums.add(val[1] + val[0]);
-  nums.forEach(num => {
-    const row = document.getElementById('limited2digitTable').insertRow();
-    row.insertCell(0).innerText = num;
-    row.insertCell(1).innerText = top ? 'x' : '';
-    row.insertCell(2).innerText = bottom ? 'x' : '';
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  });
-  document.getElementById('limited2digit').value = '';
+function addSelf3Digit() {
+  const num = document.getElementById('self3Input').value.trim();
+  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
+  const table = document.getElementById('self3Table');
+  const row = table.insertRow();
+  row.insertCell(0).innerText = num;
+  row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  document.getElementById('self3Input').value = '';
 }
 
-function addSelfBuy2Digit() {
-  const val = document.getElementById('selfbuy2digit').value.trim();
-  const top = document.getElementById('selfbuy2top').checked;
-  const bottom = document.getElementById('selfbuy2bottom').checked;
-  const reverse = document.getElementById('selfbuy2reverse').checked;
-  if (!val || (!top && !bottom)) return;
-  const nums = new Set([val]);
-  if (reverse && val[0] !== val[1]) nums.add(val[1] + val[0]);
-  nums.forEach(num => {
-    const row = document.getElementById('selfbuy2digitTable').insertRow();
-    row.insertCell(0).innerText = num;
-    row.insertCell(1).innerText = top ? 'x' : '';
-    row.insertCell(2).innerText = bottom ? 'x' : '';
+function addBlocked2Digit() {
+  const num = document.getElementById('blocked2Input').value.trim();
+  const top = document.getElementById('blocked2Top').checked;
+  const bottom = document.getElementById('blocked2Bottom').checked;
+  const reverse = document.getElementById('blocked2Reverse').checked;
+  if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  const table = document.getElementById('blocked2Table');
+  const nums = new Set();
+  nums.add(num);
+  if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+  nums.forEach(n => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = n;
+    row.insertCell(1).innerText = top ? '✔️' : '';
+    row.insertCell(2).innerText = bottom ? '✔️' : '';
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
-  document.getElementById('selfbuy2digit').value = '';
+  document.getElementById('blocked2Input').value = '';
+  document.getElementById('blocked2Top').checked = false;
+  document.getElementById('blocked2Bottom').checked = false;
+  document.getElementById('blocked2Reverse').checked = false;
 }
+
+function addSelf2Digit() {
+  const num = document.getElementById('self2Input').value.trim();
+  const top = document.getElementById('self2Top').checked;
+  const bottom = document.getElementById('self2Bottom').checked;
+  const reverse = document.getElementById('self2Reverse').checked;
+  if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  const table = document.getElementById('self2Table');
+  const nums = new Set();
+  nums.add(num);
+  if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+  nums.forEach(n => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = n;
+    row.insertCell(1).innerText = top ? '✔️' : '';
+    row.insertCell(2).innerText = bottom ? '✔️' : '';
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  });
+  document.getElementById('self2Input').value = '';
+  document.getElementById('self2Top').checked = false;
+  document.getElementById('self2Bottom').checked = false;
+  document.getElementById('self2Reverse').checked = false;
+}
+
+// ของเดิม
+
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFont("Helvetica");
+  doc.setFontSize(14);
+
+  const day = document.getElementById('drawDay').value.padStart(2, '0');
+  const month = document.getElementById('drawMonth').value.padStart(2, '0');
+  const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
+  const drawDate = `${day}/${month}/${year}`;
+
+  const topMap = {}, bottomMap = {};
+  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
+    if (num) {
+      if (top > 0) topMap[num] = (topMap[num] || 0) + top;
+      if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
+    }
+  });
+
+  const threeList = [];
+  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
+    const tod = parseInt(row.children[3]?.innerText.replace('฿', '') || '0');
+    if (num && (top > 0 || bottom > 0 || tod > 0)) {
+      threeList.push({ num, top, bottom, tod });
+    }
+  });
+
+  const threeMap = {};
+  threeList.forEach(({ num, top, bottom, tod }) => {
+    if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tod: 0 };
+    threeMap[num].top += top;
+    threeMap[num].bottom += bottom;
+    threeMap[num].tod += tod;
+  });
+
+  const sortedThreeList = Object.entries(threeMap)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([num, values]) => ({ num, ...values }));
+
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("2 top number", 15, 28);
+  draw2DigitGrid(doc, topMap, 35);
+
+  doc.addPage();
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("2 bottom number", 15, 28);
+  draw2DigitGrid(doc, bottomMap, 35);
+
+  doc.addPage();
+  doc.text(`Date: ${drawDate}`, 15, 20);
+  doc.text("3 list number", 15, 28);
+  draw3DigitList(doc, sortedThreeList, 35);
+
+  doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
+}
+
+function draw2DigitGrid(doc, dataMap, startY) {
+  const cellW = 18, cellH = 18;
+  const startX = 0;
+  doc.setFontSize(10);
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 10; c++) {
+      const num = `${r}${c}`;
+      const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
+      const x = startX + (c + 1) * cellW;
+      const y = startY + (r + 1) * cellH;
+      doc.rect(x, y, cellW, cellH);
+      doc.text(num, x + 2, y + 7);
+      doc.text(val.toString(), x + 2, y + 14);
+    }
+  }
+}
+
+function draw3DigitList(doc, list, startY) {
+  doc.setFontSize(10);
+  const startX = 15;
+  const lineHeight = 7;
+  const colWidths = [20, 20, 20, 20];
+  const headers = ["Num", "Top", "Bottom", "Tode"];
+
+  let x = startX;
+  headers.forEach((h, i) => {
+    doc.setFillColor(230, 242, 253);
+    doc.rect(x, startY, colWidths[i], lineHeight, "F");
+    doc.setDrawColor(0);
+    doc.rect(x, startY, colWidths[i], lineHeight);
+    doc.text(h, x + 3, startY + 5);
+    x += colWidths[i];
+  });
+
+  let y = startY + lineHeight;
+  list.forEach(row => {
+    x = startX;
+    const cells = [
+      row.num,
+      row.top ? row.top + "B" : "",
+      row.bottom ? row.bottom + "B" : "",
+      row.tod ? row.tod + "B" : ""
+    ];
+    cells.forEach((cell, i) => {
+      doc.rect(x, y, colWidths[i], lineHeight);
+      doc.text(cell.toString(), x + 3, y + 5);
+      x += colWidths[i];
+    });
+    y += lineHeight;
+    if (y + lineHeight > 280) {
+      doc.addPage();
+      y = 15;
+    }
+  });
+}
+
 </script>
+
 
 </body>
 </html>
