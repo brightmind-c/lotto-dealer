@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.11</h1>
+<h1>ระบบบันทึกเลขหวย v06.12</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -612,38 +612,52 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
 function draw3DigitList(doc, list, startY) {
   const cellH = 10;
   const headers = ["Num", "Top", "Bottom", "Tode", "Block", "Self"];
-  const cellWs = [15, 15, 15, 15, 15, 15]; // กว้างคอลัมน์
+  const cellWs = [15, 15, 15, 15, 15, 15];
 
   // วาดหัวตาราง
   let x = 15;
   headers.forEach((text, i) => {
-    doc.setFillColor(227, 242, 253);
+    doc.setFillColor(227, 242, 253); // สีฟ้าอ่อน
     doc.rect(x, startY, cellWs[i], cellH, 'F');
     doc.setTextColor(0);
     doc.text(text, x + 2, startY + 7);
     x += cellWs[i];
   });
 
-  // วาดข้อมูลแต่ละแถว
+  // วาดแถวข้อมูล
   list.forEach((row, index) => {
     let x = 15;
     const y = startY + (index + 1) * cellH;
+
     const values = [
       row.num,
       row.top > 0 ? row.top.toString() : '',
       row.bottom > 0 ? row.bottom.toString() : '',
       row.tod > 0 ? row.tod.toString() : '',
-      row.isBlocked ? '✔' : '',
-      row.isSelf ? '✔' : ''
+      '', // Block (ช่องเปล่า แต่มีสี)
+      ''  // Self  (ช่องเปล่า แต่มีสี)
     ];
 
     values.forEach((val, i) => {
-      doc.rect(x, y, cellWs[i], cellH);
+      // ตั้งค่าพื้นหลังสำหรับคอลัมน์ Block (4) และ Self (5)
+      if (i === 4 && row.isBlocked) {
+        doc.setFillColor(255, 192, 192); // สีแดงอ่อน
+        doc.rect(x, y, cellWs[i], cellH, 'F');
+      } else if (i === 5 && row.isSelf) {
+        doc.setFillColor(255, 246, 176); // สีเหลืองอ่อน
+        doc.rect(x, y, cellWs[i], cellH, 'F');
+      } else {
+        doc.setDrawColor(0);
+        doc.rect(x, y, cellWs[i], cellH);
+      }
+
+      doc.setTextColor(0);
       doc.text(val, x + 2, y + 7);
       x += cellWs[i];
     });
   });
 }
+
 
 </script>
 
