@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.5</h1>
+<h1>ระบบบันทึกเลขหวย v06.6</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -490,14 +490,16 @@ function draw2DigitGrid(doc, dataMap, startY, highlightList = []) {
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
-      // ตรวจว่าต้องไฮไลต์ไหม
+      // กล่องหลัก
+      doc.rect(x, y, cellW, cellH);
+
+      // ไฮไลต์เฉพาะครึ่งบน
       const highlight = highlightList.includes(num);
       if (highlight) {
         doc.setFillColor(255, 200, 200);
-        doc.rect(x, y, cellW, cellH, 'F');
-      } else {
-        doc.rect(x, y, cellW, cellH);
+        doc.rect(x, y, cellW, cellH / 2, 'F');
       }
+
       doc.setTextColor(0);
       doc.text(num, x + 2, y + 7);
       doc.text(val.toString(), x + 2, y + 14);
