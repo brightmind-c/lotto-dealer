@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบบันทึกหวย</title>
+  <title>Lotto Dealer</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.26</h1>
+<h1>Lotto Dealer v06.27</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -545,7 +545,7 @@ async function generatePDF() {
   doc.text("3 list number", 15, 28);
   draw3DigitList(doc, sortedThreeList, 35);
 
-  doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
+  doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
 
 
