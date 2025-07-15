@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.16</h1>
+<h1>ระบบบันทึกเลขหวย v06.17</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -512,16 +512,19 @@ async function generatePDF() {
     });
 
   // ===== Generate PDF Pages =====
+  doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
   draw2DigitGrid(doc, topMap, 35, highlightTop, highlightTopSelf);
 
   doc.addPage();
+  doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
   draw2DigitGrid(doc, bottomMap, 35, highlightBottom, highlightBottomSelf);
 
   doc.addPage();
+  doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("3 list number", 15, 28);
   draw3DigitList(doc, sortedThreeList, 35);
