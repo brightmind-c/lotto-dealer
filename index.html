@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.9</h1>
+<h1>ระบบบันทึกเลขหวย v06.10</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -411,7 +411,7 @@ async function generatePDF() {
   const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
   const drawDate = `${day}/${month}/${year}`;
 
-  // ===== ดึงข้อมูลเลขแทง 2 ตัว =====
+  // Map สำหรับ 2 ตัว
   const topMap = {}, bottomMap = {};
   document.querySelectorAll('#twoDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -423,31 +423,46 @@ async function generatePDF() {
     }
   });
 
-  // ===== ดึงรายการเลขอั้น 2 ตัว =====
-  const blocked2List = [];
-  document.querySelectorAll('#blocked2Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const isTop = row.children[1]?.innerText.includes('✔');
-    const isBottom = row.children[2]?.innerText.includes('✔');
-    if (num) blocked2List.push({ num, isTop, isBottom });
-  });
+  // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
+  const getBlocked2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#blocked2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
+  const getSelf2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#self2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
 
-  const blockedTop = blocked2List.filter(x => x.isTop).map(x => x.num);
-  const blockedBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
+  const blocked2List = getBlocked2Digits();
+  const self2List = getSelf2Digits();
 
-  // ===== ดึงรายการซื้อเอง 2 ตัว =====
-  const self2List = [];
-  document.querySelectorAll('#self2Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const isTop = row.children[1]?.innerText.includes('✔');
-    const isBottom = row.children[2]?.innerText.includes('✔');
-    if (num) self2List.push({ num, isTop, isBottom });
-  });
+  const expand2Digit = (n) => {
+    if (n.length !== 2) return [];
+    const [a, b] = n.split('');
+    const set = new Set();
+    set.add(`${a}${b}`);
+    if (a !== b) set.add(`${b}${a}`);
+    return [...set];
+  };
 
-  const selfTop = self2List.filter(x => x.isTop).map(x => x.num);
-  const selfBottom = self2List.filter(x => x.isBottom).map(x => x.num);
+  const highlightTop = blocked2List.flatMap(x => x.isTop ? expand2Digit(x.num) : []);
+  const highlightBottom = blocked2List.flatMap(x => x.isBottom ? expand2Digit(x.num) : []);
+  const highlightTopSelf = self2List.flatMap(x => x.isTop ? expand2Digit(x.num) : []);
+  const highlightBottomSelf = self2List.flatMap(x => x.isBottom ? expand2Digit(x.num) : []);
 
-  // ===== ดึงรายการ 3 ตัว =====
+  // ====== 3 ตัว ======
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -459,6 +474,24 @@ async function generatePDF() {
     }
   });
 
+  const getPermutations = (str) => {
+    const results = new Set();
+    if (str.length === 1) return [str];
+    for (let i = 0; i < str.length; i++) {
+      const first = str[i];
+      const rest = str.slice(0, i) + str.slice(i + 1);
+      for (const perm of getPermutations(rest)) {
+        results.add(first + perm);
+      }
+    }
+    return [...results];
+  };
+
+  const isInListWithPermutation = (num, list) => {
+    const perms = getPermutations(num);
+    return list.some(item => perms.includes(item.num));
+  };
+
   const threeMap = {};
   threeList.forEach(({ num, top, bottom, tod }) => {
     if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tod: 0 };
@@ -469,20 +502,25 @@ async function generatePDF() {
 
   const sortedThreeList = Object.entries(threeMap)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([num, values]) => ({ num, ...values }));
+    .map(([num, values]) => {
+      return {
+        num,
+        ...values,
+        isBlocked: isInListWithPermutation(num, getBlocked3List()),
+        isSelf: isInListWithPermutation(num, getSelf3List())
+      };
+    });
 
-  // ===== หน้า 1: 2 ตัวบน =====
+  // ===== Generate PDF Pages =====
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
-  draw2DigitGrid(doc, topMap, 35, blockedTop, selfTop);
+  draw2DigitGrid(doc, topMap, 35, highlightTop, highlightTopSelf);
 
-  // ===== หน้า 2: 2 ตัวล่าง =====
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 35, blockedBottom, selfBottom);
+  draw2DigitGrid(doc, bottomMap, 35, highlightBottom, highlightBottomSelf);
 
-  // ===== หน้า 3: 3 ตัว =====
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("3 list number", 15, 28);
@@ -490,6 +528,7 @@ async function generatePDF() {
 
   doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
 }
+
 
 function getBlocked2Digits() {
   const list = [];
@@ -513,6 +552,24 @@ function getSelf2Digits() {
     if (num) {
       list.push({ num, isTop, isBottom });
     }
+  });
+  return list;
+}
+
+function getBlocked3List() {
+  const list = [];
+  document.querySelectorAll('#blocked3Table tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    if (num) list.push({ num });
+  });
+  return list;
+}
+
+function getSelf3List() {
+  const list = [];
+  document.querySelectorAll('#self3Table tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    if (num) list.push({ num });
   });
   return list;
 }
@@ -552,41 +609,59 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   }
 }
 
-function draw3DigitList(doc, list, startY) {
-  doc.setFontSize(10);
-  const startX = 15;
-  const lineHeight = 7;
-  const colWidths = [20, 20, 20, 20];
-  const headers = ["Num", "Top", "Bottom", "Tode"];
+function draw3DigitList(doc, list, startY, blockedNums = [], selfNums = []) {
+  const colW = 15;      // ความกว้างแต่ละคอลัมน์
+  const rowH = 6;       // ความสูงแต่ละแถว
+  const colsPerGroup = 5; // num, top, bottom, tod, flags
+  const rowsPerColumn = Math.floor((280 - startY) / rowH);
+  const colsPerPage = 2;
 
-  let x = startX;
-  headers.forEach((h, i) => {
-    doc.setFillColor(230, 242, 253);
-    doc.rect(x, startY, colWidths[i], lineHeight, "F");
-    doc.setDrawColor(0);
-    doc.rect(x, startY, colWidths[i], lineHeight);
-    doc.text(h, x + 3, startY + 5);
-    x += colWidths[i];
-  });
+  const startX = 10;
 
-  let y = startY + lineHeight;
-  list.forEach(row => {
-    x = startX;
-    const cells = [
-      row.num,
-      row.top ? row.top + "B" : "",
-      row.bottom ? row.bottom + "B" : "",
-      row.tod ? row.tod + "B" : ""
-    ];
-    cells.forEach((cell, i) => {
-      doc.rect(x, y, colWidths[i], lineHeight);
-      doc.text(cell.toString(), x + 3, y + 5);
-      x += colWidths[i];
-    });
-    y += lineHeight;
-    if (y + lineHeight > 280) {
-      doc.addPage();
-      y = 15;
+  let col = 0, row = 0, colGroup = 0;
+
+  // Header
+  const drawHeader = (x, y) => {
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text("เลข", x, y);
+    doc.text("บน", x + colW * 1, y);
+    doc.text("ล่าง", x + colW * 2, y);
+    doc.text("โต๊ด", x + colW * 3, y);
+    doc.text("อั้น", x + colW * 4, y);
+    doc.text("ซื้อ", x + colW * 5, y);
+  };
+
+  drawHeader(startX, startY);
+
+  doc.setFontSize(9);
+  list.forEach(({ num, top, bottom, tod }, index) => {
+    const x = startX + colGroup * colsPerGroup * colW;
+    const y = startY + 6 + row * rowH;
+
+    doc.text(num, x, y);
+    doc.text(top.toString(), x + colW * 1, y);
+    doc.text(bottom.toString(), x + colW * 2, y);
+    doc.text(tod.toString(), x + colW * 3, y);
+
+    // Check flags
+    const isBlocked = blockedNums.includes(num);
+    const isSelf = selfNums.includes(num);
+
+    if (isBlocked) doc.text("✔", x + colW * 4 + 4, y);
+    if (isSelf) doc.text("✔", x + colW * 5 + 4, y);
+
+    row++;
+    if (row >= rowsPerColumn) {
+      row = 0;
+      colGroup++;
+
+      // ขึ้นซีกขวา
+      if (colGroup >= colsPerPage) {
+        doc.addPage();
+        drawHeader(startX, startY);
+        colGroup = 0;
+      }
     }
   });
 }
