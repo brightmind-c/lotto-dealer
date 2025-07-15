@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.4</h1>
+<h1>ระบบบันทึกเลขหวย v06.5</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -261,7 +261,6 @@ function addTwoDigit() {
   });
 
   numberInput.value = '';
-  amountInput.value = '';
   // คง checkbox เดิมไว้
 }
 
@@ -321,7 +320,6 @@ function addThreeDigit() {
   }
 
   numberInput.value = '';
-  amountInput.value = '';
   // คง checkbox เดิมไว้
 }
 
@@ -424,6 +422,10 @@ async function generatePDF() {
     }
   });
 
+  const blocked2List = getBlocked2Digits();
+  const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
+  const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
+
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -449,12 +451,12 @@ async function generatePDF() {
 
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 top number", 15, 28);
-  draw2DigitGrid(doc, topMap, 35);
+  draw2DigitGrid(doc, topMap, 35, highlightTop);
 
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 bottom number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 35);
+  draw2DigitGrid(doc, bottomMap, 35, highlightBottom);
 
   doc.addPage();
   doc.text(`Date: ${drawDate}`, 15, 20);
@@ -464,7 +466,20 @@ async function generatePDF() {
   doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
 }
 
-function draw2DigitGrid(doc, dataMap, startY) {
+function getBlocked2Digits() {
+  const list = [];
+  document.querySelectorAll('#blocked2Table tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const isTop = row.children[1]?.innerText.includes('✔');
+    const isBottom = row.children[2]?.innerText.includes('✔');
+    if (num) {
+      list.push({ num, isTop, isBottom });
+    }
+  });
+  return list;
+}
+
+function draw2DigitGrid(doc, dataMap, startY, highlightList = []) {
   const cellW = 18, cellH = 18;
   const startX = 0;
   doc.setFontSize(10);
@@ -474,7 +489,16 @@ function draw2DigitGrid(doc, dataMap, startY) {
       const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
-      doc.rect(x, y, cellW, cellH);
+
+      // ตรวจว่าต้องไฮไลต์ไหม
+      const highlight = highlightList.includes(num);
+      if (highlight) {
+        doc.setFillColor(255, 200, 200);
+        doc.rect(x, y, cellW, cellH, 'F');
+      } else {
+        doc.rect(x, y, cellW, cellH);
+      }
+      doc.setTextColor(0);
       doc.text(num, x + 2, y + 7);
       doc.text(val.toString(), x + 2, y + 14);
     }
