@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lotto Dealer</title>
+  <title>ระบบบันทึกหวย</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.25</h1>
+<h1>ระบบบันทึกเลขหวย v06.26</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -371,16 +371,20 @@ function addBlocked2Digit() {
   const bottom = document.getElementById('blocked2Bottom').checked;
   const reverse = document.getElementById('blocked2Reverse').checked;
 
-  if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  if (num.length !== 2 || (!top && !bottom)) {
+    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  }
 
   const table = document.getElementById('blocked2Table');
-  const nums = new Set();
-  nums.add(num);
-  if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+  const nums = [num];
+
+  if (reverse && num[0] !== num[1]) {
+    const reversed = num[1] + num[0];
+    nums.push(reversed);
+  }
 
   nums.forEach(n => {
     const row = table.insertRow();
-    row.setAttribute('data-reverse', reverse);
     row.insertCell(0).innerText = n;
     row.insertCell(1).innerText = top ? '✔️' : '';
     row.insertCell(2).innerText = bottom ? '✔️' : '';
@@ -388,7 +392,6 @@ function addBlocked2Digit() {
   });
 
   numInput.value = '';
-  // คง checkbox เดิมไว้
 }
 
 function addSelf2Digit() {
@@ -398,16 +401,20 @@ function addSelf2Digit() {
   const bottom = document.getElementById('self2Bottom').checked;
   const reverse = document.getElementById('self2Reverse').checked;
 
-  if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  if (num.length !== 2 || (!top && !bottom)) {
+    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  }
 
   const table = document.getElementById('self2Table');
-  const nums = new Set();
-  nums.add(num);
-  if (reverse && num[0] !== num[1]) nums.add(num[1] + num[0]);
+  const nums = [num];
+
+  if (reverse && num[0] !== num[1]) {
+    const reversed = num[1] + num[0];
+    nums.push(reversed);
+  }
 
   nums.forEach(n => {
     const row = table.insertRow();
-    row.setAttribute('data-reverse', reverse);
     row.insertCell(0).innerText = n;
     row.insertCell(1).innerText = top ? '✔️' : '';
     row.insertCell(2).innerText = bottom ? '✔️' : '';
@@ -415,16 +422,9 @@ function addSelf2Digit() {
   });
 
   numInput.value = '';
-  // คง checkbox เดิมไว้
 }
 
-function expandWithReverse(n, reverse = false) {
-  const [a, b] = n.split('');
-  const set = new Set();
-  set.add(`${a}${b}`);
-  if (reverse && a !== b) set.add(`${b}${a}`);
-  return [...set];
-}
+// ของเดิม
 
 async function generatePDF() {
   const { jsPDF } = window.jspdf;
@@ -456,19 +456,17 @@ async function generatePDF() {
       const num = row.children[0]?.innerText.trim();
       const isTop = row.children[1]?.innerText.includes('✔');
       const isBottom = row.children[2]?.innerText.includes('✔');
-      const isReverse = row.getAttribute('data-reverse') === 'true'; // เพิ่ม reverse
-      if (num) list.push({ num, isTop, isBottom, isReverse });
+      if (num) list.push({ num, isTop, isBottom });
     });
     return list;
   };
   const getSelf2Digits = () => {
     const list = [];
-    document.querySelectorAll('#blocked2Table tr').forEach(row => {
+    document.querySelectorAll('#self2Table tr').forEach(row => {
       const num = row.children[0]?.innerText.trim();
       const isTop = row.children[1]?.innerText.includes('✔');
       const isBottom = row.children[2]?.innerText.includes('✔');
-      const isReverse = row.getAttribute('data-reverse') === 'true'; // เพิ่ม reverse
-      if (num) list.push({ num, isTop, isBottom, isReverse });
+      if (num) list.push({ num, isTop, isBottom });
     });
     return list;
   };
@@ -476,20 +474,10 @@ async function generatePDF() {
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
 
-  const expandWithReverse = (n) => {
-    if (n.length !== 2) return [];
-    const [a, b] = n.split('');
-    const set = new Set();
-    set.add(`${a}${b}`);
-    if (a !== b) set.add(`${b}${a}`);
-    return [...set];
-  };
-
-  const highlightTop = blocked2List.flatMap(x => x.isTop ? expandWithReverse(x.num, x.isReverse) : []);
-  const highlightBottom = blocked2List.flatMap(x => x.isBottom ? expandWithReverse(x.num, x.isReverse) : []);
-  const highlightTopSelf = self2List.flatMap(x => x.isTop ? expandWithReverse(x.num, x.isReverse) : []);
-  const highlightBottomSelf = self2List.flatMap(x => x.isBottom ? expandWithReverse(x.num, x.isReverse) : []);
-
+  const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
+  const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
+  const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
+  const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
   // ====== 3 ตัว ======
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
@@ -557,7 +545,7 @@ async function generatePDF() {
   doc.text("3 list number", 15, 28);
   draw3DigitList(doc, sortedThreeList, 35);
 
-  doc.save(`Lotto-Dealer_${day}-${month}-${year}.pdf`);
+  doc.save(`L-Dealer_${day}-${month}-${year}.pdf`);
 }
 
 
