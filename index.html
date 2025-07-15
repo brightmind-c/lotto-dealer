@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบบันทึกหวย</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -19,8 +20,25 @@
       font-size: 16px;
     }
     input[type="text"], input[type="number"] {
-      width: 80px;
+      width: 100%;
+      max-width: 120px;
       margin-right: 10px;
+      flex: 1;
+    }
+    @media (max-width: 600px) {
+      .form-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      input[type="text"], input[type="number"], button {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
     }
     .form-section {
       margin-bottom: 10px;
@@ -68,7 +86,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.17</h1>
+<h1>ระบบบันทึกเลขหวย v06.18</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -613,7 +631,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
 }
 
 function draw3DigitList(doc, list, startY) {
-  const cellH = 10;
+  const cellH = 7.5;
   const headers = ["Num", "Top", "Bottom", "Tode", "Block", "Self"];
   const cellWs = [15, 15, 15, 15, 15, 15];
   const colGap = 10;
