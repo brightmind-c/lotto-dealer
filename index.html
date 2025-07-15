@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<h1>ระบบบันทึกเลขหวย v06.2</h1>
+<h1>ระบบบันทึกเลขหวย v06.3</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -117,7 +117,7 @@
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
   <div class="form-group">
-    <strong>3 ตัว</strong>
+    <strong>แทง 3 ตัว</strong>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <input type="number" id="threeDigitAmount" min="1" placeholder="บาท">
     <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
@@ -132,7 +132,7 @@
 <!-- ===== 2 ตัว input ===== -->
 <div class="form-section">
   <div class="form-group">
-    <strong>2 ตัว</strong>
+    <strong>แทง 2 ตัว</strong>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <input type="number" id="twoDigitAmount" min="1" placeholder="บาท">
     <label><input type="checkbox" id="twoDigitTop"> บน</label>
@@ -169,7 +169,7 @@
 </table>
 
 <!-- ===== 3 ตัว table ===== -->
-<h2>รายการ 3 ตัว</h2>
+<h2>รายการแทง 3 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -184,7 +184,7 @@
 </table>
 
 <!-- ===== 2 ตัว table ===== -->
-<h2>รายการ 2 ตัว</h2>
+<h2>รายการแทง 2 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -258,9 +258,10 @@ function addTwoDigit() {
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
-  clearTwoDigit();
+  // ไม่ clear input และ checkbox
 }
 
+// --- แก้ส่วน addThreeDigit ให้ไม่ล้าง input และ checkbox ---
 function addThreeDigit() {
   const number = document.getElementById('threeDigitNumber').value.trim();
   const amount = parseInt(document.getElementById('threeDigitAmount').value.trim());
@@ -314,7 +315,7 @@ function addThreeDigit() {
     });
   }
 
-  clearThreeDigit();
+  // ไม่ clear input และ checkbox
 }
 
 // Script ส่วนเสริมใหม่
@@ -506,7 +507,6 @@ function draw3DigitList(doc, list, startY) {
 }
 
 </script>
-
 
 </body>
 </html>
