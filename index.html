@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
-      font-family: 'Sarabun', sans-serif;
+      font-family: 'NotoSansThai', sans-serif;
       background: #f8f9fa;
       padding: 20px;
       max-width: 850px;
@@ -89,7 +89,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.31</h1>
+<h1>Lotto Dealer v06.32</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -112,6 +112,7 @@
 <!-- ===== เลขอั้น 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
+    <strong>เลขอั้น 2 ตัว</strong>
     <label><input type="checkbox" id="blocked2Top"> บน</label>
     <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
@@ -123,6 +124,7 @@
 <!-- ===== ซื้อเอง 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
+    <strong>ซื้อเอง 2 ตัว</strong>
     <label><input type="checkbox" id="self2Top"> บน</label>
     <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="self2Reverse"> กลับ</label>
@@ -327,7 +329,7 @@ function addThreeDigit() {
     perms.forEach(num => {
       const r = table.insertRow();
       r.insertCell(0).innerText = num;
-      r.insertCell(1).innerText = amount + "฿";
+      r.insertCell(1).innerText = amount + " ฿";
       r.insertCell(2).innerText = "";
       r.insertCell(3).innerText = "";
       r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
@@ -438,8 +440,8 @@ async function generatePDF() {
   const topMap = {}, bottomMap = {};
   document.querySelectorAll('#twoDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
     if (num) {
       if (top > 0) topMap[num] = (topMap[num] || 0) + top;
       if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
@@ -479,9 +481,9 @@ async function generatePDF() {
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace('฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace('฿', '') || '0');
-    const tod = parseInt(row.children[3]?.innerText.replace('฿', '') || '0');
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const tod = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
     if (num && (top > 0 || bottom > 0 || tod > 0)) {
       threeList.push({ num, top, bottom, tod });
     }
