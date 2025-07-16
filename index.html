@@ -86,7 +86,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.27</h1>
+<h1>Lotto Dealer v06.28</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -630,7 +630,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
 
 function draw3DigitList(doc, list, startY) {
   const cellH = 7.5;
-  const headers = ["Num", "Top", "Bottom", "Tode", "Block", "Self"];
+  const headers = ["Num", "Top", "Tode", "Bottom", "Block", "Self"];
   const cellWs = [15, 15, 15, 15, 15, 15];
   const colGap = 10;
 
@@ -639,16 +639,20 @@ function draw3DigitList(doc, list, startY) {
   const colWidth = cellWs.reduce((a, b) => a + b, 0);
   const leftX = 15;
   const rightX = leftX + colWidth + colGap;
-  const maxRowsPerCol = Math.floor((280 - startY) / cellH); // เหลือเผื่อ footer
+  const maxRowsPerCol = 30;
 
   let rowCount = 0;
   let colX = leftX;
   let currentY = startY;
+  let pageCount = 1;
+
+  // ➤ หน้าแรก
+  doc.text(`3 list number`, 15, 28);
 
   const drawHeader = (x, y) => {
     let xPos = x;
     headers.forEach((text, i) => {
-      doc.setFillColor(227, 242, 253); // สีฟ้าอ่อน
+      doc.setFillColor(227, 242, 253);
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setTextColor(0);
       doc.text(text, xPos + 2, y + 7);
@@ -661,19 +665,18 @@ function draw3DigitList(doc, list, startY) {
     const values = [
       row.num,
       row.top > 0 ? row.top.toString() : '',
-      row.bottom > 0 ? row.bottom.toString() : '',
       row.tod > 0 ? row.tod.toString() : '',
-      '', // Block (สี)
-      ''  // Self  (สี)
+      row.bottom > 0 ? row.bottom.toString() : '',
+      '',
+      ''
     ];
 
     values.forEach((val, i) => {
-      // Block / Self สีพื้น
       if (i === 4 && row.isBlocked) {
-        doc.setFillColor(255, 192, 192); // แดงอ่อน
+        doc.setFillColor(255, 192, 192);
         doc.rect(xPos, y, cellWs[i], cellH, 'F');
       } else if (i === 5 && row.isSelf) {
-        doc.setFillColor(255, 246, 176); // เหลืองอ่อน
+        doc.setFillColor(255, 246, 176);
         doc.rect(xPos, y, cellWs[i], cellH, 'F');
       } else {
         doc.setDrawColor(0);
@@ -686,26 +689,28 @@ function draw3DigitList(doc, list, startY) {
     });
   };
 
-  // เริ่มวาด
   drawHeader(colX, currentY);
   currentY += cellH;
 
-  list.forEach((row, idx) => {
+  list.forEach((row) => {
     drawRow(colX, currentY, row);
     currentY += cellH;
     rowCount++;
 
     if (rowCount >= maxRowsPerCol) {
       if (colX === leftX) {
-        // ย้ายไปฝั่งขวา
+        // ไปคอลัมน์ขวา
         colX = rightX;
         currentY = startY;
         drawHeader(colX, currentY);
         currentY += cellH;
         rowCount = 0;
       } else {
-        // เต็มทั้งสองคอลัมน์ ➜ เพิ่มหน้าใหม่
+        // เพิ่มหน้าใหม่
         doc.addPage();
+        pageCount++;
+        doc.text(`3 list number (page ${pageCount})`, 15, 28);
+
         colX = leftX;
         currentY = startY;
         drawHeader(colX, currentY);
