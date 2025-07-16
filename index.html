@@ -89,14 +89,11 @@
     th {
       background-color: #e3f2fd;
     }
-    h1 {
-    font-weight: bold;
-    }
   </style>
 </head>
 <body>
 
-<h1>Lotto Dealer v07.01_3</h1>
+<h1>Lotto Dealer v06.33_2</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -140,19 +137,6 @@
   </div>
 </div>
 
-<!-- ===== ลำดับโพย ===== -->
-<div class="form-section">
-  <div class="form-group">
-    <strong>ลำดับโพย</strong>
-    <label>ชื่อ: <input type="text" id="personName" placeholder="ชื่อคน" style="max-width: 100px;"></label>
-    <label>โพยที่:
-      <input type="number" id="slipNumber" value="1" style="width: 60px;">
-      <button onclick="changeSlipNumber(1)">+</button>
-      <button onclick="changeSlipNumber(-1)">-</button>
-    </label>
-  </div>
-</div>
-
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
   <div class="form-group">
@@ -162,7 +146,6 @@
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
-    <strong> ฿  </strong>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
@@ -177,32 +160,32 @@
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
     <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
-    <strong> ฿  </strong>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
   </div>
 </div>
 
-<h2>รายการ เลขอั้น 3 ตัว</h2>
+<!-- ===== ตารางรายการใหม่ทั้ง 4 แบบ ===== -->
+<h2>รายการเลขอั้น 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="blocked3Table"></tbody>
 </table>
 
-<h2>รายการ ซื้อเอง 3 ตัว</h2>
+<h2>รายการซื้อเอง 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="self3Table"></tbody>
 </table>
 
-<h2>รายการ เลขอั้น 2 ตัว</h2>
+<h2>รายการเลขอั้น 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="blocked2Table"></tbody>
 </table>
 
-<h2>รายการ ซื้อเอง 2 ตัว</h2>
+<h2>รายการซื้อเอง 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="self2Table"></tbody>
@@ -213,8 +196,6 @@
 <table>
   <thead>
     <tr>
-      <th>ชื่อ</th>
-      <th>โพยที่</th>
       <th>เลขแทง</th>
       <th>เต็ง</th>
       <th>โต๊ด</th>
@@ -230,8 +211,6 @@
 <table>
   <thead>
     <tr>
-      <th>ชื่อ</th>
-      <th>โพยที่</th>
       <th>เลขแทง</th>
       <th>บน</th>
       <th>ล่าง</th>
@@ -288,9 +267,6 @@ function addTwoDigit() {
   }
 
   const table = document.getElementById('twoDigitTable');
-  const name = document.getElementById('personName').value.trim() || "-";
-  const slip = document.getElementById('slipNumber').value;
-
   const nums = new Set();
   nums.add(number);
   if (reverse && number[0] !== number[1]) {
@@ -299,15 +275,14 @@ function addTwoDigit() {
 
   nums.forEach(num => {
     const row = table.insertRow();
-    row.insertCell(0).innerText = name;
-    row.insertCell(1).innerText = slip;
-    row.insertCell(2).innerText = num;
-    row.insertCell(3).innerText = top ? amount + " ฿" : "";
-    row.insertCell(4).innerText = bottom ? amount + " ฿" : "";
-    row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    row.insertCell(0).innerText = num;
+    row.insertCell(1).innerText = top ? amount + " ฿" : "";
+    row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
   numberInput.value = '';
+  // คง checkbox เดิมไว้
 }
 
 function addThreeDigit() {
@@ -326,21 +301,15 @@ function addThreeDigit() {
   }
 
   const table = document.getElementById('threeDigitTable');
-  const name = document.getElementById('personName').value.trim() || "-";
-  const slip = document.getElementById('slipNumber').value;
+  const added = new Set();
 
-  const insertRow = (num) => {
-    const row = table.insertRow();
-    row.insertCell(0).innerText = name;
-    row.insertCell(1).innerText = slip;
-    row.insertCell(2).innerText = num;
-    row.insertCell(3).innerText = top ? amount + " ฿" : "";
-    row.insertCell(4).innerText = tod ? amount + " ฿" : "";
-    row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
-    row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  };
-
-  insertRow(number);
+  const row = table.insertRow();
+  row.insertCell(0).innerText = number;
+  row.insertCell(1).innerText = top ? amount + " ฿" : "";
+  row.insertCell(2).innerText = tod ? amount + " ฿" : "";
+  row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
+  row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  added.add(number);
 
   if (reverse && top) {
     const chars = number.split('');
@@ -349,7 +318,7 @@ function addThreeDigit() {
     const permute = (arr, m = []) => {
       if (arr.length === 0) {
         const result = m.join('');
-        if (result !== number) perms.add(result);
+        if (!added.has(result)) perms.add(result);
       } else {
         for (let i = 0; i < arr.length; i++) {
           let curr = arr.slice();
@@ -360,11 +329,21 @@ function addThreeDigit() {
     };
 
     permute(chars);
-    perms.forEach(num => insertRow(num));
+
+    perms.forEach(num => {
+      const r = table.insertRow();
+      r.insertCell(0).innerText = num;
+      r.insertCell(1).innerText = amount + " ฿";
+      r.insertCell(2).innerText = "";
+      r.insertCell(3).innerText = "";
+      r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    });
   }
 
   numberInput.value = '';
+  // คง checkbox เดิมไว้
 }
+
 
 // Script ส่วนเสริมใหม่
 
@@ -462,14 +441,11 @@ async function generatePDF() {
   const drawDate = `${day}/${month}/${year}`;
 
   // Map สำหรับ 2 ตัว
-  // แก้ตรงนี้ ให้ดึงเลขที่คอลัมน์ 2 (เลขแทง) และจำนวนเงินบนล่างจริงๆ
   const topMap = {}, bottomMap = {};
-  document.querySelectorAll('#twoDigitTable tbody tr').forEach(row => {
-    const num = row.children[2]?.innerText.trim();
-    const topStr = row.children[3]?.innerText.trim();
-    const bottomStr = row.children[4]?.innerText.trim();
-    const top = topStr ? parseInt(topStr.replace(' ฿', '')) || 0 : 0;
-    const bottom = bottomStr ? parseInt(bottomStr.replace(' ฿', '')) || 0 : 0;
+  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
     if (num) {
       if (top > 0) topMap[num] = (topMap[num] || 0) + top;
       if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
@@ -477,7 +453,26 @@ async function generatePDF() {
   });
 
   // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
-  // (ใช้ฟังก์ชันเดิม getBlocked2Digits และ getSelf2Digits ได้เลย)
+  const getBlocked2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#blocked2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
+  const getSelf2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#self2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
 
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
@@ -486,27 +481,35 @@ async function generatePDF() {
   const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
   const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
-
   // ====== 3 ตัว ======
-// ✅ โค้ดใหม่: เก็บชื่อ, โพยที่, และเลข พร้อมยอด
-const threeList = [];
-document.querySelectorAll('#threeDigitTable tbody tr').forEach(row => {
-  const name = row.children[0]?.innerText.trim();
-  const slip = row.children[1]?.innerText.trim();
-  const num = row.children[2]?.innerText.trim();
-  const topStr = row.children[3]?.innerText.trim();
-  const todStr = row.children[4]?.innerText.trim();
-  const bottomStr = row.children[5]?.innerText.trim();
-  const top = topStr ? parseInt(topStr.replace(' ฿', '')) || 0 : 0;
-  const tod = todStr ? parseInt(todStr.replace(' ฿', '')) || 0 : 0;
-  const bottom = bottomStr ? parseInt(bottomStr.replace(' ฿', '')) || 0 : 0;
+  const threeList = [];
+  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const tod = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    if (num && (top > 0 || bottom > 0 || tod > 0)) {
+      threeList.push({ num, top, bottom, tod });
+    }
+  });
 
-  if (num && (top > 0 || bottom > 0 || tod > 0)) {
-    threeList.push({ name, slip, num, top, bottom, tod });
-  }
-});
+  const getPermutations = (str) => {
+    const results = new Set();
+    if (str.length === 1) return [str];
+    for (let i = 0; i < str.length; i++) {
+      const first = str[i];
+      const rest = str.slice(0, i) + str.slice(i + 1);
+      for (const perm of getPermutations(rest)) {
+        results.add(first + perm);
+      }
+    }
+    return [...results];
+  };
 
-  // (ฟังก์ชัน getPermutations และ isInListWithPermutation เดิมใช้ได้เลย)
+  const isInListWithPermutation = (num, list) => {
+    const perms = getPermutations(num);
+    return list.some(item => perms.includes(item.num));
+  };
 
   const threeMap = {};
   threeList.forEach(({ num, top, bottom, tod }) => {
@@ -600,7 +603,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
       const num = `${r}${c}`;
-      const val = dataMap[num] !== undefined ? `${dataMap[num]} ฿` : '-';
+      const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
@@ -751,16 +754,6 @@ document.getElementById("threeDigitNumber").addEventListener("keydown", function
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
 });
-</script>
-
-<script>
-function changeSlipNumber(delta) {
-  const input = document.getElementById("slipNumber");
-  let val = parseInt(input.value || "1");
-  val += delta;
-  if (val < 1) val = 1;
-  input.value = val;
-}
 </script>
 
 </body>
