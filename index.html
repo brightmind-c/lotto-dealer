@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v07.08</h1>
+<h1>Lotto Dealer v07.09</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -323,7 +323,6 @@ function addThreeDigit() {
   }
 
   const table = document.getElementById('threeDigitTable');
-  const added = new Set();
 
   const row = table.insertRow();
   row.insertCell(0).innerText = number;
@@ -334,8 +333,6 @@ function addThreeDigit() {
   row.insertCell(4).innerText = name;
   row.insertCell(5).innerText = document.getElementById('slipNumber').value;
   row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-
-  added.add(number);
 
   if (reverse && top) {
     const chars = number.split('');
@@ -480,28 +477,6 @@ async function generatePDF() {
     }
   });
 
-  // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
-  const getBlocked2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#blocked2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-  const getSelf2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#self2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
 
@@ -581,7 +556,6 @@ async function generatePDF() {
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
-
 
 function getBlocked2Digits() {
   const list = [];
