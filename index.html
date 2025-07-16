@@ -89,11 +89,14 @@
     th {
       background-color: #e3f2fd;
     }
+    h1 {
+    font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33</h1>
+<h1>Lotto Dealer v07.01</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -137,6 +140,19 @@
   </div>
 </div>
 
+<!-- ===== ลำดับโพย ===== -->
+<div class="form-section">
+  <div class="form-group">
+    <strong>ลำดับโพย</strong>
+    <label>ชื่อ: <input type="text" id="personName" placeholder="ชื่อคน" style="max-width: 100px;"></label>
+    <label>โพยที่:
+      <input type="number" id="slipNumber" value="1" style="width: 60px;">
+      <button onclick="changeSlipNumber(1)">+</button>
+      <button onclick="changeSlipNumber(-1)">-</button>
+    </label>
+  </div>
+</div>
+
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
   <div class="form-group">
@@ -146,6 +162,7 @@
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
+    <strong> ฿  </strong>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
@@ -160,32 +177,32 @@
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
     <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
+    <strong> ฿  </strong>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
   </div>
 </div>
 
-<!-- ===== ตารางรายการใหม่ทั้ง 4 แบบ ===== -->
-<h2>รายการเลขอั้น 3 ตัว</h2>
+<h2>รายการ เลขอั้น 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="blocked3Table"></tbody>
 </table>
 
-<h2>รายการซื้อเอง 3 ตัว</h2>
+<h2>รายการ ซื้อเอง 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="self3Table"></tbody>
 </table>
 
-<h2>รายการเลขอั้น 2 ตัว</h2>
+<h2>รายการ เลขอั้น 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="blocked2Table"></tbody>
 </table>
 
-<h2>รายการซื้อเอง 2 ตัว</h2>
+<h2>รายการ ซื้อเอง 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="self2Table"></tbody>
@@ -196,6 +213,8 @@
 <table>
   <thead>
     <tr>
+      <th>ชื่อ</th>
+      <th>โพยที่</th>
       <th>เลขแทง</th>
       <th>เต็ง</th>
       <th>โต๊ด</th>
@@ -211,6 +230,8 @@
 <table>
   <thead>
     <tr>
+      <th>ชื่อ</th>
+      <th>โพยที่</th>
       <th>เลขแทง</th>
       <th>บน</th>
       <th>ล่าง</th>
@@ -273,12 +294,17 @@ function addTwoDigit() {
     nums.add(number[1] + number[0]);
   }
 
+  const name = document.getElementById('buyerName').value.trim() || "-";
+  const slip = document.getElementById('slipNo').value;
+
   nums.forEach(num => {
     const row = table.insertRow();
-    row.insertCell(0).innerText = num;
-    row.insertCell(1).innerText = top ? amount + " ฿" : "";
-    row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    row.insertCell(0).innerText = name;
+    row.insertCell(1).innerText = slip;
+    row.insertCell(2).innerText = num;
+    row.insertCell(3).innerText = top ? amount + " ฿" : "";
+    row.insertCell(4).innerText = bottom ? amount + " ฿" : "";
+    row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
   numberInput.value = '';
@@ -304,12 +330,17 @@ function addThreeDigit() {
   const added = new Set();
 
   const row = table.insertRow();
-  row.insertCell(0).innerText = number;
-  row.insertCell(1).innerText = top ? amount + " ฿" : "";
-  row.insertCell(2).innerText = tod ? amount + " ฿" : "";
-  row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
-  row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  added.add(number);
+  const name = document.getElementById('buyerName').value.trim() || "-";
+  const slip = document.getElementById('slipNo').value;
+
+  row.insertCell(0).innerText = name;
+  row.insertCell(1).innerText = slip;
+  row.insertCell(2).innerText = number;
+  row.insertCell(3).innerText = top ? amount + " ฿" : "";
+  row.insertCell(4).innerText = tod ? amount + " ฿" : "";
+  row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
+  row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+
 
   if (reverse && top) {
     const chars = number.split('');
@@ -332,11 +363,13 @@ function addThreeDigit() {
 
     perms.forEach(num => {
       const r = table.insertRow();
-      r.insertCell(0).innerText = num;
-      r.insertCell(1).innerText = amount + " ฿";
-      r.insertCell(2).innerText = "";
-      r.insertCell(3).innerText = "";
-      r.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+      row.insertCell(0).innerText = name;
+      row.insertCell(1).innerText = slip;
+      row.insertCell(2).innerText = number;
+      row.insertCell(3).innerText = top ? amount + " ฿" : "";
+      row.insertCell(4).innerText = tod ? amount + " ฿" : "";
+      row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
+      row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
     });
   }
 
@@ -754,6 +787,16 @@ document.getElementById("threeDigitNumber").addEventListener("keydown", function
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
 });
+</script>
+
+<script>
+function changeSlipNumber(delta) {
+  const input = document.getElementById("slipNumber");
+  let val = parseInt(input.value || "1");
+  val += delta;
+  if (val < 1) val = 1;
+  input.value = val;
+}
 </script>
 
 </body>
