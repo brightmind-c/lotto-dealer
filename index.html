@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_6</h1>
+<h1>Lotto Dealer v06.33_7</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -573,6 +573,9 @@ async function generatePDF() {
   doc.text(`Date: ${drawDate}`, 15, 20);
   draw3DigitList(doc, sortedThreeList, 35, drawDate);
 
+  const slipList = getSlipSummaries();
+  drawSlipList(doc, slipList, formattedDate, 2);
+
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
 
@@ -756,6 +759,138 @@ function draw3DigitList(doc, list, startY, drawDate) {
         currentY += cellH;
       }
     }
+  });
+}
+
+function getSlipSummaries() {
+  const map = {};
+
+  // เก็บรายการ 3 ตัว
+  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const tod = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    const name = row.children[4]?.innerText.trim();
+    const slip = row.children[5]?.innerText.trim();
+
+    const key = `${name}__${slip}`;
+    if (!map[key]) map[key] = { name, slip, total: 0 };
+    map[key].total += top + tod + bottom;
+  });
+
+  // เก็บรายการ 2 ตัว
+  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const name = row.children[3]?.innerText.trim();
+    const slip = row.children[4]?.innerText.trim();
+
+    const key = `${name}__${slip}`;
+    if (!map[key]) map[key] = { name, slip, total: 0 };
+    map[key].total += top + bottom;
+  });
+
+  const entries = Object.values(map);
+
+  // รวมยอดทั้งหมดของแต่ละชื่อ
+  const nameTotalMap = {};
+  entries.forEach(e => {
+    if (!nameTotalMap[e.name]) nameTotalMap[e.name] = 0;
+    nameTotalMap[e.name] += e.total;
+  });
+
+  // แทรก Total ต่อท้ายแต่ละชื่อ
+  const result = [];
+  const grouped = {};
+
+  entries.forEach(e => {
+    if (!grouped[e.name]) grouped[e.name] = [];
+    grouped[e.name].push(e);
+  });
+
+  Object.keys(grouped).forEach(name => {
+    grouped[name]
+      .sort((a, b) => parseInt(a.slip) - parseInt(b.slip))
+      .forEach(e => result.push({ ...e }));
+    result.push({ name, slip: 'Total', total: nameTotalMap[name] });
+  });
+
+  return result;
+}
+
+function drawSlipList(doc, list, drawDate, startPage) {
+  const cellH = 8;
+  const headers = ["Name", "Slip", "Total"];
+  const cellWs = [45, 45, 45]; // 3 คอลัมน์ในแต่ละแถบ
+  const maxRowsPerColumn = 30;
+
+  // ตำแหน่งของแถบ: ซ้าย กลาง ขวา
+  const columns = [
+    { x: 15, y: 35 },
+    { x: 80, y: 35 },
+    { x: 145, y: 35 }
+  ];
+
+  let colIndex = 0;
+  let rowInCol = 0;
+  let page = startPage;
+
+  const drawTitle = (pageNum) => {
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text(`Date: ${drawDate}`, 15, 20);
+    const title = pageNum > 1 ? `slip list (page ${pageNum})` : "slip list";
+    doc.text(title, 15, 28);
+  };
+
+  const drawHeader = (x, y) => {
+    let xPos = x;
+    doc.setFontSize(10);
+    headers.forEach((text, i) => {
+      doc.setFillColor(200);
+      doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      doc.setTextColor(0);
+      doc.text(text, xPos + 2, y + 6);
+      xPos += cellWs[i];
+    });
+  };
+
+  const drawRow = (x, y, row) => {
+    let xPos = x;
+    const vals = [row.name, row.slip, row.total.toString()];
+    vals.forEach((val, i) => {
+      doc.setDrawColor(0);
+      doc.setFontSize(10);
+      doc.rect(xPos, y, cellWs[i], cellH);
+      doc.text(val, xPos + 2, y + 6);
+      xPos += cellWs[i];
+    });
+  };
+
+  // วาดหน้าแรก
+  drawTitle(page);
+  drawHeader(columns[colIndex].x, columns[colIndex].y);
+
+  list.forEach((row, idx) => {
+    if (rowInCol >= maxRowsPerColumn) {
+      colIndex++;
+      rowInCol = 0;
+
+      if (colIndex > 2) {
+        doc.addPage();
+        page++;
+        colIndex = 0;
+        drawTitle(page);
+      }
+
+      drawHeader(columns[colIndex].x, columns[colIndex].y);
+    }
+
+    const x = columns[colIndex].x;
+    const y = columns[colIndex].y + cellH * (rowInCol + 1);
+    drawRow(x, y, row);
+    rowInCol++;
   });
 }
 
