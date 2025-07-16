@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lotto Dealer</title>
+  <link rel="icon" href="L-D.ico" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
@@ -86,7 +87,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.28</h1>
+<h1>Lotto Dealer v06.29</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -542,8 +543,7 @@ async function generatePDF() {
   doc.addPage();
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  doc.text("3 list number", 15, 28);
-  draw3DigitList(doc, sortedThreeList, 35);
+  draw3DigitList(doc, sortedThreeList, 35, drawDate);
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
@@ -628,13 +628,14 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   }
 }
 
-function draw3DigitList(doc, list, startY) {
+function draw3DigitList(doc, list, startY, drawDate) {
   const cellH = 7.5;
-  const headers = ["Num", "Top", "Tode", "Bottom", "Block", "Self"];
+  const headers = ["Num", "Top", "Tod", "Bottom", "Block", "Self"];
   const cellWs = [15, 15, 15, 15, 15, 15];
   const colGap = 10;
 
-  doc.setFontSize(10);
+  doc.setFontSize(14);
+  let pageCount = 1;
 
   const colWidth = cellWs.reduce((a, b) => a + b, 0);
   const leftX = 15;
@@ -644,17 +645,14 @@ function draw3DigitList(doc, list, startY) {
   let rowCount = 0;
   let colX = leftX;
   let currentY = startY;
-  let pageCount = 1;
-
-  // ➤ หน้าแรก
-  doc.text(`3 list number`, 15, 28);
 
   const drawHeader = (x, y) => {
     let xPos = x;
     headers.forEach((text, i) => {
-      doc.setFillColor(227, 242, 253);
+      doc.setFillColor(227, 242, 253); // สีฟ้าอ่อน
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setTextColor(0);
+      doc.setFontSize(10);
       doc.text(text, xPos + 2, y + 7);
       xPos += cellWs[i];
     });
@@ -667,8 +665,8 @@ function draw3DigitList(doc, list, startY) {
       row.top > 0 ? row.top.toString() : '',
       row.tod > 0 ? row.tod.toString() : '',
       row.bottom > 0 ? row.bottom.toString() : '',
-      '',
-      ''
+      '', // Block (สี)
+      ''  // Self  (สี)
     ];
 
     values.forEach((val, i) => {
@@ -682,40 +680,55 @@ function draw3DigitList(doc, list, startY) {
         doc.setDrawColor(0);
         doc.rect(xPos, y, cellWs[i], cellH);
       }
-
       doc.setTextColor(0);
+      doc.setFontSize(10);
       doc.text(val, xPos + 2, y + cellH * 0.7);
       xPos += cellWs[i];
     });
   };
 
+  // วาดวันที่และหัวข้อที่แต่ละหน้า
+  const drawTitle = (page) => {
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text(`Date: ${drawDate}`, 15, 20);
+    if (page === 1) {
+      doc.text("3 list number", 15, 28);
+    } else {
+      doc.text(`3 list number (page ${page})`, 15, 28);
+    }
+  };
+
+  // หน้าแรก
+  drawTitle(pageCount);
   drawHeader(colX, currentY);
   currentY += cellH;
 
-  list.forEach((row) => {
+  list.forEach((row, idx) => {
     drawRow(colX, currentY, row);
     currentY += cellH;
     rowCount++;
 
     if (rowCount >= maxRowsPerCol) {
       if (colX === leftX) {
-        // ไปคอลัมน์ขวา
+        // ไปฝั่งขวา
         colX = rightX;
         currentY = startY;
+        rowCount = 0;
+        pageCount++;
+        drawTitle(pageCount);
         drawHeader(colX, currentY);
         currentY += cellH;
-        rowCount = 0;
       } else {
         // เพิ่มหน้าใหม่
         doc.addPage();
-        pageCount++;
-        doc.text(`3 list number (page ${pageCount})`, 15, 28);
-
         colX = leftX;
         currentY = startY;
+        rowCount = 0;
+        pageCount++;
+        drawTitle(pageCount);
         drawHeader(colX, currentY);
         currentY += cellH;
-        rowCount = 0;
       }
     }
   });
