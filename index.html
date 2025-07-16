@@ -15,9 +15,6 @@
       max-width: 850px;
       margin: auto;
     }
-    input, button, textarea, select{
-      font-family: 'Anuphan', sans-serif;
-    }
     h1, h2 {
       margin-top: 30px;
     }
@@ -92,14 +89,14 @@
     th {
       background-color: #e3f2fd;
     }
+    h1 {
+    font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-<h1>
-  <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer v07.05
-</h1>
+<h1>Lotto Dealer v07.01</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -147,11 +144,11 @@
 <div class="form-section">
   <div class="form-group">
     <strong>ลำดับโพย</strong>
-    <label>ชื่อ: <input type="text" id="BuyerName" placeholder="ชื่อ" style="max-width: 100px;"></label>
+    <label>ชื่อ: <input type="text" id="personName" placeholder="ชื่อคน" style="max-width: 100px;"></label>
     <label>โพยที่:
-      <input type="number" id="OrderNumber" value="1" style="width: 60px;">
-      <button onclick="changeOrderNumber(1)">+</button>
-      <button onclick="changeOrderNumber(-1)">-</button>
+      <input type="number" id="slipNumber" value="1" style="width: 60px;">
+      <button onclick="changeSlipNumber(1)">+</button>
+      <button onclick="changeSlipNumber(-1)">-</button>
     </label>
   </div>
 </div>
@@ -165,6 +162,7 @@
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
+    <strong> ฿  </strong>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
@@ -179,6 +177,7 @@
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
     <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
+    <strong> ฿  </strong>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
@@ -210,7 +209,7 @@
 </table>
 
 <!-- ===== 3 ตัว table ===== -->
-<h2>รายการ แทง 3 ตัว</h2>
+<h2>รายการแทง 3 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -227,7 +226,7 @@
 </table>
 
 <!-- ===== 2 ตัว table ===== -->
-<h2>รายการ แทง 2 ตัว</h2>
+<h2>รายการแทง 2 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -289,19 +288,19 @@ function addTwoDigit() {
   }
 
   const table = document.getElementById('twoDigitTable');
+  const name = document.getElementById('personName').value.trim() || "-";
+  const slip = document.getElementById('slipNumber').value;
+
   const nums = new Set();
   nums.add(number);
   if (reverse && number[0] !== number[1]) {
     nums.add(number[1] + number[0]);
   }
 
-  const name = document.getElementById('BuyerName').value.trim() || "-";
-  const order = document.getElementById('OrderNumber').value;
-
   nums.forEach(num => {
     const row = table.insertRow();
     row.insertCell(0).innerText = name;
-    row.insertCell(1).innerText = order;
+    row.insertCell(1).innerText = slip;
     row.insertCell(2).innerText = num;
     row.insertCell(3).innerText = top ? amount + " ฿" : "";
     row.insertCell(4).innerText = bottom ? amount + " ฿" : "";
@@ -309,7 +308,6 @@ function addTwoDigit() {
   });
 
   numberInput.value = '';
-  // คง checkbox เดิมไว้
 }
 
 function addThreeDigit() {
@@ -328,20 +326,21 @@ function addThreeDigit() {
   }
 
   const table = document.getElementById('threeDigitTable');
-  const added = new Set();
+  const name = document.getElementById('personName').value.trim() || "-";
+  const slip = document.getElementById('slipNumber').value;
 
-  const row = table.insertRow();
-  const name = document.getElementById('BuyerName').value.trim() || "-";
-  const order = document.getElementById('OrderNumber').value;
+  const insertRow = (num) => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = name;
+    row.insertCell(1).innerText = slip;
+    row.insertCell(2).innerText = num;
+    row.insertCell(3).innerText = top ? amount + " ฿" : "";
+    row.insertCell(4).innerText = tod ? amount + " ฿" : "";
+    row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
+    row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  };
 
-  row.insertCell(0).innerText = name;
-  row.insertCell(1).innerText = order;
-  row.insertCell(2).innerText = number;
-  row.insertCell(3).innerText = top ? amount + " ฿" : "";
-  row.insertCell(4).innerText = tod ? amount + " ฿" : "";
-  row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
-  row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-
+  insertRow(number);
 
   if (reverse && top) {
     const chars = number.split('');
@@ -350,7 +349,7 @@ function addThreeDigit() {
     const permute = (arr, m = []) => {
       if (arr.length === 0) {
         const result = m.join('');
-        if (!added.has(result)) perms.add(result);
+        if (result !== number) perms.add(result);
       } else {
         for (let i = 0; i < arr.length; i++) {
           let curr = arr.slice();
@@ -361,23 +360,11 @@ function addThreeDigit() {
     };
 
     permute(chars);
-
-    perms.forEach(num => {
-      const r = table.insertRow();
-      row.insertCell(0).innerText = name;
-      row.insertCell(1).innerText = order;
-      row.insertCell(2).innerText = number;
-      row.insertCell(3).innerText = top ? amount + " ฿" : "";
-      row.insertCell(4).innerText = tod ? amount + " ฿" : "";
-      row.insertCell(5).innerText = bottom ? amount + " ฿" : "";
-      row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-    });
+    perms.forEach(num => insertRow(num));
   }
 
   numberInput.value = '';
-  // คง checkbox เดิมไว้
 }
-
 
 // Script ส่วนเสริมใหม่
 
@@ -564,9 +551,6 @@ async function generatePDF() {
       };
     });
 
-  // สร้างข้อมูล order list รวมยอดเงินต่อชื่อ+โพย
-  const orderData = getOrderListData();
-
   // ===== Generate PDF Pages =====
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
@@ -583,10 +567,6 @@ async function generatePDF() {
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   draw3DigitList(doc, sortedThreeList, 35, drawDate);
-
-  // วาด Order List (เพิ่มหน้าใหม่แล้ววาด)
-  doc.addPage();
-  drawOrderList(doc, orderData, drawDate);
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
@@ -774,143 +754,6 @@ function draw3DigitList(doc, list, startY, drawDate) {
   });
 }
 
-// ฟังก์ชันดึงข้อมูลโพย พร้อมยอดเงินรวมจาก 2 ตัว และ 3 ตัว
-function getOrderListData() {
-  const orderMap = {};
-
-  // รวมยอด 3 ตัว
-  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
-    const name = row.children[0]?.innerText.trim() || "-";
-    const order = row.children[1]?.innerText.trim() || "-";
-    const topStr = row.children[3]?.innerText.replace(' ฿', '') || '0';
-    const todStr = row.children[4]?.innerText.replace(' ฿', '') || '0';
-    const bottomStr = row.children[5]?.innerText.replace(' ฿', '') || '0';
-
-    const total = (parseInt(topStr) || 0) + (parseInt(todStr) || 0) + (parseInt(bottomStr) || 0);
-
-    const key = `${name}|${order}`;
-    if (!orderMap[key]) orderMap[key] = { name, order, total: 0 };
-    orderMap[key].total += total;
-  });
-
-  // รวมยอด 2 ตัว
-  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
-    const name = row.children[0]?.innerText.trim() || "-";
-    const order = row.children[1]?.innerText.trim() || "-";
-    const topStr = row.children[3]?.innerText.replace(' ฿', '') || '0';
-    const bottomStr = row.children[4]?.innerText.replace(' ฿', '') || '0';
-
-    const total = (parseInt(topStr) || 0) + (parseInt(bottomStr) || 0);
-
-    const key = `${name}|${order}`;
-    if (!orderMap[key]) orderMap[key] = { name, order, total: 0 };
-    orderMap[key].total += total;
-  });
-
-  // แปลงเป็น array และจัดเรียงตามชื่อและโพย
-  const arr = Object.values(orderMap);
-  arr.sort((a, b) => {
-    if (a.name !== b.name) return a.name.localeCompare(b.name);
-    return parseInt(a.order) - parseInt(b.order);
-  });
-
-  return arr;
-}
-
-// ฟังก์ชันวาด Order List 3 คอลัมน์ ต่อหน้า
-function drawOrderList(doc, data, drawDate) {
-  const cellH = 7.5;
-  const colWidths = [40, 30, 40]; // ชื่อ, โพยที่, ยอดเงิน
-  const colGap = 10;
-
-  const startX = 15;
-  const startY = 30;
-  const maxRowsPerCol = 30; // แถวต่อคอลัมน์
-  const colCount = 3; // จำนวนคอลัมน์ต่อหน้า
-
-  let page = 1;
-  let rowCount = 0;
-  let colIndex = 0;
-  let currentX = startX;
-  let currentY = startY;
-
-  const totalRowsPerPage = maxRowsPerCol * colCount;
-
-  for (let i = 0; i < data.length; i++) {
-    // ถ้าเริ่มหน้าใหม่ (ยกเว้นหน้าแรก)
-    if (i > 0 && i % totalRowsPerPage === 0) {
-      doc.addPage();
-      page++;
-      currentX = startX;
-      currentY = startY;
-      colIndex = 0;
-      rowCount = 0;
-
-      // หัวข้อบนหน้าที่ 2 ขึ้นไป
-      doc.setFontSize(14);
-      doc.text(`Date: ${drawDate}`, 15, 20);
-      doc.text(`Order list (page ${page})`, 15, 28);
-    }
-
-    // หน้าแรก (page=1) ไม่ต้องแสดงหัวข้อ (ตามที่ขอ)
-    if (page === 1 && i === 0) {
-      // ไม่แสดงหัวข้อ (เว้นไว้)
-    } else if (rowCount === 0 && colIndex === 0) {
-      // วาด header คอลัมน์ที่แถวแรกของคอลัมน์
-      let headerX = currentX;
-      ["ชื่อ", "โพยที่", "ยอดเงิน"].forEach((text, idx) => {
-        doc.setFillColor(227, 242, 253);
-        doc.rect(headerX, currentY - cellH, colWidths[idx], cellH, "F");
-        doc.setTextColor(0);
-        doc.setFontSize(10);
-        doc.text(text, headerX + 2, currentY - 4);
-        headerX += colWidths[idx];
-      });
-    }
-
-    // วาดข้อมูลแถว
-    const item = data[i];
-    let xPos = currentX;
-    const values = [item.name, item.order, `${item.total} ฿`];
-
-    for (let j = 0; j < values.length; j++) {
-      doc.setDrawColor(0);
-      doc.rect(xPos, currentY, colWidths[j], cellH);
-      doc.setTextColor(0);
-      doc.setFontSize(10);
-      doc.text(values[j], xPos + 2, currentY + cellH * 0.7);
-      xPos += colWidths[j];
-    }
-
-    rowCount++;
-    currentY += cellH;
-
-    if (rowCount >= maxRowsPerCol) {
-      // ขยับคอลัมน์
-      colIndex++;
-      currentY = startY;
-      rowCount = 0;
-      currentX += colWidths.reduce((a, b) => a + b, 0) + colGap;
-
-      // ถ้าครบ 3 คอลัมน์ให้ขึ้นหน้าใหม่ (ถ้ายังมีข้อมูลเหลือ)
-      if (colIndex >= colCount) {
-        if (i < data.length - 1) {
-          doc.addPage();
-          page++;
-          currentX = startX;
-          currentY = startY;
-          colIndex = 0;
-          rowCount = 0;
-
-          doc.setFontSize(14);
-          doc.text(`Date: ${drawDate}`, 15, 20);
-          doc.text(`Order list (page ${page})`, 15, 28);
-        }
-      }
-    }
-  }
-}
-
 </script>
 
 <script>
@@ -935,8 +778,8 @@ document.getElementById("twoDigitNumber").addEventListener("keydown", function (
 </script>
 
 <script>
-function changeOrderNumber(delta) {
-  const input = document.getElementById("OrderNumber");
+function changeSlipNumber(delta) {
+  const input = document.getElementById("slipNumber");
   let val = parseInt(input.value || "1");
   val += delta;
   if (val < 1) val = 1;
