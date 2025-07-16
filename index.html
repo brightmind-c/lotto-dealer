@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_3</h1>
+<h1>Lotto Dealer v06.33_4</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -134,6 +134,18 @@
     <label><input type="checkbox" id="self2Reverse"> กลับ</label>
     <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
     <button onclick="addSelf2Digit()">เพิ่มรายการ</button>
+  </div>
+</div>
+
+<!-- ===== ลำดับโพย ===== -->
+<div class="form-section">
+  <div class="form-group">
+    <strong>ลำดับโพย</strong>
+    <input type="text" id="buyerName" placeholder="ชื่อคน" style="max-width: 100px;">
+    <label>โพยที่:</label>
+    <button onclick="changeOrder(-1)">➖</button>
+    <span id="orderDisplay">1</span>
+    <button onclick="changeOrder(1)">➕</button>
   </div>
 </div>
 
@@ -200,6 +212,8 @@
       <th>เต็ง</th>
       <th>โต๊ด</th>
       <th>ล่าง</th>
+      <th>ชื่อ</th>
+      <th>โพยที่</th>
       <th>ลบ</th>
     </tr>
   </thead>
@@ -214,6 +228,8 @@
       <th>เลขแทง</th>
       <th>บน</th>
       <th>ล่าง</th>
+      <th>ชื่อ</th>
+      <th>โพยที่</th>
       <th>ลบ</th>
     </tr>
   </thead>
@@ -278,7 +294,10 @@ function addTwoDigit() {
     row.insertCell(0).innerText = num;
     row.insertCell(1).innerText = top ? amount + " ฿" : "";
     row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    const name = document.getElementById('buyerName').value.trim();
+    row.insertCell(3).innerText = name;
+    row.insertCell(4).innerText = currentOrder;
+    row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
   numberInput.value = '';
@@ -308,7 +327,11 @@ function addThreeDigit() {
   row.insertCell(1).innerText = top ? amount + " ฿" : "";
   row.insertCell(2).innerText = tod ? amount + " ฿" : "";
   row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
-  row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  const name = document.getElementById('buyerName').value.trim();
+  row.insertCell(4).innerText = name;
+  row.insertCell(5).innerText = currentOrder;
+  row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+
   added.add(number);
 
   if (reverse && top) {
@@ -754,6 +777,15 @@ document.getElementById("threeDigitNumber").addEventListener("keydown", function
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
 });
+</script>
+
+<script>
+let currentOrder = 1;
+
+function changeOrder(delta) {
+  currentOrder = Math.max(1, currentOrder + delta);
+  document.getElementById('orderDisplay').innerText = currentOrder;
+}
 </script>
 
 </body>
