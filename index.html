@@ -21,8 +21,10 @@
       font-size: 16px;
     }
     input[type="text"], input[type="number"] {
+      height: 40px;
+      font-size: 32px;
       width: 100%;
-      max-width: 120px;
+      max-width: 80px;
       margin-right: 10px;
       flex: 1;
     }
@@ -87,7 +89,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.30</h1>
+<h1>Lotto Dealer v06.31</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -110,11 +112,10 @@
 <!-- ===== เลขอั้น 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
-    <strong>เลขอั้น 2 ตัว</strong>
-    <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
     <label><input type="checkbox" id="blocked2Top"> บน</label>
     <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
+    <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
     <button onclick="addBlocked2Digit()">เพิ่มรายการ</button>
   </div>
 </div>
@@ -122,29 +123,26 @@
 <!-- ===== ซื้อเอง 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
-    <strong>ซื้อเอง 2 ตัว</strong>
-    <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
     <label><input type="checkbox" id="self2Top"> บน</label>
     <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="self2Reverse"> กลับ</label>
+    <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
     <button onclick="addSelf2Digit()">เพิ่มรายการ</button>
   </div>
 </div>
-
-<!-- ===== บล็อกเดิม: 3 ตัว / 2 ตัว ===== -->
 
 <!-- ===== 3 ตัว input ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
-    <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
-    <input type="number" id="threeDigitAmount" min="1" placeholder="บาท">
     <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
     <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
-    <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
+    <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
+    <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
+    <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
-    <button class="clear-btn" onclick="clearThreeDigit()">Clear</button>
+    <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
   </div>
 </div>
 
@@ -152,13 +150,13 @@
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
-    <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
-    <input type="number" id="twoDigitAmount" min="1" placeholder="บาท">
     <label><input type="checkbox" id="twoDigitTop"> บน</label>
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
+    <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
+    <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
-    <button class="clear-btn" onclick="clearTwoDigit()">Clear</button>
+    <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
   </div>
 </div>
 
@@ -194,8 +192,8 @@
     <tr>
       <th>เลขแทง</th>
       <th>เต็ง</th>
-      <th>ล่าง</th>
       <th>โต๊ด</th>
+      <th>ล่าง</th>
       <th>ลบ</th>
     </tr>
   </thead>
@@ -226,8 +224,6 @@
     <input type="text" id="drawMonth" maxlength="2" placeholder="ดด">
     <span>/</span>
     <input type="text" id="drawYear" maxlength="2" placeholder="ปป">
-  </div>
-  <div>
     <button onclick="generatePDF()">สร้างโพย pdf</button>
   </div>
 </div>
@@ -274,8 +270,8 @@ function addTwoDigit() {
   nums.forEach(num => {
     const row = table.insertRow();
     row.insertCell(0).innerText = num;
-    row.insertCell(1).innerText = top ? amount + "฿" : "";
-    row.insertCell(2).innerText = bottom ? amount + "฿" : "";
+    row.insertCell(1).innerText = top ? amount + " ฿" : "";
+    row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
     row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
@@ -303,9 +299,9 @@ function addThreeDigit() {
 
   const row = table.insertRow();
   row.insertCell(0).innerText = number;
-  row.insertCell(1).innerText = top ? amount + "฿" : "";
-  row.insertCell(2).innerText = bottom ? amount + "฿" : "";
-  row.insertCell(3).innerText = tod ? amount + "฿" : "";
+  row.insertCell(1).innerText = top ? amount + " ฿" : "";
+  row.insertCell(2).innerText = tod ? amount + " ฿" : "";
+  row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
   row.insertCell(4).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   added.add(number);
 
@@ -708,7 +704,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
     currentY += cellH;
     rowCount++;
 
-    if (rowCount >= maxRowsPerCol) {
+    if (rowCount === maxRowsPerCol) {
       if (colX === leftX) {
         // ขยับไปคอลัมน์ขวา ไม่เพิ่มหน้า ไม่เปลี่ยน pageCount
         colX = rightX;
