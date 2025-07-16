@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer v07.05
+  Lotto Dealer v07.06
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -515,13 +515,15 @@ async function generatePDF() {
   const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
   const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
+
   // ====== 3 ตัว ======
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const tod = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    const num = row.children[2]?.innerText.trim();  // ช่องที่ 2 คือเลขแทง
+    const top = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    const tod = parseInt(row.children[4]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[5]?.innerText.replace(' ฿', '') || '0');
+
     if (num && (top > 0 || bottom > 0 || tod > 0)) {
       threeList.push({ num, top, bottom, tod });
     }
@@ -820,7 +822,7 @@ function getOrderListData() {
 // ฟังก์ชันวาด Order List 3 คอลัมน์ ต่อหน้า
 function drawOrderList(doc, data, drawDate) {
   const cellH = 7.5;
-  const colWidths = [40, 30, 40]; // ชื่อ, โพยที่, ยอดเงิน
+  const colWidths = [15, 15, 15]; // ชื่อ, โพยที่, ยอดเงิน
   const colGap = 10;
 
   const startX = 15;
@@ -858,7 +860,7 @@ function drawOrderList(doc, data, drawDate) {
     } else if (rowCount === 0 && colIndex === 0) {
       // วาด header คอลัมน์ที่แถวแรกของคอลัมน์
       let headerX = currentX;
-      ["ชื่อ", "โพยที่", "ยอดเงิน"].forEach((text, idx) => {
+      ["Name", "Order", "Total"].forEach((text, idx) => {
         doc.setFillColor(227, 242, 253);
         doc.rect(headerX, currentY - cellH, colWidths[idx], cellH, "F");
         doc.setTextColor(0);
@@ -871,7 +873,7 @@ function drawOrderList(doc, data, drawDate) {
     // วาดข้อมูลแถว
     const item = data[i];
     let xPos = currentX;
-    const values = [item.name, item.order, `${item.total} ฿`];
+    const values = [item.name, item.order, `${item.total} B`];
 
     for (let j = 0; j < values.length; j++) {
       doc.setDrawColor(0);
