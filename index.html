@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.11
+  Lotto Dealer - v07.12
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -565,14 +565,14 @@ async function generatePDF() {
   // ===== Generate PDF Pages =====
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  doc.text("2 top number", 15, 28);
-  draw2DigitGrid(doc, topMap, 35, highlightTop, highlightTopSelf);
+  doc.text("2 Top Number", 15, 28);
+  draw2DigitGrid(doc, topMap, 25, highlightTop, highlightTopSelf);
 
   doc.addPage();
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  doc.text("2 bottom number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 35, highlightBottom, highlightBottomSelf);
+  doc.text("2 Bottom Number", 15, 28);
+  draw2DigitGrid(doc, bottomMap, 25, highlightBottom, highlightBottomSelf);
 
   doc.addPage();
   doc.setFontSize(14);
@@ -730,9 +730,9 @@ function draw3DigitList(doc, list, startY, drawDate) {
     doc.setTextColor(0);
     doc.text(`Date: ${drawDate}`, 15, 20);
     if (page === 1) {
-      doc.text("3 list number", 15, 28);
+      doc.text("3 Number List", 15, 28);
     } else {
-      doc.text(`3 list number (page ${page})`, 15, 28);
+      doc.text(`3 Number List (page ${page})`, 15, 28);
     }
   };
 
@@ -782,7 +782,7 @@ function getSlipSummaries() {
     const slip = row.children[5]?.innerText.trim();
 
     const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, slip, total: 0 };
+    if (!map[key]) map[key] = { name, Order, total: 0 };
     map[key].total += top + tod + bottom;
   });
 
@@ -794,7 +794,7 @@ function getSlipSummaries() {
     const slip = row.children[4]?.innerText.trim();
 
     const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, slip, total: 0 };
+    if (!map[key]) map[key] = { name, Order, total: 0 };
     map[key].total += top + bottom;
   });
 
@@ -828,7 +828,7 @@ function getSlipSummaries() {
 
 function drawSlipList(doc, list, drawDate, startPage) {
   const cellH = 8;
-  const headers = ["Name", "Slip", "Total"];
+  const headers = ["Name", "Order", "Total"];
   const cellWs = [15, 15, 15]; // 3 คอลัมน์ในแต่ละแถบ
   const maxRowsPerColumn = 30;
 
@@ -847,7 +847,7 @@ function drawSlipList(doc, list, drawDate, startPage) {
     doc.setFontSize(14);
     doc.setTextColor(0);
     doc.text(`Date: ${drawDate}`, 15, 20);
-    const title = pageNum > 1 ? `slip list (page ${pageNum})` : "slip list";
+    const title = pageNum > 1 ? `Order List (page ${pageNum})` : "Order List";
     doc.text(title, 15, 28);
   };
 
@@ -923,6 +923,28 @@ document.getElementById("twoDigitNumber").addEventListener("keydown", function (
   if (e.key === "Enter") addTwoDigit();
 });
 </script>
+
+<script>
+document.getElementById("drawDay").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("drawMonth").focus();
+  }
+});
+document.getElementById("drawMonth").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("drawYear").focus();
+  }
+});
+document.getElementById("drawYear").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
+  }
+});
+</script>
+
 
 <script>
 function adjustSlipNumber(delta) {
