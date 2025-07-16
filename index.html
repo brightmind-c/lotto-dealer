@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lotto Dealer</title>
   <link rel="icon" href="L-D.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Anuphan&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
-      font-family: 'NotoSansThai', sans-serif;
+      font-family: 'Anuphan', sans-serif;
       background: #f8f9fa;
       padding: 20px;
       max-width: 850px;
@@ -27,6 +28,9 @@
       max-width: 80px;
       margin-right: 10px;
       flex: 1;
+    }
+    input::placeholder {
+      font-size: 16px; /* หรือขนาดที่คุณต้องการ */
     }
     @media (max-width: 600px) {
       .form-group {
@@ -89,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.32</h1>
+<h1>Lotto Dealer v06.33</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -706,13 +710,12 @@ function draw3DigitList(doc, list, startY, drawDate) {
     currentY += cellH;
     rowCount++;
 
-    if (rowCount === maxRowsPerCol) {
+    if (rowCount >= maxRowsPerCol) {
       if (colX === leftX) {
         // ขยับไปคอลัมน์ขวา ไม่เพิ่มหน้า ไม่เปลี่ยน pageCount
         colX = rightX;
         currentY = startY;
         rowCount = 0;
-        drawTitle(pageCount); // วาดหัวข้อใหม่บนคอลัมน์ขวา
         drawHeader(colX, currentY);
         currentY += cellH;
       } else {
@@ -730,6 +733,27 @@ function draw3DigitList(doc, list, startY, drawDate) {
   });
 }
 
+</script>
+
+<script>
+document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addBlocked3Digit();
+});
+document.getElementById("self3Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addSelf3Digit();
+});
+document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addBlocked2Digit();
+});
+document.getElementById("self2Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addSelf2Digit();
+});
+document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addThreeDigit();
+});
+document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addTwoDigit();
+});
 </script>
 
 </body>
