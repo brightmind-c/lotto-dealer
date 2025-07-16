@@ -96,7 +96,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v07.01</h1>
+<h1>Lotto Dealer v07.01_3</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -462,11 +462,14 @@ async function generatePDF() {
   const drawDate = `${day}/${month}/${year}`;
 
   // Map สำหรับ 2 ตัว
+  // แก้ตรงนี้ ให้ดึงเลขที่คอลัมน์ 2 (เลขแทง) และจำนวนเงินบนล่างจริงๆ
   const topMap = {}, bottomMap = {};
-  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+  document.querySelectorAll('#twoDigitTable tbody tr').forEach(row => {
+    const num = row.children[2]?.innerText.trim();
+    const topStr = row.children[3]?.innerText.trim();
+    const bottomStr = row.children[4]?.innerText.trim();
+    const top = topStr ? parseInt(topStr.replace(' ฿', '')) || 0 : 0;
+    const bottom = bottomStr ? parseInt(bottomStr.replace(' ฿', '')) || 0 : 0;
     if (num) {
       if (top > 0) topMap[num] = (topMap[num] || 0) + top;
       if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
@@ -474,26 +477,7 @@ async function generatePDF() {
   });
 
   // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
-  const getBlocked2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#blocked2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-  const getSelf2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#self2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
+  // (ใช้ฟังก์ชันเดิม getBlocked2Digits และ getSelf2Digits ได้เลย)
 
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
@@ -502,35 +486,27 @@ async function generatePDF() {
   const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
   const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
+
   // ====== 3 ตัว ======
-  const threeList = [];
-  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const tod = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
-    if (num && (top > 0 || bottom > 0 || tod > 0)) {
-      threeList.push({ num, top, bottom, tod });
-    }
-  });
+// ✅ โค้ดใหม่: เก็บชื่อ, โพยที่, และเลข พร้อมยอด
+const threeList = [];
+document.querySelectorAll('#threeDigitTable tbody tr').forEach(row => {
+  const name = row.children[0]?.innerText.trim();
+  const slip = row.children[1]?.innerText.trim();
+  const num = row.children[2]?.innerText.trim();
+  const topStr = row.children[3]?.innerText.trim();
+  const todStr = row.children[4]?.innerText.trim();
+  const bottomStr = row.children[5]?.innerText.trim();
+  const top = topStr ? parseInt(topStr.replace(' ฿', '')) || 0 : 0;
+  const tod = todStr ? parseInt(todStr.replace(' ฿', '')) || 0 : 0;
+  const bottom = bottomStr ? parseInt(bottomStr.replace(' ฿', '')) || 0 : 0;
 
-  const getPermutations = (str) => {
-    const results = new Set();
-    if (str.length === 1) return [str];
-    for (let i = 0; i < str.length; i++) {
-      const first = str[i];
-      const rest = str.slice(0, i) + str.slice(i + 1);
-      for (const perm of getPermutations(rest)) {
-        results.add(first + perm);
-      }
-    }
-    return [...results];
-  };
+  if (num && (top > 0 || bottom > 0 || tod > 0)) {
+    threeList.push({ name, slip, num, top, bottom, tod });
+  }
+});
 
-  const isInListWithPermutation = (num, list) => {
-    const perms = getPermutations(num);
-    return list.some(item => perms.includes(item.num));
-  };
+  // (ฟังก์ชัน getPermutations และ isInListWithPermutation เดิมใช้ได้เลย)
 
   const threeMap = {};
   threeList.forEach(({ num, top, bottom, tod }) => {
@@ -624,7 +600,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
       const num = `${r}${c}`;
-      const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
+      const val = dataMap[num] !== undefined ? `${dataMap[num]} ฿` : '-';
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
