@@ -15,6 +15,9 @@
       max-width: 850px;
       margin: auto;
     }
+    input, button, textarea, select{
+      font-family: 'Anuphan', sans-serif;
+    }
     h1, h2 {
       margin-top: 30px;
     }
@@ -89,14 +92,11 @@
     th {
       background-color: #e3f2fd;
     }
-    h1 {
-    font-weight: bold;
-    }
   </style>
 </head>
 <body>
 
-<h1>Lotto Dealer v07.01</h1>
+<h1>Lotto Dealer v07.02</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -144,11 +144,11 @@
 <div class="form-section">
   <div class="form-group">
     <strong>ลำดับโพย</strong>
-    <label>ชื่อ: <input type="text" id="personName" placeholder="ชื่อคน" style="max-width: 100px;"></label>
+    <label>ชื่อ: <input type="text" id="BuyerName" placeholder="ชื่อ" style="max-width: 100px;"></label>
     <label>โพยที่:
-      <input type="number" id="slipNumber" value="1" style="width: 60px;">
-      <button onclick="changeSlipNumber(1)">+</button>
-      <button onclick="changeSlipNumber(-1)">-</button>
+      <input type="number" id="orderNumber" value="1" style="width: 60px;">
+      <button onclick="changeorderNumber(1)">+</button>
+      <button onclick="changeorderNumber(-1)">-</button>
     </label>
   </div>
 </div>
@@ -162,7 +162,7 @@
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
-    <strong> ฿  </strong>
+    <h2>฿  </h2>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
@@ -177,7 +177,7 @@
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
     <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
-    <strong> ฿  </strong>
+    <h2>฿  </h2>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
@@ -295,12 +295,12 @@ function addTwoDigit() {
   }
 
   const name = document.getElementById('buyerName').value.trim() || "-";
-  const slip = document.getElementById('slipNo').value;
+  const order = document.getElementById('orderNumber').value;
 
   nums.forEach(num => {
     const row = table.insertRow();
     row.insertCell(0).innerText = name;
-    row.insertCell(1).innerText = slip;
+    row.insertCell(1).innerText = order;
     row.insertCell(2).innerText = num;
     row.insertCell(3).innerText = top ? amount + " ฿" : "";
     row.insertCell(4).innerText = bottom ? amount + " ฿" : "";
@@ -331,10 +331,10 @@ function addThreeDigit() {
 
   const row = table.insertRow();
   const name = document.getElementById('buyerName').value.trim() || "-";
-  const slip = document.getElementById('slipNo').value;
+  const order = document.getElementById('orderNumber').value;
 
   row.insertCell(0).innerText = name;
-  row.insertCell(1).innerText = slip;
+  row.insertCell(1).innerText = order;
   row.insertCell(2).innerText = number;
   row.insertCell(3).innerText = top ? amount + " ฿" : "";
   row.insertCell(4).innerText = tod ? amount + " ฿" : "";
@@ -364,7 +364,7 @@ function addThreeDigit() {
     perms.forEach(num => {
       const r = table.insertRow();
       row.insertCell(0).innerText = name;
-      row.insertCell(1).innerText = slip;
+      row.insertCell(1).innerText = order;
       row.insertCell(2).innerText = number;
       row.insertCell(3).innerText = top ? amount + " ฿" : "";
       row.insertCell(4).innerText = tod ? amount + " ฿" : "";
@@ -790,8 +790,8 @@ document.getElementById("twoDigitNumber").addEventListener("keydown", function (
 </script>
 
 <script>
-function changeSlipNumber(delta) {
-  const input = document.getElementById("slipNumber");
+function changeorderNumber(delta) {
+  const input = document.getElementById("orderNumber");
   let val = parseInt(input.value || "1");
   val += delta;
   if (val < 1) val = 1;
