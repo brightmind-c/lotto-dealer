@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_5</h1>
+<h1>Lotto Dealer v06.33_6</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -299,7 +299,7 @@ function addTwoDigit() {
     row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
     const name = document.getElementById('buyerName').value.trim();
     row.insertCell(3).innerText = name;
-    row.insertCell(4).innerText = currentOrder;
+    row.insertCell(4).innerText = document.getElementById('slipNumber').value;
     row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
@@ -332,7 +332,7 @@ function addThreeDigit() {
   row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
   const name = document.getElementById('buyerName').value.trim();
   row.insertCell(4).innerText = name;
-  row.insertCell(5).innerText = currentOrder;
+  row.insertCell(5).innerText = document.getElementById('slipNumber').value;
   row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
 
   added.add(number);
