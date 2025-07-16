@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer v07.04
+  Lotto Dealer v07.05
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -564,6 +564,9 @@ async function generatePDF() {
       };
     });
 
+  // สร้างข้อมูล order list รวมยอดเงินต่อชื่อ+โพย
+  const orderData = getOrderListData();
+
   // ===== Generate PDF Pages =====
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
@@ -580,6 +583,10 @@ async function generatePDF() {
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   draw3DigitList(doc, sortedThreeList, 35, drawDate);
+
+  // วาด Order List (เพิ่มหน้าใหม่แล้ววาด)
+  doc.addPage();
+  drawOrderList(doc, orderData, drawDate);
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
@@ -765,6 +772,143 @@ function draw3DigitList(doc, list, startY, drawDate) {
       }
     }
   });
+}
+
+// ฟังก์ชันดึงข้อมูลโพย พร้อมยอดเงินรวมจาก 2 ตัว และ 3 ตัว
+function getOrderListData() {
+  const orderMap = {};
+
+  // รวมยอด 3 ตัว
+  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+    const name = row.children[0]?.innerText.trim() || "-";
+    const order = row.children[1]?.innerText.trim() || "-";
+    const topStr = row.children[3]?.innerText.replace(' ฿', '') || '0';
+    const todStr = row.children[4]?.innerText.replace(' ฿', '') || '0';
+    const bottomStr = row.children[5]?.innerText.replace(' ฿', '') || '0';
+
+    const total = (parseInt(topStr) || 0) + (parseInt(todStr) || 0) + (parseInt(bottomStr) || 0);
+
+    const key = `${name}|${order}`;
+    if (!orderMap[key]) orderMap[key] = { name, order, total: 0 };
+    orderMap[key].total += total;
+  });
+
+  // รวมยอด 2 ตัว
+  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+    const name = row.children[0]?.innerText.trim() || "-";
+    const order = row.children[1]?.innerText.trim() || "-";
+    const topStr = row.children[3]?.innerText.replace(' ฿', '') || '0';
+    const bottomStr = row.children[4]?.innerText.replace(' ฿', '') || '0';
+
+    const total = (parseInt(topStr) || 0) + (parseInt(bottomStr) || 0);
+
+    const key = `${name}|${order}`;
+    if (!orderMap[key]) orderMap[key] = { name, order, total: 0 };
+    orderMap[key].total += total;
+  });
+
+  // แปลงเป็น array และจัดเรียงตามชื่อและโพย
+  const arr = Object.values(orderMap);
+  arr.sort((a, b) => {
+    if (a.name !== b.name) return a.name.localeCompare(b.name);
+    return parseInt(a.order) - parseInt(b.order);
+  });
+
+  return arr;
+}
+
+// ฟังก์ชันวาด Order List 3 คอลัมน์ ต่อหน้า
+function drawOrderList(doc, data, drawDate) {
+  const cellH = 7.5;
+  const colWidths = [40, 30, 40]; // ชื่อ, โพยที่, ยอดเงิน
+  const colGap = 10;
+
+  const startX = 15;
+  const startY = 30;
+  const maxRowsPerCol = 30; // แถวต่อคอลัมน์
+  const colCount = 3; // จำนวนคอลัมน์ต่อหน้า
+
+  let page = 1;
+  let rowCount = 0;
+  let colIndex = 0;
+  let currentX = startX;
+  let currentY = startY;
+
+  const totalRowsPerPage = maxRowsPerCol * colCount;
+
+  for (let i = 0; i < data.length; i++) {
+    // ถ้าเริ่มหน้าใหม่ (ยกเว้นหน้าแรก)
+    if (i > 0 && i % totalRowsPerPage === 0) {
+      doc.addPage();
+      page++;
+      currentX = startX;
+      currentY = startY;
+      colIndex = 0;
+      rowCount = 0;
+
+      // หัวข้อบนหน้าที่ 2 ขึ้นไป
+      doc.setFontSize(14);
+      doc.text(`Date: ${drawDate}`, 15, 20);
+      doc.text(`Order list (page ${page})`, 15, 28);
+    }
+
+    // หน้าแรก (page=1) ไม่ต้องแสดงหัวข้อ (ตามที่ขอ)
+    if (page === 1 && i === 0) {
+      // ไม่แสดงหัวข้อ (เว้นไว้)
+    } else if (rowCount === 0 && colIndex === 0) {
+      // วาด header คอลัมน์ที่แถวแรกของคอลัมน์
+      let headerX = currentX;
+      ["ชื่อ", "โพยที่", "ยอดเงิน"].forEach((text, idx) => {
+        doc.setFillColor(227, 242, 253);
+        doc.rect(headerX, currentY - cellH, colWidths[idx], cellH, "F");
+        doc.setTextColor(0);
+        doc.setFontSize(10);
+        doc.text(text, headerX + 2, currentY - 4);
+        headerX += colWidths[idx];
+      });
+    }
+
+    // วาดข้อมูลแถว
+    const item = data[i];
+    let xPos = currentX;
+    const values = [item.name, item.order, `${item.total} ฿`];
+
+    for (let j = 0; j < values.length; j++) {
+      doc.setDrawColor(0);
+      doc.rect(xPos, currentY, colWidths[j], cellH);
+      doc.setTextColor(0);
+      doc.setFontSize(10);
+      doc.text(values[j], xPos + 2, currentY + cellH * 0.7);
+      xPos += colWidths[j];
+    }
+
+    rowCount++;
+    currentY += cellH;
+
+    if (rowCount >= maxRowsPerCol) {
+      // ขยับคอลัมน์
+      colIndex++;
+      currentY = startY;
+      rowCount = 0;
+      currentX += colWidths.reduce((a, b) => a + b, 0) + colGap;
+
+      // ถ้าครบ 3 คอลัมน์ให้ขึ้นหน้าใหม่ (ถ้ายังมีข้อมูลเหลือ)
+      if (colIndex >= colCount) {
+        if (i < data.length - 1) {
+          doc.addPage();
+          page++;
+          currentX = startX;
+          currentY = startY;
+          colIndex = 0;
+          rowCount = 0;
+
+          doc.setFontSize(14);
+          doc.text(`Date: ${drawDate}`, 15, 20);
+          doc.text(`Order list (page ${page})`, 15, 28);
+        }
+      }
+    }
+  }
 }
 
 </script>
