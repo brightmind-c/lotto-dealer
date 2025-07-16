@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_7</h1>
+<h1>Lotto Dealer v06.33_8</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -573,6 +573,7 @@ async function generatePDF() {
   doc.text(`Date: ${drawDate}`, 15, 20);
   draw3DigitList(doc, sortedThreeList, 35, drawDate);
 
+  doc.addPage();
   const slipList = getSlipSummaries();
   drawSlipList(doc, slipList, formattedDate, 2);
 
