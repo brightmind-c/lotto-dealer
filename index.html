@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_9</h1>
+<h1>Lotto Dealer v06.33_10</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -239,7 +239,7 @@
   <tbody id="twoDigitTable"></tbody>
 </table>
 
-<!-- งวดที่ -->
+<!-- สร้างโพย -->
 <h2>สร้างโพย</h2>
 <div class="form-section">
   <div class="form-group">
@@ -575,7 +575,7 @@ async function generatePDF() {
 
   doc.addPage();
   const slipList = getSlipSummaries();
-  drawSlipList(doc, slipList, drawDate, 2);
+  drawSlipList(doc, slipList, drawDate, 1);
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
@@ -823,7 +823,7 @@ function getSlipSummaries() {
 function drawSlipList(doc, list, drawDate, startPage) {
   const cellH = 8;
   const headers = ["Name", "Slip", "Total"];
-  const cellWs = [45, 45, 45]; // 3 คอลัมน์ในแต่ละแถบ
+  const cellWs = [15, 15, 15]; // 3 คอลัมน์ในแต่ละแถบ
   const maxRowsPerColumn = 30;
 
   // ตำแหน่งของแถบ: ซ้าย กลาง ขวา
