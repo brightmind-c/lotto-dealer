@@ -916,8 +916,14 @@ document.getElementById("blocked2Input").addEventListener("keydown", function (e
 document.getElementById("self2Input").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addSelf2Digit();
 });
+document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") document.getElementById("threeDigitNumber").focus();
+});
 document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addThreeDigit();
+});
+document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") document.getElementById("twoDigitNumber").focus();
 });
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
