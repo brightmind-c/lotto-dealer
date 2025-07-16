@@ -87,7 +87,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.29</h1>
+<h1>Lotto Dealer v06.30</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -649,7 +649,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
   const drawHeader = (x, y) => {
     let xPos = x;
     headers.forEach((text, i) => {
-      doc.setFillColor(227, 242, 253); // สีฟ้าอ่อน
+      doc.setFillColor(227, 242, 253);
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setTextColor(0);
       doc.setFontSize(10);
@@ -665,8 +665,8 @@ function draw3DigitList(doc, list, startY, drawDate) {
       row.top > 0 ? row.top.toString() : '',
       row.tod > 0 ? row.tod.toString() : '',
       row.bottom > 0 ? row.bottom.toString() : '',
-      '', // Block (สี)
-      ''  // Self  (สี)
+      '', 
+      ''
     ];
 
     values.forEach((val, i) => {
@@ -687,7 +687,6 @@ function draw3DigitList(doc, list, startY, drawDate) {
     });
   };
 
-  // วาดวันที่และหัวข้อที่แต่ละหน้า
   const drawTitle = (page) => {
     doc.setFontSize(14);
     doc.setTextColor(0);
@@ -699,7 +698,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
     }
   };
 
-  // หน้าแรก
+  // วาดหน้าแรกก่อน
   drawTitle(pageCount);
   drawHeader(colX, currentY);
   currentY += cellH;
@@ -711,12 +710,11 @@ function draw3DigitList(doc, list, startY, drawDate) {
 
     if (rowCount >= maxRowsPerCol) {
       if (colX === leftX) {
-        // ไปฝั่งขวา
+        // ขยับไปคอลัมน์ขวา ไม่เพิ่มหน้า ไม่เปลี่ยน pageCount
         colX = rightX;
         currentY = startY;
         rowCount = 0;
-        pageCount++;
-        drawTitle(pageCount);
+        drawTitle(pageCount); // วาดหัวข้อใหม่บนคอลัมน์ขวา
         drawHeader(colX, currentY);
         currentY += cellH;
       } else {
@@ -725,7 +723,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
         colX = leftX;
         currentY = startY;
         rowCount = 0;
-        pageCount++;
+        pageCount++;         // นับหน้าเพิ่ม **หลัง** เพิ่มหน้า
         drawTitle(pageCount);
         drawHeader(colX, currentY);
         currentY += cellH;
