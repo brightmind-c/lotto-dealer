@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer v07.03
+  Lotto Dealer v07.04
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -150,8 +150,8 @@
     <label>ชื่อ: <input type="text" id="BuyerName" placeholder="ชื่อ" style="max-width: 100px;"></label>
     <label>โพยที่:
       <input type="number" id="OrderNumber" value="1" style="width: 60px;">
-      <button onclick="changeorderNumber(1)">+</button>
-      <button onclick="changeorderNumber(-1)">-</button>
+      <button onclick="changeOrderNumber(1)">+</button>
+      <button onclick="changeOrderNumber(-1)">-</button>
     </label>
   </div>
 </div>
@@ -791,8 +791,8 @@ document.getElementById("twoDigitNumber").addEventListener("keydown", function (
 </script>
 
 <script>
-function changeorderNumber(delta) {
-  const input = document.getElementById("orderNumber");
+function changeOrderNumber(delta) {
+  const input = document.getElementById("OrderNumber");
   let val = parseInt(input.value || "1");
   val += delta;
   if (val < 1) val = 1;
