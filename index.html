@@ -93,7 +93,7 @@
 </head>
 <body>
 
-<h1>Lotto Dealer v06.33_2</h1>
+<h1>Lotto Dealer v06.33_3</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -485,9 +485,9 @@ async function generatePDF() {
   const threeList = [];
   document.querySelectorAll('#threeDigitTable tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const tod = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+  const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+  const tod = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+  const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
     if (num && (top > 0 || bottom > 0 || tod > 0)) {
       threeList.push({ num, top, bottom, tod });
     }
