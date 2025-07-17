@@ -98,7 +98,8 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.16
+  Lotto Dealer - v07.17
+</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -482,28 +483,6 @@ async function generatePDF() {
       if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
     }
   });
-
-  // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
-  const getBlocked2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#blocked2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
-  const getSelf2Digits = () => {
-    const list = [];
-    document.querySelectorAll('#self2Table tr').forEach(row => {
-      const num = row.children[0]?.innerText.trim();
-      const isTop = row.children[1]?.innerText.includes('✔');
-      const isBottom = row.children[2]?.innerText.includes('✔');
-      if (num) list.push({ num, isTop, isBottom });
-    });
-    return list;
-  };
 
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
@@ -903,59 +882,44 @@ function drawSlipList(doc, list, drawDate, startPage) {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addBlocked3Digit();
-  });
-  document.getElementById("self3Input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addSelf3Digit();
-  });
-  document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addBlocked2Digit();
-  });
-  document.getElementById("self2Input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addSelf2Digit();
-  });
-  /*
-  document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      //e.preventDefault();
-      document.getElementById("threeDigitNumber").focus();
-    }
-  });
-  */
-  document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addThreeDigit();
-  });
-  /*
-  document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      //e.preventDefault();
-      document.getElementById("twoDigitNumber").focus();
-    }
-  });
-  */
-  document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") addTwoDigit();
-  });
-  document.getElementById("drawDay").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById("drawMonth").focus();
-    }
-  });
-  document.getElementById("drawMonth").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById("drawYear").focus();
-    }
-  });
-  document.getElementById("drawYear").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
-    }
-  });
+document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addBlocked3Digit();
+});
+document.getElementById("self3Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addSelf3Digit();
+});
+document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addBlocked2Digit();
+});
+document.getElementById("self2Input").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addSelf2Digit();
+});
+document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addThreeDigit();
+});
+document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") addTwoDigit();
+});
+</script>
+
+<script>
+document.getElementById("drawDay").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("drawMonth").focus();
+  }
+});
+document.getElementById("drawMonth").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("drawYear").focus();
+  }
+});
+document.getElementById("drawYear").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
+  }
 });
 </script>
 
