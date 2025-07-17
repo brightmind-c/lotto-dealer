@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.13
+  Lotto Dealer - v07.14
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -904,56 +904,55 @@ function drawSlipList(doc, list, drawDate, startPage) {
 </script>
 
 <script>
-document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addBlocked3Digit();
-});
-document.getElementById("self3Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addSelf3Digit();
-});
-document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addBlocked2Digit();
-});
-document.getElementById("self2Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addSelf2Digit();
-});
-document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    //e.preventDefault();
-    document.getElementById("threeDigitNumber").focus();
-  }
-});
-document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addThreeDigit();
-});
-document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    //e.preventDefault();
-    document.getElementById("twoDigitNumber").focus();
-  }
-});
-document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addTwoDigit();
-});
-</script>
-
-<script>
-document.getElementById("drawDay").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("drawMonth").focus();
-  }
-});
-document.getElementById("drawMonth").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("drawYear").focus();
-  }
-});
-document.getElementById("drawYear").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
-  }
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addBlocked3Digit();
+  });
+  document.getElementById("self3Input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addSelf3Digit();
+  });
+  document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addBlocked2Digit();
+  });
+  document.getElementById("self2Input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addSelf2Digit();
+  });
+  document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      //e.preventDefault();
+      document.getElementById("threeDigitNumber").focus();
+    }
+  });
+  document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addThreeDigit();
+  });
+  document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      //e.preventDefault();
+      document.getElementById("twoDigitNumber").focus();
+    }
+  });
+  document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") addTwoDigit();
+  });
+  document.getElementById("drawDay").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("drawMonth").focus();
+    }
+  });
+  document.getElementById("drawMonth").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("drawYear").focus();
+    }
+  });
+  document.getElementById("drawYear").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
+    }
+  });
 });
 </script>
 
