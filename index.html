@@ -15,9 +15,6 @@
       max-width: 850px;
       margin: auto;
     }
-    input, button, textarea, select{
-      font-family: 'Anuphan', sans-serif;
-    }
     h1, h2 {
       margin-top: 30px;
     }
@@ -96,10 +93,7 @@
 </head>
 <body>
 
-<h1>
-  <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.18 - work version
-</h1>
+<h1>Lotto Dealer - v07.08 - work_v</h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -165,6 +159,7 @@
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
+    <label>บาท</label>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
     <button onclick="addThreeDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
@@ -179,6 +174,7 @@
     <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
     <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
     <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
+    <label>บาท</label>
     <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
     <button onclick="addTwoDigit()">เพิ่มรายการ</button>
     <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
@@ -186,32 +182,32 @@
 </div>
 
 <!-- ===== ตารางรายการใหม่ทั้ง 4 แบบ ===== -->
-<h2>รายการ เลขอั้น 3 ตัว</h2>
+<h2>รายการเลขอั้น 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="blocked3Table"></tbody>
 </table>
 
-<h2>รายการ ซื้อเอง 3 ตัว</h2>
+<h2>รายการซื้อเอง 3 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
   <tbody id="self3Table"></tbody>
 </table>
 
-<h2>รายการ เลขอั้น 2 ตัว</h2>
+<h2>รายการเลขอั้น 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="blocked2Table"></tbody>
 </table>
 
-<h2>รายการ ซื้อเอง 2 ตัว</h2>
+<h2>รายการซื้อเอง 2 ตัว</h2>
 <table>
   <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
   <tbody id="self2Table"></tbody>
 </table>
 
 <!-- ===== 3 ตัว table ===== -->
-<h2>รายการ แทง 3 ตัว</h2>
+<h2>รายการแทง 3 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -228,7 +224,7 @@
 </table>
 
 <!-- ===== 2 ตัว table ===== -->
-<h2>รายการ แทง 2 ตัว</h2>
+<h2>รายการแทง 2 ตัว</h2>
 <table>
   <thead>
     <tr>
@@ -484,6 +480,28 @@ async function generatePDF() {
     }
   });
 
+  // ===== ดึงรายการเลขอั้น/ซื้อเอง 2 ตัว =====
+  const getBlocked2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#blocked2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
+  const getSelf2Digits = () => {
+    const list = [];
+    document.querySelectorAll('#self2Table tr').forEach(row => {
+      const num = row.children[0]?.innerText.trim();
+      const isTop = row.children[1]?.innerText.includes('✔');
+      const isBottom = row.children[2]?.innerText.includes('✔');
+      if (num) list.push({ num, isTop, isBottom });
+    });
+    return list;
+  };
+
   const blocked2List = getBlocked2Digits();
   const self2List = getSelf2Digits();
 
@@ -543,14 +561,14 @@ async function generatePDF() {
   // ===== Generate PDF Pages =====
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  doc.text("2 Top Number", 15, 28);
-  draw2DigitGrid(doc, topMap, 25, highlightTop, highlightTopSelf);
+  doc.text("2 top number", 15, 28);
+  draw2DigitGrid(doc, topMap, 35, highlightTop, highlightTopSelf);
 
   doc.addPage();
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  doc.text("2 Bottom Number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 25, highlightBottom, highlightBottomSelf);
+  doc.text("2 bottom number", 15, 28);
+  draw2DigitGrid(doc, bottomMap, 35, highlightBottom, highlightBottomSelf);
 
   doc.addPage();
   doc.setFontSize(14);
@@ -708,9 +726,9 @@ function draw3DigitList(doc, list, startY, drawDate) {
     doc.setTextColor(0);
     doc.text(`Date: ${drawDate}`, 15, 20);
     if (page === 1) {
-      doc.text("3 Number List", 15, 28);
+      doc.text("3 list number", 15, 28);
     } else {
-      doc.text(`3 Number List (page ${page})`, 15, 28);
+      doc.text(`3 list number (page ${page})`, 15, 28);
     }
   };
 
@@ -760,7 +778,7 @@ function getSlipSummaries() {
     const slip = row.children[5]?.innerText.trim();
 
     const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, Order, total: 0 };
+    if (!map[key]) map[key] = { name, slip, total: 0 };
     map[key].total += top + tod + bottom;
   });
 
@@ -772,7 +790,7 @@ function getSlipSummaries() {
     const slip = row.children[4]?.innerText.trim();
 
     const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, Order, total: 0 };
+    if (!map[key]) map[key] = { name, slip, total: 0 };
     map[key].total += top + bottom;
   });
 
@@ -806,7 +824,7 @@ function getSlipSummaries() {
 
 function drawSlipList(doc, list, drawDate, startPage) {
   const cellH = 8;
-  const headers = ["Name", "Order", "Total"];
+  const headers = ["Name", "Slip", "Total"];
   const cellWs = [15, 15, 15]; // 3 คอลัมน์ในแต่ละแถบ
   const maxRowsPerColumn = 30;
 
@@ -825,7 +843,7 @@ function drawSlipList(doc, list, drawDate, startPage) {
     doc.setFontSize(14);
     doc.setTextColor(0);
     doc.text(`Date: ${drawDate}`, 15, 20);
-    const title = pageNum > 1 ? `Order List (page ${pageNum})` : "Order List";
+    const title = pageNum > 1 ? `slip list (page ${pageNum})` : "slip list";
     doc.text(title, 15, 28);
   };
 
@@ -900,29 +918,6 @@ document.getElementById("threeDigitNumber").addEventListener("keydown", function
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
 });
-</script>
-
-<script>
-document.getElementById("drawDay").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("drawMonth").focus();
-  }
-});
-document.getElementById("drawMonth").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("drawYear").focus();
-  }
-});
-/*
-document.getElementById("drawYear").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
-  }
-});
-*/
 </script>
 
 <script>
