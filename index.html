@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.15
+  Lotto Dealer - v07.16
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
 <div class="form-section">
@@ -916,21 +916,25 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("self2Input").addEventListener("keydown", function (e) {
     if (e.key === "Enter") addSelf2Digit();
   });
+  /*
   document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       //e.preventDefault();
       document.getElementById("threeDigitNumber").focus();
     }
   });
+  */
   document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
     if (e.key === "Enter") addThreeDigit();
   });
+  /*
   document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       //e.preventDefault();
       document.getElementById("twoDigitNumber").focus();
     }
   });
+  */
   document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
     if (e.key === "Enter") addTwoDigit();
   });
@@ -949,14 +953,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("drawYear").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
-      console.log("Enter pressed on drawYear"); // ✅ เช็กว่ามาถึงตรงนี้ไหม
-      console.log("Enter detected via keyCode");
-      console.log("OK! drawYear enter works.");
-      try {
-        generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
-      } catch (error) {
-        console.error("Error calling generatePDF:", error);
-      }
+      generatePDF(); // กด Enter ที่ drawYear แล้วสร้างโพยทันที
     }
   });
 });
