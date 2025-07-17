@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.19
+  Lotto Dealer - v07.18 - work version
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -900,20 +900,6 @@ document.getElementById("threeDigitNumber").addEventListener("keydown", function
 document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
   if (e.key === "Enter") addTwoDigit();
 });
-
-document.getElementById("threeDigitAmount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("threeDigitNumber").focus();
-  }
-});
-document.getElementById("twoDigitAmount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("twoDigitNumber").focus();
-  }
-});
-
 </script>
 
 <script>
