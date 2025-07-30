@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.19
+  Lotto Dealer - v07.20
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -156,14 +156,14 @@
   </div>
 </div>
 
-<!-- ===== 3 ตัว input ===== -->
+<!-- ===== แทง 3 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
     <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
-    <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
     <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
     <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
+    <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
     <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
@@ -172,7 +172,7 @@
   </div>
 </div>
 
-<!-- ===== 2 ตัว input ===== -->
+<!-- ===== แทง 2 ตัว ===== -->
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
@@ -343,7 +343,7 @@ function addThreeDigit() {
 
   added.add(number);
 
-  if (reverse && top) {
+  if (reverse && (top || bottom)) { //จุดที่แก้เรื่องกลับทั้งเต็งและล่าง
     const chars = number.split('');
     const perms = new Set();
 
