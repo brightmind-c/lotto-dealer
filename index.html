@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.20
+  Lotto Dealer - v07.21
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -365,9 +365,9 @@ function addThreeDigit() {
     perms.forEach(num => {
       const r = table.insertRow();
       r.insertCell(0).innerText = num;
-      r.insertCell(1).innerText = amount + " ฿";
+      r.insertCell(1).innerText = top ? amount + " ฿" : "";
       r.insertCell(2).innerText = "";
-      r.insertCell(3).innerText = "";
+      r.insertCell(3).innerText = bottom ? amount + " ฿" : "";
       r.insertCell(4).innerText = name;
       r.insertCell(5).innerText = document.getElementById('slipNumber').value;
       r.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
