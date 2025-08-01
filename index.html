@@ -18,12 +18,8 @@
     input, button, textarea, select{
       font-family: 'Anuphan', sans-serif;
     }
-    h1, h2 {
-      margin-top: 30px;
-    }
-    label, input, select {
-      font-size: 16px;
-    }
+    h1, h2 {margin-top: 30px;}
+    label, input, select {font-size: 16px;}
     input[type="text"], input[type="number"] {
       height: 40px;
       font-size: 32px;
@@ -32,23 +28,17 @@
       margin-right: 10px;
       flex: 1;
     }
-    input::placeholder {
-      font-size: 16px; /* หรือขนาดที่คุณต้องการ */
-    }
+    input::placeholder {font-size: 16px;}
     @media (max-width: 600px) {
       .form-group {
         flex-direction: column;
         align-items: stretch;
       }
-
       input[type="text"], input[type="number"], button {
         width: 100%;
         margin-bottom: 8px;
       }
-
-      table, th, td {
-        font-size: 14px;
-      }
+      table, th, td {font-size: 14px;}
     }
     .form-section {
       margin-bottom: 10px;
@@ -73,12 +63,8 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .clear-btn {
-      background-color: #9e9e9e;
-    }
-    .delete-btn {
-      background-color: #e53935;
-    }
+    .clear-btn {background-color: #9e9e9e;}
+    .delete-btn {background-color: #e53935;}
     table {
       width: 100%;
       margin-top: 10px;
@@ -89,16 +75,15 @@
       border: 1px solid #ccc;
       text-align: center;
     }
-    th {
-      background-color: #e3f2fd;
-    }
+    th {background-color: #e3f2fd;}
   </style>
 </head>
+
 <body>
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.23
+  Lotto Dealer - v07.24
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -106,7 +91,7 @@
   <div class="form-group">
     <strong>เลขอั้น 3 ตัว</strong>
     <input type="text" id="blocked3Input" maxlength="3" placeholder="เลข">
-    <button onclick="addBlocked3Digit()">เพิ่มรายการ</button>
+    <button onclick="addBlocked3()">เพิ่มรายการ</button>
   </div>
 </div>
 
@@ -115,7 +100,7 @@
   <div class="form-group">
     <strong>ซื้อเอง 3 ตัว</strong>
     <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
-    <button onclick="addSelf3Digit()">เพิ่มรายการ</button>
+    <button onclick="addSelf3()">เพิ่มรายการ</button>
   </div>
 </div>
 
@@ -127,7 +112,7 @@
     <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
     <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
-    <button onclick="addBlocked2Digit()">เพิ่มรายการ</button>
+    <button onclick="addBlocked2()">เพิ่มรายการ</button>
   </div>
 </div>
 
@@ -139,7 +124,7 @@
     <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
     <label><input type="checkbox" id="self2Reverse"> กลับ</label>
     <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
-    <button onclick="addSelf2Digit()">เพิ่มรายการ</button>
+    <button onclick="addSelf2()">เพิ่มรายการ</button>
   </div>
 </div>
 
@@ -150,9 +135,9 @@
     <label>ชื่อ:</label>
     <input type="text" id="buyerName" placeholder="ชื่อ" style="max-width: 100px;">
     <label>โพยที่:</label>
-    <button onclick="adjustSlipNumber(-1)">−</button>
-    <input type="number" id="slipNumber" min="1" value="1" style="width: 60px; text-align: center;">
-    <button onclick="adjustSlipNumber(1)">+</button>
+    <button onclick="adjustOrderNumber(-1)">−</button>
+    <input type="number" id="orderNumber" min="1" value="1" style="width: 60px; text-align: center;">
+    <button onclick="adjustOrderNumber(1)">+</button>
   </div>
 </div>
 
@@ -160,15 +145,15 @@
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
-    <label><input type="checkbox" id="threeDigitTop"> เต็ง</label>
-    <label><input type="checkbox" id="threeDigitTod"> โต๊ด</label>
-    <label><input type="checkbox" id="threeDigitBottom"> ล่าง</label>
-    <label><input type="checkbox" id="threeDigitReverse"> กลับ</label>
-    <input type="number" id="threeDigitAmount" min="1" placeholder="เงิน">
+    <label><input type="checkbox" id="bet3Top"> เต็ง</label>
+    <label><input type="checkbox" id="bet3Tode"> โต๊ด</label>
+    <label><input type="checkbox" id="bet3Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="bet3Reverse"> กลับ</label>
+    <input type="number" id="bet3Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
-    <input type="text" id="threeDigitNumber" maxlength="3" placeholder="เลข">
-    <button onclick="addThreeDigit()">เพิ่มรายการ</button>
-    <button class="clear-btn" onclick="clearThreeDigit()">เคลียร์</button>
+    <input type="text" id="bet3Number" maxlength="3" placeholder="เลข">
+    <button onclick="addBet3()">เพิ่มรายการ</button>
+    <button class="clear-btn" onclick="clearBet3()">เคลียร์</button>
   </div>
 </div>
 
@@ -176,76 +161,60 @@
 <div class="form-section">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
-    <label><input type="checkbox" id="twoDigitTop"> บน</label>
-    <label><input type="checkbox" id="twoDigitBottom"> ล่าง</label>
-    <label><input type="checkbox" id="twoDigitReverse"> กลับ</label>
-    <input type="number" id="twoDigitAmount" min="1" placeholder="เงิน">
+    <label><input type="checkbox" id="bet2Top"> บน</label>
+    <label><input type="checkbox" id="bet2Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="bet2Reverse"> กลับ</label>
+    <input type="number" id="bet2Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
-    <input type="text" id="twoDigitNumber" maxlength="2" placeholder="เลข">
-    <button onclick="addTwoDigit()">เพิ่มรายการ</button>
-    <button class="clear-btn" onclick="clearTwoDigit()">เคลียร์</button>
+    <input type="text" id="bet2Number" maxlength="2" placeholder="เลข">
+    <button onclick="addBet2()">เพิ่มรายการ</button>
+    <button class="clear-btn" onclick="clearBet2()">เคลียร์</button>
   </div>
 </div>
 
-<!-- ===== ตารางรายการใหม่ทั้ง 4 แบบ ===== -->
 <h2>รายการ เลขอั้น 3 ตัว</h2>
 <table>
-  <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
+  <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
   <tbody id="blocked3Table"></tbody>
 </table>
 
 <h2>รายการ ซื้อเอง 3 ตัว</h2>
 <table>
-  <thead><tr><th>เลข</th><th>ลบ</th></tr></thead>
+  <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
   <tbody id="self3Table"></tbody>
 </table>
 
 <h2>รายการ เลขอั้น 2 ตัว</h2>
 <table>
-  <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
+  <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
   <tbody id="blocked2Table"></tbody>
 </table>
 
 <h2>รายการ ซื้อเอง 2 ตัว</h2>
 <table>
-  <thead><tr><th>เลข</th><th>บน</th><th>ล่าง</th><th>ลบ</th></tr></thead>
+  <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
   <tbody id="self2Table"></tbody>
 </table>
 
-<!-- ===== 3 ตัว table ===== -->
 <h2>รายการ แทง 3 ตัว</h2>
 <table>
-  <thead>
-    <tr>
-      <th>เลขแทง</th>
-      <th>เต็ง</th>
-      <th>โต๊ด</th>
-      <th>ล่าง</th>
-      <th>ชื่อ</th>
-      <th>โพยที่</th>
-      <th>ลบ</th>
-    </tr>
-  </thead>
-  <tbody id="threeDigitTable"></tbody>
+  <thead><tr>
+      <th>เลขแทง</th> <th>เต็ง</th> <th>โต๊ด</th> <th>ล่าง</th>
+      <th>ชื่อ</th> <th>โพยที่</th> <th>ลบ</th>
+  </tr></thead>
+  <tbody id="bet3Table"></tbody>
 </table>
 
-<!-- ===== 2 ตัว table ===== -->
 <h2>รายการ แทง 2 ตัว</h2>
 <table>
-  <thead>
-    <tr>
-      <th>เลขแทง</th>
-      <th>บน</th>
-      <th>ล่าง</th>
-      <th>ชื่อ</th>
-      <th>โพยที่</th>
-      <th>ลบ</th>
+  <thead><tr>
+      <th>เลขแทง</th> <th>บน</th> <th>ล่าง</th>
+      <th>ชื่อ</th> <th>โพยที่</th> <th>ลบ</th>
     </tr>
   </thead>
-  <tbody id="twoDigitTable"></tbody>
+  <tbody id="bet2Table"></tbody>
 </table>
 
-<!-- สร้างโพย -->
 <h2>สร้างโพย</h2>
 <div class="form-section">
   <div class="form-group">
@@ -260,85 +229,151 @@
 </div>
 
 <script>
-function clearTwoDigit() {
-  document.getElementById('twoDigitNumber').value = '';
-  document.getElementById('twoDigitAmount').value = '';
-  document.getElementById('twoDigitTop').checked = false;
-  document.getElementById('twoDigitBottom').checked = false;
-  document.getElementById('twoDigitReverse').checked = false;
+
+//function ทั้งหมด
+function addBlocked3() {}
+function addSelf3() {}
+function addBlocked2() {}
+function addSelf2() {}
+function clearBet3() {}
+function clearBet2() {}
+function addBet3() {}
+function addBet2() {}
+async function generatePDF() {}
+function getBlocked2() {}
+function getSelf2() {}
+function getBlocked3() {}
+function getSelf3() {}
+function getOrderSum() {}
+function draw2Grid() {}
+function draw3List() {}
+function drawOrderList() {}
+function adjustOrderNumber() {}
+//หมดแล้ว
+
+function addBlocked3() {
+  const num = document.getElementById('blocked3Input').value.trim();
+  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
+  const table = document.getElementById('blocked3Table');
+  const row = table.insertRow();
+  row.insertCell(0).innerText = num;
+  row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  document.getElementById('blocked3Input').value = '';
 }
 
-function clearThreeDigit() {
-  document.getElementById('threeDigitNumber').value = '';
-  document.getElementById('threeDigitAmount').value = '';
-  document.getElementById('threeDigitTop').checked = false;
-  document.getElementById('threeDigitBottom').checked = false;
-  document.getElementById('threeDigitTod').checked = false;
-  document.getElementById('threeDigitReverse').checked = false;
+function addSelf3() {
+  const num = document.getElementById('self3Input').value.trim();
+  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
+  const table = document.getElementById('self3Table');
+  const row = table.insertRow();
+  row.insertCell(0).innerText = num;
+  row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  document.getElementById('self3Input').value = '';
 }
 
-function addTwoDigit() {
-  const numberInput = document.getElementById('twoDigitNumber');
-  const amountInput = document.getElementById('twoDigitAmount');
-  const number = numberInput.value.trim();
-  const amount = parseInt(amountInput.value.trim());
-  const top = document.getElementById('twoDigitTop').checked;
-  const bottom = document.getElementById('twoDigitBottom').checked;
-  const reverse = document.getElementById('twoDigitReverse').checked;
+function addBlocked2() {
+  const numInput = document.getElementById('blocked2Input');
+  const num      = numInput.value.trim();
+  const top      = document.getElementById('blocked2Top').checked;
+  const bottom   = document.getElementById('blocked2Bottom').checked;
+  const reverse  = document.getElementById('blocked2Reverse').checked;
 
-  if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
-    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
-    return;
+  if (num.length !== 2 || (!top && !bottom)) {
+    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
   }
 
-  const table = document.getElementById('twoDigitTable');
-  const nums = new Set();
-  nums.add(number);
-  if (reverse && number[0] !== number[1]) {
-    nums.add(number[1] + number[0]);
+  const table = document.getElementById('blocked2Table');
+  const nums = [num];
+
+  if (reverse && num[0] !== num[1]) {
+    const reversed = num[1] + num[0];
+    nums.push(reversed);
   }
 
-  nums.forEach(num => {
+  nums.forEach(n => {
     const row = table.insertRow();
-    row.insertCell(0).innerText = num;
-    row.insertCell(1).innerText = top ? amount + " ฿" : "";
-    row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
-    const name = document.getElementById('buyerName').value.trim();
-    row.insertCell(3).innerText = name;
-    row.insertCell(4).innerText = document.getElementById('slipNumber').value;
-    row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    row.insertCell(0).innerText = n;
+    row.insertCell(1).innerText = top ? '✔️' : '';
+    row.insertCell(2).innerText = bottom ? '✔️' : '';
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
-  numberInput.value = '';
-  // คง checkbox เดิมไว้
+  numInput.value = '';
 }
 
-function addThreeDigit() {
-  const numberInput = document.getElementById('threeDigitNumber');
-  const amountInput = document.getElementById('threeDigitAmount');
-  const number = numberInput.value.trim();
-  const amount = parseInt(amountInput.value.trim());
-  const top = document.getElementById('threeDigitTop').checked;
-  const bottom = document.getElementById('threeDigitBottom').checked;
-  const tod = document.getElementById('threeDigitTod').checked;
-  const reverse = document.getElementById('threeDigitReverse').checked;
+function addSelf2() {
+  const numInput = document.getElementById('self2Input');
+  const num      = numInput.value.trim();
+  const top      = document.getElementById('self2Top').checked;
+  const bottom   = document.getElementById('self2Bottom').checked;
+  const reverse  = document.getElementById('self2Reverse').checked;
 
-  if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tod)) {
+  if (num.length !== 2 || (!top && !bottom)) {
+    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  }
+
+  const table = document.getElementById('self2Table');
+  const nums = [num];
+
+  if (reverse && num[0] !== num[1]) {
+    const reversed = num[1] + num[0];
+    nums.push(reversed);
+  }
+
+  nums.forEach(n => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = n;
+    row.insertCell(1).innerText = top ? '✔️' : '';
+    row.insertCell(2).innerText = bottom ? '✔️' : '';
+    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+  });
+
+  numInput.value = '';
+}
+
+function clearBet3() {
+  document.getElementById('bet3Number').value = '';
+  document.getElementById('bet3Amount').value = '';
+  document.getElementById('bet3Top').checked = false;
+  document.getElementById('bet3Bottom').checked = false;
+  document.getElementById('bet3Tode').checked = false;
+  document.getElementById('bet3Reverse').checked = false;
+}
+
+function clearBet2() {
+  document.getElementById('bet2Number').value = '';
+  document.getElementById('bet2Amount').value = '';
+  document.getElementById('bet2Top').checked = false;
+  document.getElementById('bet2Bottom').checked = false;
+  document.getElementById('bet2Reverse').checked = false;
+}
+
+function addBet3() {
+  const numberInput = document.getElementById('bet3Number');
+  const amountInput = document.getElementById('bet3Amount');
+  const number  = numberInput.value.trim();
+  const amount  = parseInt(amountInput.value.trim());
+  const top     = document.getElementById('bet3Top').checked;
+  const bottom  = document.getElementById('bet3Bottom').checked;
+  const tode    = document.getElementById('bet3Tode').checked;
+  const reverse = document.getElementById('bet3Reverse').checked;
+
+  if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tode)) {
     alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
     return;
   }
 
-  const table = document.getElementById('threeDigitTable');
+  const table = document.getElementById('bet3Table');
   const added = new Set();
 
   const row = table.insertRow();
   row.insertCell(0).innerText = number;
   row.insertCell(1).innerText = top ? amount + " ฿" : "";
-  row.insertCell(2).innerText = tod ? amount + " ฿" : "";
+  row.insertCell(2).innerText = tode ? amount + " ฿" : "";
   row.insertCell(3).innerText = bottom ? amount + " ฿" : "";
   const name = document.getElementById('buyerName').value.trim();
   row.insertCell(4).innerText = name;
-  row.insertCell(5).innerText = document.getElementById('slipNumber').value;
+  row.insertCell(5).innerText = document.getElementById('orderNumber').value;
   row.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
 
   added.add(number);
@@ -369,99 +404,48 @@ function addThreeDigit() {
       r.insertCell(2).innerText = "";
       r.insertCell(3).innerText = bottom ? amount + " ฿" : "";
       r.insertCell(4).innerText = name;
-      r.insertCell(5).innerText = document.getElementById('slipNumber').value;
+      r.insertCell(5).innerText = document.getElementById('orderNumber').value;
       r.insertCell(6).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
     });
   }
 
-  numberInput.value = '';
-  // คง checkbox เดิมไว้
+  numberInput.value = ''; // คง checkbox เดิมไว้
 }
 
+function addBet2() {
+  const numberInput = document.getElementById('bet2Number');
+  const amountInput = document.getElementById('bet2Amount');
+  const number  = numberInput.value.trim();
+  const amount  = parseInt(amountInput.value.trim());
+  const top     = document.getElementById('bet2Top').checked;
+  const bottom  = document.getElementById('bet2Bottom').checked;
+  const reverse = document.getElementById('bet2Reverse').checked;
 
-// Script ส่วนเสริมใหม่
-
-function addBlocked3Digit() {
-  const num = document.getElementById('blocked3Input').value.trim();
-  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
-  const table = document.getElementById('blocked3Table');
-  const row = table.insertRow();
-  row.insertCell(0).innerText = num;
-  row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  document.getElementById('blocked3Input').value = '';
-}
-
-function addSelf3Digit() {
-  const num = document.getElementById('self3Input').value.trim();
-  if (num.length !== 3) return alert("ใส่เลข 3 หลัก");
-  const table = document.getElementById('self3Table');
-  const row = table.insertRow();
-  row.insertCell(0).innerText = num;
-  row.insertCell(1).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  document.getElementById('self3Input').value = '';
-}
-
-function addBlocked2Digit() {
-  const numInput = document.getElementById('blocked2Input');
-  const num = numInput.value.trim();
-  const top = document.getElementById('blocked2Top').checked;
-  const bottom = document.getElementById('blocked2Bottom').checked;
-  const reverse = document.getElementById('blocked2Reverse').checked;
-
-  if (num.length !== 2 || (!top && !bottom)) {
-    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
+  if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
+    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
+    return;
   }
 
-  const table = document.getElementById('blocked2Table');
-  const nums = [num];
-
-  if (reverse && num[0] !== num[1]) {
-    const reversed = num[1] + num[0];
-    nums.push(reversed);
+  const table = document.getElementById('bet2Table');
+  const nums = new Set();
+  nums.add(number);
+  if (reverse && number[0] !== number[1]) {
+    nums.add(number[1] + number[0]);
   }
 
-  nums.forEach(n => {
+  nums.forEach(num => {
     const row = table.insertRow();
-    row.insertCell(0).innerText = n;
-    row.insertCell(1).innerText = top ? '✔️' : '';
-    row.insertCell(2).innerText = bottom ? '✔️' : '';
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
+    row.insertCell(0).innerText = num;
+    row.insertCell(1).innerText = top ? amount + " ฿" : "";
+    row.insertCell(2).innerText = bottom ? amount + " ฿" : "";
+    const name = document.getElementById('buyerName').value.trim();
+    row.insertCell(3).innerText = name;
+    row.insertCell(4).innerText = document.getElementById('orderNumber').value;
+    row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
-  numInput.value = '';
+  numberInput.value = ''; // คง checkbox เดิมไว้
 }
-
-function addSelf2Digit() {
-  const numInput = document.getElementById('self2Input');
-  const num = numInput.value.trim();
-  const top = document.getElementById('self2Top').checked;
-  const bottom = document.getElementById('self2Bottom').checked;
-  const reverse = document.getElementById('self2Reverse').checked;
-
-  if (num.length !== 2 || (!top && !bottom)) {
-    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
-  }
-
-  const table = document.getElementById('self2Table');
-  const nums = [num];
-
-  if (reverse && num[0] !== num[1]) {
-    const reversed = num[1] + num[0];
-    nums.push(reversed);
-  }
-
-  nums.forEach(n => {
-    const row = table.insertRow();
-    row.insertCell(0).innerText = n;
-    row.insertCell(1).innerText = top ? '✔️' : '';
-    row.insertCell(2).innerText = bottom ? '✔️' : '';
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  });
-
-  numInput.value = '';
-}
-
-// ของเดิม
 
 async function generatePDF() {
   const { jsPDF } = window.jspdf;
@@ -474,9 +458,9 @@ async function generatePDF() {
   const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
   const drawDate = `${day}/${month}/${year}`;
 
-  // Map สำหรับ 2 ตัว
+  //สำหรับ 2 ตัว
   const topMap = {}, bottomMap = {};
-  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
+  document.querySelectorAll('#bet2Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
     const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
     const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
@@ -486,22 +470,23 @@ async function generatePDF() {
     }
   });
 
-  const blocked2List = getBlocked2Digits();
-  const self2List = getSelf2Digits();
+  const blocked2List = getBlocked2();
+  const self2List = getSelf2();
 
   const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
   const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
   const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
-  // ====== 3 ตัว ======
+
+  //สำหรับ 3 ตัว
   const threeList = [];
-  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
+  document.querySelectorAll('#bet3Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
   const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-  const tod = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+  const tode = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
   const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
-    if (num && (top > 0 || bottom > 0 || tod > 0)) {
-      threeList.push({ num, top, bottom, tod });
+    if (num && (top > 0 || bottom > 0 || tode > 0)) {
+      threeList.push({ num, top, bottom, tode });
     }
   });
 
@@ -524,11 +509,11 @@ async function generatePDF() {
   };
 
   const threeMap = {};
-  threeList.forEach(({ num, top, bottom, tod }) => {
-    if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tod: 0 };
+  threeList.forEach(({ num, top, bottom, tode }) => {
+    if (!threeMap[num]) threeMap[num] = { top: 0, bottom: 0, tode: 0 };
     threeMap[num].top += top;
     threeMap[num].bottom += bottom;
-    threeMap[num].tod += tod;
+    threeMap[num].tode += tode;
   });
 
   const sortedThreeList = Object.entries(threeMap)
@@ -537,37 +522,36 @@ async function generatePDF() {
       return {
         num,
         ...values,
-        isBlocked: isInListWithPermutation(num, getBlocked3List()),
-        isSelf: isInListWithPermutation(num, getSelf3List())
+        isBlocked: isInListWithPermutation(num, getBlocked3()),
+        isSelf: isInListWithPermutation(num, getSelf3())
       };
     });
 
-  // ===== Generate PDF Pages =====
+  // Generate PDF Pages
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 Top Number", 15, 28);
-  draw2DigitGrid(doc, topMap, 20, highlightTop, highlightTopSelf);
+  draw2Grid(doc, topMap, 20, highlightTop, highlightTopSelf);
 
   doc.addPage();
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
   doc.text("2 Bottom Number", 15, 28);
-  draw2DigitGrid(doc, bottomMap, 20, highlightBottom, highlightBottomSelf);
+  draw2Grid(doc, bottomMap, 20, highlightBottom, highlightBottomSelf);
 
   doc.addPage();
   doc.setFontSize(14);
   doc.text(`Date: ${drawDate}`, 15, 20);
-  draw3DigitList(doc, sortedThreeList, 35, drawDate);
+  draw3List(doc, sortedThreeList, 35, drawDate);
 
   doc.addPage();
-  const slipList = getSlipSummaries();
-  drawSlipList(doc, slipList, drawDate, 1);
+  const orderList = getOrderSum();
+  drawOrderList(doc, orderList, drawDate, 1);
 
   doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
 
-
-function getBlocked2Digits() {
+function getBlocked2() {
   const list = [];
   document.querySelectorAll('#blocked2Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -580,7 +564,7 @@ function getBlocked2Digits() {
   return list;
 }
 
-function getSelf2Digits() {
+function getSelf2() {
   const list = [];
   document.querySelectorAll('#self2Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -593,7 +577,7 @@ function getSelf2Digits() {
   return list;
 }
 
-function getBlocked3List() {
+function getBlocked3() {
   const list = [];
   document.querySelectorAll('#blocked3Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -602,7 +586,7 @@ function getBlocked3List() {
   return list;
 }
 
-function getSelf3List() {
+function getSelf3() {
   const list = [];
   document.querySelectorAll('#self3Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -611,7 +595,64 @@ function getSelf3List() {
   return list;
 }
 
-function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBottomList = []) {
+function getOrderSum() {
+  const map = {};
+
+  // เก็บรายการ 3 ตัว
+  document.querySelectorAll('#bet3Table tr').forEach(row => {
+    const num = row.children[0]?.innerText.trim();
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const tode = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    const name = row.children[4]?.innerText.trim();
+    const order = row.children[5]?.innerText.trim();
+
+    const key = `${name}__${order}`;
+    if (!map[key]) map[key] = { name, order, total: 0 };
+    map[key].total += top + tode + bottom;
+  });
+
+  // เก็บรายการ 2 ตัว
+  document.querySelectorAll('#bet2Table tr').forEach(row => {
+    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const name = row.children[3]?.innerText.trim();
+    const order = row.children[4]?.innerText.trim();
+
+    const key = `${name}__${order}`;
+    if (!map[key]) map[key] = { name, order, total: 0 };
+    map[key].total += top + bottom;
+  });
+
+  const entries = Object.values(map);
+
+  // รวมยอดทั้งหมดของแต่ละชื่อ
+  const nameTotalMap = {};
+  entries.forEach(e => {
+    if (!nameTotalMap[e.name]) nameTotalMap[e.name] = 0;
+    nameTotalMap[e.name] += e.total;
+  });
+
+  // แทรก Total ต่อท้ายแต่ละชื่อ
+  const result = [];
+  const grouped = {};
+
+  entries.forEach(e => {
+    if (!grouped[e.name]) grouped[e.name] = [];
+    grouped[e.name].push(e);
+  });
+
+  Object.keys(grouped).forEach(name => {
+    grouped[name]
+      .sort((a, b) => parseInt(a.order) - parseInt(b.order))
+      .forEach(e => result.push({ ...e }));
+    result.push({ name, order: 'Total', total: nameTotalMap[name] });
+  });
+
+  return result;
+}
+
+function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomList = []) {
   const cellW = 18, cellH = 18;
   const startX = 0;
   doc.setFontSize(10);
@@ -646,9 +687,9 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   }
 }
 
-function draw3DigitList(doc, list, startY, drawDate) {
+function draw3List(doc, list, startY, drawDate) {
   const cellH = 7.5;
-  const headers = ["Num", "Top", "Tod", "Bottom", "Block", "Self"];
+  const headers = ["Num", "Top", "Tode", "Bottom", "Block", "Self"];
   const cellWs = [15, 15, 15, 15, 15, 15];
   const colGap = 10;
 
@@ -681,7 +722,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
     const values = [
       row.num,
       row.top > 0 ? `${row.top} B` : '',
-      row.tod > 0 ? `${row.tod} B` : '',
+      row.tode > 0 ? `${row.tode} B` : '',
       row.bottom > 0 ? `${row.bottom} B` : '',
       '', 
       ''
@@ -749,64 +790,7 @@ function draw3DigitList(doc, list, startY, drawDate) {
   });
 }
 
-function getSlipSummaries() {
-  const map = {};
-
-  // เก็บรายการ 3 ตัว
-  document.querySelectorAll('#threeDigitTable tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const tod = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
-    const name = row.children[4]?.innerText.trim();
-    const slip = row.children[5]?.innerText.trim();
-
-    const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, slip, total: 0 };
-    map[key].total += top + tod + bottom;
-  });
-
-  // เก็บรายการ 2 ตัว
-  document.querySelectorAll('#twoDigitTable tr').forEach(row => {
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const name = row.children[3]?.innerText.trim();
-    const slip = row.children[4]?.innerText.trim();
-
-    const key = `${name}__${slip}`;
-    if (!map[key]) map[key] = { name, slip, total: 0 };
-    map[key].total += top + bottom;
-  });
-
-  const entries = Object.values(map);
-
-  // รวมยอดทั้งหมดของแต่ละชื่อ
-  const nameTotalMap = {};
-  entries.forEach(e => {
-    if (!nameTotalMap[e.name]) nameTotalMap[e.name] = 0;
-    nameTotalMap[e.name] += e.total;
-  });
-
-  // แทรก Total ต่อท้ายแต่ละชื่อ
-  const result = [];
-  const grouped = {};
-
-  entries.forEach(e => {
-    if (!grouped[e.name]) grouped[e.name] = [];
-    grouped[e.name].push(e);
-  });
-
-  Object.keys(grouped).forEach(name => {
-    grouped[name]
-      .sort((a, b) => parseInt(a.slip) - parseInt(b.slip))
-      .forEach(e => result.push({ ...e }));
-    result.push({ name, slip: 'Total', total: nameTotalMap[name] });
-  });
-
-  return result;
-}
-
-function drawSlipList(doc, list, drawDate, startPage) {
+function drawOrderList(doc, list, drawDate, startPage) {
   const cellH = 7.5;
   const headers = ["Name", "Order", "Total"];
   const cellWs = [15, 15, 15]; // 3 คอลัมน์ในแต่ละแถบ
@@ -847,7 +831,7 @@ function drawSlipList(doc, list, drawDate, startPage) {
     let xPos = x;
     const vals = [
       row.name,
-      row.slip,
+      row.order,
       row.total > 0 ? `${row.total} B` : ''
     ];
     vals.forEach((val, i) => {
@@ -885,36 +869,21 @@ function drawSlipList(doc, list, drawDate, startPage) {
   });
 }
 
-</script>
+//กด Enter แทน ปุ่มเพิ่มรายการ
+document.getElementById("blocked3Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked3();});
+document.getElementById("self3Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf3();});
+document.getElementById("blocked2Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked2();});
+document.getElementById("self2Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf2();});
+document.getElementById("bet3Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet3();});
+document.getElementById("bet2Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet2();});
 
-<script>
-document.getElementById("blocked3Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addBlocked3Digit();
-});
-document.getElementById("self3Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addSelf3Digit();
-});
-document.getElementById("blocked2Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addBlocked2Digit();
-});
-document.getElementById("self2Input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addSelf2Digit();
-});
-document.getElementById("threeDigitNumber").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addThreeDigit();
-});
-document.getElementById("twoDigitNumber").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") addTwoDigit();
-});
-</script>
-
-<script>
-function adjustSlipNumber(delta) {
-  const input = document.getElementById('slipNumber');
+function adjustOrderNumber(delta) {
+  const input = document.getElementById('orderNumber');
   let value = parseInt(input.value) || 1;
   value = Math.max(1, value + delta);
   input.value = value;
 }
+
 </script>
 
 </body>
