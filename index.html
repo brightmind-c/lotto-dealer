@@ -98,7 +98,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.22
+  Lotto Dealer - v07.23
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -619,7 +619,7 @@ function draw2DigitGrid(doc, dataMap, startY, highlightTopList = [], highlightBo
   for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
       const num = `${r}${c}`;
-      const val = dataMap[num] !== undefined ? `${dataMap[num]}B` : '-';
+      const val = dataMap[num] !== undefined ? `${dataMap[num]} B` : '-';
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
@@ -680,9 +680,9 @@ function draw3DigitList(doc, list, startY, drawDate) {
     let xPos = x;
     const values = [
       row.num,
-      row.top > 0 ? row.top.toString() : '',
-      row.tod > 0 ? row.tod.toString() : '',
-      row.bottom > 0 ? row.bottom.toString() : '',
+      row.top > 0 ? `${row.top} B` : '',
+      row.tod > 0 ? `${row.tod} B` : '',
+      row.bottom > 0 ? `${row.bottom} B` : '',
       '', 
       ''
     ];
@@ -845,7 +845,11 @@ function drawSlipList(doc, list, drawDate, startPage) {
 
   const drawRow = (x, y, row) => {
     let xPos = x;
-    const vals = [row.name, row.slip, row.total.toString()];
+    const vals = [
+      row.name,
+      row.slip,
+      row.total > 0 ? `${row.total} B` : ''
+    ];
     vals.forEach((val, i) => {
       doc.setDrawColor(0);
       doc.setFontSize(10);
