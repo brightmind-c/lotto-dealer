@@ -89,7 +89,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.27
+  Lotto Dealer - v07.28
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -756,8 +756,12 @@ function draw3List(doc, list, startY, drawDate) {
       // วาดข้อความ
       doc.setTextColor(0);
       doc.setFontSize(10);
-      doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
 
+      if (i === 0) {
+        doc.text(val, xPos + 2, y + cellH * 0.7); // ชิดซ้าย
+      } else {
+        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); // ชิดขวา
+      }
       xPos += cellWs[i];
     });
   };
@@ -854,7 +858,11 @@ function drawOrderList(doc, list, drawDate, startPage) {
       doc.setDrawColor(0);
       doc.setFontSize(10);
       doc.rect(xPos, y, cellWs[i], cellH);
-      doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
+      if (i === 0) {
+        doc.text(val, xPos + 2, y + cellH * 0.7); // ชิดซ้าย
+      } else {
+        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); // ชิดขวา
+      }
       xPos += cellWs[i];
     });
   };
