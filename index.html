@@ -10,7 +10,7 @@
   <style>
     body {
       font-family: 'Anuphan', sans-serif;
-      background: #FFDFDF;
+      background: rgb(255, 239, 239);
       padding: 20px;
       max-width: 850px;
       margin: auto;
@@ -18,7 +18,10 @@
     input, button, textarea, select{
       font-family: 'Anuphan', sans-serif;
     }
-    h1, h2 {margin-top: 30px;}
+    h1, h2 {
+      margin-top: 30px;
+      letter-spacing: 2px
+    }
     label, input, select {font-size: 16px;}
     input[type="text"], input[type="number"] {
       height: 40px;
@@ -83,7 +86,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.25
+  Lotto Dealer - v07.26
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -230,7 +233,7 @@
 
 <script>
 
-//function ทั้งหมด
+/* function ทั้งหมด
 function addBlocked3() {}
 function addSelf3() {}
 function addBlocked2() {}
@@ -249,7 +252,7 @@ function draw2Grid() {}
 function draw3List() {}
 function drawOrderList() {}
 function adjustOrderNumber() {}
-//หมดแล้ว
+*/
 
 function addBlocked3() {
   const num = document.getElementById('blocked3Input').value.trim();
@@ -664,10 +667,6 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
-      // กรอบหลัก
-      doc.setDrawColor(0);
-      doc.rect(x, y, cellW, cellH);
-
       // ไฮไลต์แดง: ครึ่งบน (เลขอั้น)
       if (highlightTopList.includes(num)) {
         doc.setFillColor(255, 200, 200); // สีแดงอ่อน
@@ -679,6 +678,10 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
         doc.setFillColor(255, 255, 153); // สีเหลืองอ่อน
         doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
       }
+
+      // กรอบหลัก
+      doc.setDrawColor(0);
+      doc.rect(x, y, cellW, cellH);
 
       doc.setTextColor(0);
       doc.text(num, x + 2, y + 7);
@@ -709,9 +712,9 @@ function draw3List(doc, list, startY, drawDate) {
     let xPos = x;
     headers.forEach((text, i) => {
       doc.setFillColor(227, 242, 253);
-      doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      doc.rect(xPos, y, cellWs[i], cellH, 'F'); // วาดพื้นหลัง
       doc.setDrawColor(0);
-      doc.rect(xPos, y, cellWs[i], cellH);
+      doc.rect(xPos, y, cellWs[i], cellH);      // วาดกรอบทับ
       doc.setTextColor(0);
       doc.setFontSize(10);
       doc.text(text, xPos + 2, y + 5);
@@ -731,19 +734,27 @@ function draw3List(doc, list, startY, drawDate) {
     ];
 
     values.forEach((val, i) => {
+      // วาดพื้นหลังถ้าจำเป็น
       if (i === 4 && row.isBlocked) {
         doc.setFillColor(255, 192, 192);
-        doc.rect(xPos, y, cellWs[i], cellH, 'F');
+        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น Block
       } else if (i === 5 && row.isSelf) {
         doc.setFillColor(255, 246, 176);
-        doc.rect(xPos, y, cellWs[i], cellH, 'F');
+        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น Self
       } else {
-        doc.setDrawColor(0);
-        doc.rect(xPos, y, cellWs[i], cellH);
+        doc.setFillColor(255, 255, 255); // ไม่ไฮไลต์ = ขาว
+        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // วาดพื้นปกติ
       }
+
+      // วาดเส้นกรอบ “ทับ” พื้นหลัง
+      doc.setDrawColor(0);
+      doc.rect(xPos, y, cellWs[i], cellH); // เส้นตาราง
+
+      // วาดข้อความ
       doc.setTextColor(0);
       doc.setFontSize(10);
       doc.text(val, xPos + 2, y + cellH * 0.7);
+
       xPos += cellWs[i];
     });
   };
@@ -759,31 +770,29 @@ function draw3List(doc, list, startY, drawDate) {
     }
   };
 
-  // วาดหน้าแรกก่อน
+  // เริ่มวาดหน้าแรก
   drawTitle(pageCount);
   drawHeader(colX, currentY);
   currentY += cellH;
 
-  list.forEach((row, idx) => {
+  list.forEach((row) => {
     drawRow(colX, currentY, row);
     currentY += cellH;
     rowCount++;
 
     if (rowCount >= maxRowsPerCol) {
       if (colX === leftX) {
-        // ขยับไปคอลัมน์ขวา ไม่เพิ่มหน้า ไม่เปลี่ยน pageCount
         colX = rightX;
         currentY = startY;
         rowCount = 0;
         drawHeader(colX, currentY);
         currentY += cellH;
       } else {
-        // เพิ่มหน้าใหม่
         doc.addPage();
         colX = leftX;
         currentY = startY;
         rowCount = 0;
-        pageCount++;         // นับหน้าเพิ่ม **หลัง** เพิ่มหน้า
+        pageCount++;
         drawTitle(pageCount);
         drawHeader(colX, currentY);
         currentY += cellH;
