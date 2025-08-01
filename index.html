@@ -20,7 +20,9 @@
     }
     h1, h2 {
       margin-top: 30px;
-      letter-spacing: 2px
+    }
+    h1, h2, strong {
+      letter-spacing: 1px
     }
     label, input, select {font-size: 16px;}
     input[type="text"], input[type="number"] {
@@ -79,6 +81,7 @@
       text-align: center;
     }
     th {background-color: #e3f2fd;}
+    td {background-color: #ffffff;}
   </style>
 </head>
 
@@ -86,7 +89,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.26
+  Lotto Dealer - v07.27
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -685,7 +688,7 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
 
       doc.setTextColor(0);
       doc.text(num, x + 2, y + 7);
-      doc.text(val.toString(), x + 2, y + 14);
+      doc.text(val.toString(), x + cellW - 2, y + 14, { align: 'right' });
     }
   }
 }
@@ -753,7 +756,7 @@ function draw3List(doc, list, startY, drawDate) {
       // วาดข้อความ
       doc.setTextColor(0);
       doc.setFontSize(10);
-      doc.text(val, xPos + 2, y + cellH * 0.7);
+      doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
 
       xPos += cellWs[i];
     });
@@ -851,7 +854,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
       doc.setDrawColor(0);
       doc.setFontSize(10);
       doc.rect(xPos, y, cellWs[i], cellH);
-      doc.text(val, xPos + 2, y + cellH * 0.7);
+      doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
       xPos += cellWs[i];
     });
   };
