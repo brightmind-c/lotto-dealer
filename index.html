@@ -89,7 +89,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.28
+  Lotto Dealer - v07.29
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -654,6 +654,15 @@ function getOrderSum() {
       .forEach(e => result.push({ ...e }));
     result.push({ name, order: 'Total', total: nameTotalMap[name] });
   });
+
+  // รวมยอดรวมของทุกคน
+  let grandTotal = 0;
+  Object.values(nameTotalMap).forEach(t => {
+    grandTotal += t;
+  });
+
+  // เพิ่มแถว Total Total
+  result.push({ name: 'Total', order: 'Total', total: grandTotal });
 
   return result;
 }
