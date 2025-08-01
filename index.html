@@ -10,7 +10,7 @@
   <style>
     body {
       font-family: 'Anuphan', sans-serif;
-      background: #f8f9fa;
+      background: #FFDFDF;
       padding: 20px;
       max-width: 850px;
       margin: auto;
@@ -83,7 +83,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.24
+  Lotto Dealer - v07.25
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -710,9 +710,11 @@ function draw3List(doc, list, startY, drawDate) {
     headers.forEach((text, i) => {
       doc.setFillColor(227, 242, 253);
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      doc.setDrawColor(0);
+      doc.rect(xPos, y, cellWs[i], cellH);
       doc.setTextColor(0);
       doc.setFontSize(10);
-      doc.text(text, xPos + 2, y + 7);
+      doc.text(text, xPos + 2, y + 5);
       xPos += cellWs[i];
     });
   };
@@ -817,12 +819,14 @@ function drawOrderList(doc, list, drawDate, startPage) {
 
   const drawHeader = (x, y) => {
     let xPos = x;
-    doc.setFontSize(10);
     headers.forEach((text, i) => {
-      doc.setFillColor(200);
+      doc.setFillColor(227, 242, 253);
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
+      doc.setDrawColor(0);
+      doc.rect(xPos, y, cellWs[i], cellH);
       doc.setTextColor(0);
-      doc.text(text, xPos + 2, y + 6);
+      doc.setFontSize(10);
+      doc.text(text, xPos + 2, y + 5);
       xPos += cellWs[i];
     });
   };
@@ -838,7 +842,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
       doc.setDrawColor(0);
       doc.setFontSize(10);
       doc.rect(xPos, y, cellWs[i], cellH);
-      doc.text(val, xPos + 2, y + 6);
+      doc.text(val, xPos + 2, y + cellH * 0.7);
       xPos += cellWs[i];
     });
   };
