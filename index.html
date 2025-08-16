@@ -89,7 +89,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.29
+  Lotto Dealer - v07.30
 </h1>
 
 <!-- ===== เลขอั้น 3 ตัว ===== -->
@@ -820,7 +820,7 @@ function draw3List(doc, list, startY, drawDate) {
 function drawOrderList(doc, list, drawDate, startPage) {
   const cellH = 7.5;
   const headers = ["Name", "Order", "Total"];
-  const cellWs = [15, 15, 15]; // 3 คอลัมน์ในแต่ละแถบ
+  const cellWs = [15, 15, 20]; // 3 คอลัมน์ในแต่ละแถบ
   const maxRowsPerColumn = 30;
 
   // ตำแหน่งของแถบ: ซ้าย กลาง ขวา
@@ -861,7 +861,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
     const vals = [
       row.name,
       row.order,
-      row.total > 0 ? `${row.total} B` : ''
+      row.total > 0 ? `${row.total.toLocaleString()} B` : ''
     ];
     vals.forEach((val, i) => {
       doc.setDrawColor(0);
