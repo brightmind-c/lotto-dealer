@@ -45,15 +45,14 @@
       }
       table, th, td {font-size: 14px;}
     }
-    .form-section {
+    .form-section-0 {
       margin-bottom: 10px;
       padding: 10px;
       background: #ffffff;
       border: 1px solid #ccc;
       border-radius: 5px;
-      /*width: 300px;*/
     }
-    .form-section-2 {
+    .form-section-1 {
       margin-bottom: 10px;
       padding: 10px;
       background: #ffffff;
@@ -61,12 +60,24 @@
       border-radius: 5px;
       width: 300px;
     }
+    .form-section-2 {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 450px;
+    }
     .form-group {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 10px;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px; /* ระยะห่างระหว่างบล็อก */
     }
     button {
       padding: 6px 12px;
@@ -98,53 +109,55 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.32
+  Lotto Dealer - v07.33
 </h1>
 
-<!-- ===== เลขอั้น 3 ตัว ===== -->
-<div class="form-section">
-  <div class="form-group">
-    <strong>เลขอั้น 3 ตัว</strong>
-    <input type="text" id="blocked3Input" maxlength="3" placeholder="เลข">
-    <button onclick="addBlocked3()">เพิ่มรายการ</button>
+<div class="form-row">
+  <!-- ===== เลขอั้น 3 ตัว ===== -->
+  <div class="form-section-1">
+    <div class="form-group">
+      <strong>เลขอั้น 3 ตัว</strong>
+      <input type="text" id="blocked3Input" maxlength="3" placeholder="เลข">
+      <button onclick="addBlocked3()">เพิ่มรายการ</button>
+    </div>
+  </div>
+  <!-- ===== ซื้อเอง 3 ตัว ===== -->
+  <div class="form-section-2">
+    <div class="form-group">
+      <strong>ซื้อเอง 3 ตัว</strong>
+      <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
+      <button onclick="addSelf3()">เพิ่มรายการ</button>
+    </div>
   </div>
 </div>
 
-<!-- ===== ซื้อเอง 3 ตัว ===== -->
-<div class="form-section-2">
-  <div class="form-group">
-    <strong>ซื้อเอง 3 ตัว</strong>
-    <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
-    <button onclick="addSelf3()">เพิ่มรายการ</button>
+<div class="form-row">
+  <!-- ===== เลขอั้น 2 ตัว ===== -->
+  <div class="form-section-1">
+    <div class="form-group">
+      <strong>เลขอั้น 2 ตัว</strong>
+      <label><input type="checkbox" id="blocked2Top"> บน</label>
+      <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
+      <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
+      <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
+      <button onclick="addBlocked2()">เพิ่มรายการ</button>
+    </div>
   </div>
-</div>
-
-<!-- ===== เลขอั้น 2 ตัว ===== -->
-<div class="form-section-2">
-  <div class="form-group">
-    <strong>เลขอั้น 2 ตัว</strong>
-    <label><input type="checkbox" id="blocked2Top"> บน</label>
-    <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
-    <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
-    <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
-    <button onclick="addBlocked2()">เพิ่มรายการ</button>
-  </div>
-</div>
-
-<!-- ===== ซื้อเอง 2 ตัว ===== -->
-<div class="form-section">
-  <div class="form-group">
-    <strong>ซื้อเอง 2 ตัว</strong>
-    <label><input type="checkbox" id="self2Top"> บน</label>
-    <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
-    <label><input type="checkbox" id="self2Reverse"> กลับ</label>
-    <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
-    <button onclick="addSelf2()">เพิ่มรายการ</button>
+  <!-- ===== ซื้อเอง 2 ตัว ===== -->
+  <div class="form-section-2">
+    <div class="form-group">
+      <strong>ซื้อเอง 2 ตัว</strong>
+      <label><input type="checkbox" id="self2Top"> บน</label>
+      <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
+      <label><input type="checkbox" id="self2Reverse"> กลับ</label>
+      <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
+      <button onclick="addSelf2()">เพิ่มรายการ</button>
+    </div>
   </div>
 </div>
 
 <!-- ===== ลำดับโพย ===== -->
-<div class="form-section">
+<div class="form-section-0">
   <div class="form-group">
     <strong>ลำดับโพย</strong>
     <label>ชื่อ:</label>
@@ -157,7 +170,7 @@
 </div>
 
 <!-- ===== แทง 3 ตัว ===== -->
-<div class="form-section">
+<div class="form-section-0">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
     <label><input type="checkbox" id="bet3Top"> เต็ง</label>
@@ -173,7 +186,7 @@
 </div>
 
 <!-- ===== แทง 2 ตัว ===== -->
-<div class="form-section">
+<div class="form-section-0">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
     <label><input type="checkbox" id="bet2Top"> บน</label>
