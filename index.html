@@ -102,6 +102,27 @@
     }
     th {background-color: #e3f2fd;}
     td {background-color: #ffffff;}
+    .table-row {
+      display: flex;
+      gap: 15px; /* ระยะห่างระหว่างคอลัมน์ */
+      margin-bottom: 20px; /* เว้นระยะระหว่างแถว */
+    }
+    .table-section-1 {
+      width: 310px; /* same as input block */
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      background: #fff;
+      overflow-x: auto;
+    }
+    .table-section-2 {
+      width: 481px; /* same as input block */
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      background: #fff;
+      overflow-x: auto;
+    }
   </style>
 </head>
 
@@ -109,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.35
+  Lotto Dealer - v07.36
 </h1>
 
 <div class="form-row">
@@ -200,29 +221,43 @@
   </div>
 </div>
 
-<h2>รายการ เลขอั้น 3 ตัว</h2>
-<table>
-  <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
-  <tbody id="blocked3Table"></tbody>
-</table>
+<!-- ===== ตารางรายการ 3 ตัว ===== -->
+<div class="table-row">
+  <div class="table-section-1">
+    <h2>รายการ เลขอั้น 3 ตัว</h2>
+    <table>
+      <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
+      <tbody id="blocked3Table"></tbody>
+    </table>
+  </div>
 
-<h2>รายการ ซื้อเอง 3 ตัว</h2>
-<table>
-  <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
-  <tbody id="self3Table"></tbody>
-</table>
+  <div class="table-section-2">
+    <h2>รายการ ซื้อเอง 3 ตัว</h2>
+    <table>
+      <thead><tr> <th>เลข</th> <th>ลบ</th> </tr></thead>
+      <tbody id="self3Table"></tbody>
+    </table>
+  </div>
+</div>
 
-<h2>รายการ เลขอั้น 2 ตัว</h2>
-<table>
-  <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
-  <tbody id="blocked2Table"></tbody>
-</table>
+<!-- ===== ตารางรายการ 2 ตัว ===== -->
+<div class="table-row">
+  <div class="table-section-1">
+    <h2>รายการ เลขอั้น 2 ตัว</h2>
+    <table>
+      <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
+      <tbody id="blocked2Table"></tbody>
+    </table>
+  </div>
 
-<h2>รายการ ซื้อเอง 2 ตัว</h2>
-<table>
-  <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
-  <tbody id="self2Table"></tbody>
-</table>
+  <div class="table-section-2">
+    <h2>รายการ ซื้อเอง 2 ตัว</h2>
+    <table>
+      <thead><tr> <th>เลข</th> <th>บน</th> <th>ล่าง</th> <th>ลบ</th> </tr></thead>
+      <tbody id="self2Table"></tbody>
+    </table>
+  </div>
+</div>
 
 <h2>รายการ แทง 3 ตัว</h2>
 <table>
