@@ -58,7 +58,7 @@
       background: #ffffff;
       border: 1px solid #ccc;
       border-radius: 5px;
-      width: 300px;
+      width: 310px;
     }
     .form-section-2 {
       margin-bottom: 10px;
@@ -66,7 +66,7 @@
       background: #ffffff;
       border: 1px solid #ccc;
       border-radius: 5px;
-      width: 450px;
+      width: 466px;
     }
     .form-group {
       display: flex;
@@ -109,7 +109,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v07.33
+  Lotto Dealer - v07.34
 </h1>
 
 <div class="form-row">
@@ -121,19 +121,8 @@
       <button onclick="addBlocked3()">เพิ่มรายการ</button>
     </div>
   </div>
-  <!-- ===== ซื้อเอง 3 ตัว ===== -->
-  <div class="form-section-2">
-    <div class="form-group">
-      <strong>ซื้อเอง 3 ตัว</strong>
-      <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
-      <button onclick="addSelf3()">เพิ่มรายการ</button>
-    </div>
-  </div>
-</div>
-
-<div class="form-row">
   <!-- ===== เลขอั้น 2 ตัว ===== -->
-  <div class="form-section-1">
+  <div class="form-section-2">
     <div class="form-group">
       <strong>เลขอั้น 2 ตัว</strong>
       <label><input type="checkbox" id="blocked2Top"> บน</label>
@@ -141,6 +130,17 @@
       <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
       <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
       <button onclick="addBlocked2()">เพิ่มรายการ</button>
+    </div>
+  </div>
+</div>
+
+<div class="form-row">
+    <!-- ===== ซื้อเอง 3 ตัว ===== -->
+  <div class="form-section-1">
+    <div class="form-group">
+      <strong>ซื้อเอง 3 ตัว</strong>
+      <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
+      <button onclick="addSelf3()">เพิ่มรายการ</button>
     </div>
   </div>
   <!-- ===== ซื้อเอง 2 ตัว ===== -->
