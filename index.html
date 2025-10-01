@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.01
+  Lotto Dealer - v08.02
 </h1>
 
 <div class="form-row">
@@ -773,6 +773,7 @@ function draw3List(doc, list, startY, drawDate) {
   const leftX = 10; //edited
   const middleX = leftX + colWidth + colGap; //created
   const rightX = middleX + colWidth + colGap; //edited
+  const colPositions = [leftX, middleX, rightX];
   const maxRowsPerCol = 30;
 
   let rowCount = 0;
