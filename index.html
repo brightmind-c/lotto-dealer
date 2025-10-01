@@ -762,20 +762,21 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
 
 function draw3List(doc, list, startY, drawDate) {
   const cellH = 7.5;
-  const headers = ["Num", "Top", "Tode", "Bottom", "Block", "Self"];
-  const cellWs = [15, 15, 15, 15, 15, 15];
-  const colGap = 10;
+  const headers = ["Num", "Top", "Tode", "Bottom"]; //edited
+  const cellWs = [15, 15, 15, 15]; //edited
+  const colGap = 5; //edited
 
   doc.setFontSize(14);
   let pageCount = 1;
 
   const colWidth = cellWs.reduce((a, b) => a + b, 0);
-  const leftX = 15;
-  const rightX = leftX + colWidth + colGap;
+  const leftX = 10; //edited
+  const middleX = leftX + colWidth + colGap; //created
+  const rightX = middleX + colWidth + colGap; //edited
   const maxRowsPerCol = 30;
 
   let rowCount = 0;
-  let colX = leftX;
+  let colIndex = 0; // 0=left,1=middle,2=right //edited
   let currentY = startY;
 
   const drawHeader = (x, y) => {
@@ -799,24 +800,25 @@ function draw3List(doc, list, startY, drawDate) {
       row.top > 0 ? `${row.top} B` : '',
       row.tode > 0 ? `${row.tode} B` : '',
       row.bottom > 0 ? `${row.bottom} B` : '',
-      '', 
-      ''
     ];
 
     values.forEach((val, i) => {
       // วาดพื้นหลังถ้าจำเป็น
-      if (i === 4 && row.isBlocked) {
-        doc.setFillColor(255, 192, 192);
-        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น Block
-      } else if (i === 5 && row.isSelf) {
-        doc.setFillColor(255, 246, 176);
-        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น Self
+      if (i === 0) {
+        if (row.isBlocked && row.isSelf) {
+          doc.setFillColor(165, 42, 42); // น้ำตาล
+        } else if (row.isBlocked) {
+          doc.setFillColor(255, 0, 0);   // แดง
+        } else if (row.isSelf) {
+          doc.setFillColor(255, 255, 0); // เหลือง
+        } else {
+          doc.setFillColor(255, 255, 255); // ขาว
+        }
       } else {
         doc.setFillColor(255, 255, 255); // ไม่ไฮไลต์ = ขาว
-        doc.rect(xPos, y, cellWs[i], cellH, 'F'); // วาดพื้นปกติ
       }
 
-      // วาดเส้นกรอบ “ทับ” พื้นหลัง
+      doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น
       doc.setDrawColor(0);
       doc.rect(xPos, y, cellWs[i], cellH); // เส้นตาราง
 
@@ -846,31 +848,27 @@ function draw3List(doc, list, startY, drawDate) {
 
   // เริ่มวาดหน้าแรก
   drawTitle(pageCount);
-  drawHeader(colX, currentY);
+  drawHeader(colPositions[colIndex], currentY);
   currentY += cellH;
 
   list.forEach((row) => {
-    drawRow(colX, currentY, row);
+    drawRow(colPositions[colIndex], currentY, row);
     currentY += cellH;
     rowCount++;
 
     if (rowCount >= maxRowsPerCol) {
-      if (colX === leftX) {
-        colX = rightX;
-        currentY = startY;
-        rowCount = 0;
-        drawHeader(colX, currentY);
-        currentY += cellH;
-      } else {
+      rowCount = 0;
+      colIndex++;
+      if (colIndex >= colPositions.length) {
+        // ครบ 3 กล่อง → หน้าใหม่
         doc.addPage();
-        colX = leftX;
-        currentY = startY;
-        rowCount = 0;
         pageCount++;
         drawTitle(pageCount);
-        drawHeader(colX, currentY);
-        currentY += cellH;
+        colIndex = 0;
       }
+      currentY = startY;
+      drawHeader(colPositions[colIndex], currentY);
+      currentY += cellH;
     }
   });
 }
