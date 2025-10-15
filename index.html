@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.04
+  Lotto Dealer - v08.05
 </h1>
 
 <div class="form-row">
@@ -288,7 +288,7 @@
     <span>/</span>
     <input type="text" id="drawYear" maxlength="2" placeholder="ปป">
     <button onclick="generatePDF()">สร้างโพย Pdf</button>
-    <button id="downloadExcel">สร้าง Excel</button>
+    <!-- <button id="downloadExcel">สร้าง Excel</button> -->
   </div>
 </div>
 
@@ -976,6 +976,7 @@ function adjustOrderNumber(delta) {
 
 </script>
 
+<!--
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
   // สมมติข้อมูล Array/JSON ที่คุณใช้ทำ PDF
@@ -997,6 +998,7 @@ function adjustOrderNumber(delta) {
     XLSX.writeFile(wb, "data.xlsx");
   });
 </script>
+-->
 
 </body>
 </html>
