@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.05
+  Lotto Dealer - v08.06
 </h1>
 
 <div class="form-row">
@@ -688,6 +688,7 @@ function getOrderSum() {
     map[key].total += top + bottom;
   });
 
+  // แปลงเป็น array
   const entries = Object.values(map);
 
   // รวมยอดทั้งหมดของแต่ละชื่อ
@@ -697,27 +698,32 @@ function getOrderSum() {
     nameTotalMap[e.name] += e.total;
   });
 
-  // แทรก Total ต่อท้ายแต่ละชื่อ
-  const result = [];
+  // จัดกลุ่มตามชื่อ
   const grouped = {};
-
   entries.forEach(e => {
     if (!grouped[e.name]) grouped[e.name] = [];
     grouped[e.name].push(e);
   });
 
-  Object.keys(grouped).forEach(name => {
+  // ✨ เรียงชื่อคนตามตัวอักษร (เว้น Total)
+  const sortedNames = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
+
+  const result = [];
+
+  // เติมข้อมูลตามชื่อที่เรียงแล้ว
+  sortedNames.forEach(name => {
+    // เรียง order ของคนนั้นตามตัวเลข
     grouped[name]
       .sort((a, b) => parseInt(a.order) - parseInt(b.order))
       .forEach(e => result.push({ ...e }));
-    result.push({ name, order: 'Total', total: nameTotalMap[name] });
+
+    // เติม Total ของชื่อ
+    result.push({ name, order: "Total", total: nameTotalMap[name] });
   });
 
   // รวมยอดรวมของทุกคน
   let grandTotal = 0;
-  Object.values(nameTotalMap).forEach(t => {
-    grandTotal += t;
-  });
+  Object.values(nameTotalMap).forEach(t => grandTotal += t;);
 
   // เพิ่มแถว Total Total
   result.push({ name: 'Total', order: 'Total', total: grandTotal });
@@ -961,11 +967,11 @@ function drawOrderList(doc, list, drawDate, startPage) {
 
 //กด Enter แทน ปุ่มเพิ่มรายการ
 document.getElementById("blocked3Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked3();});
-document.getElementById("self3Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf3();});
+document.getElementById("self3Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf3()   ;});
 document.getElementById("blocked2Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked2();});
-document.getElementById("self2Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf2();});
-document.getElementById("bet3Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet3();});
-document.getElementById("bet2Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet2();});
+document.getElementById("self2Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf2()   ;});
+document.getElementById("bet3Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet3()    ;});
+document.getElementById("bet2Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet2()    ;});
 
 function adjustOrderNumber(delta) {
   const input = document.getElementById('orderNumber');
