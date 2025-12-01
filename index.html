@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.07
+  Lotto Dealer - v08.08
 </h1>
 
 <div class="form-row">
@@ -612,7 +612,7 @@ async function generatePDF() {
   const orderList = getOrderSum();
   drawOrderList(doc, orderList, drawDate, 1);
 
-  doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
+  doc.save(`Lotto-Dealer_${year}-${month}-${day}_main.pdf`);
 }
 
 function getBlocked2() {
