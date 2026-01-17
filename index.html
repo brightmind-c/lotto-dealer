@@ -612,7 +612,7 @@ async function generatePDF() {
   const orderList = getOrderSum();
   drawOrderList(doc, orderList, drawDate, 1);
 
-  doc.save(`Lotto-Dealer_${year}-${month}-${day}_main.pdf`);
+  doc.save(`Lotto-Dealer_${year}-${month}-${day}.pdf`);
 }
 
 function getBlocked2() {
