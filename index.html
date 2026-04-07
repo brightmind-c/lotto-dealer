@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.10
+  Lotto Dealer - v08.11
 </h1>
 
 <div class="form-row">
@@ -736,48 +736,70 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
   const startX = 0;
   doc.setFontSize(10);
 
-  // วาดตาราง 10x10 ปกติ (00-99)
+  let countN = 0;      // ตัวแปรนับจำนวนหมายเลขที่มีการแทง (ยอด > 0)
+  let grandTotal = 0;  // ตัวแปรสะสมยอดเงินรวมทั้งหมด
+
+  // 1. วาดตาราง 10x10 ปกติ (00-99)
   for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
-      drawCell(r, c);
+      const num = `${r}${c}`;
+      const amount = dataMap[num] || 0; // ดึงยอดเงิน (ถ้าไม่มีให้เป็น 0)
+      const valText = amount > 0 ? `${amount} B` : '-';
+      
+      // สะสมค่าเพื่อนำไปใส่ในกล่องสรุป
+      if (amount > 0) {
+        countN++;
+        grandTotal += amount;
+      }
+
+      const x = startX + (c + 1) * cellW;
+      const y = startY + (r + 1) * cellH;
+
+      // ไฮไลต์แดง: เลขอั้น
+      if (highlightTopList.includes(num)) {
+        doc.setFillColor(255, 200, 200);
+        doc.rect(x, y, cellW, cellH / 2, 'F');
+      }
+
+      // ไฮไลต์เหลือง: ซื้อเอง
+      if (highlightBottomList.includes(num)) {
+        doc.setFillColor(255, 255, 153);
+        doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
+      }
+
+      // วาดกรอบและตัวเลข 00-99
+      doc.setDrawColor(0);
+      doc.rect(x, y, cellW, cellH);
+      doc.setTextColor(0);
+      doc.text(num, x + 2, y + 7);
+      doc.text(valText, x + cellW - 2, y + 14, { align: 'right' });
     }
   }
 
-  // เพิ่มแถวใหม่ 1 แถว เฉพาะ 2 คอลัมน์สุดท้าย (คอลัมน์ที่ 8 และ 9 ในดัชนี 0-9)
-  // ดังนั้นตำแหน่งใหม่คือ r = 10, c = 8 และ c = 9
-  for (let c = 8; c <= 9; c++) {
-    // ในที่นี้ถ้าไม่มีเลขกำกับ (num) สามารถใส่เป็นค่าว่างหรือข้อความที่ต้องการได้
-    drawCell(10, c, "พิเศษ"); 
-  }
+  // 2. วาด 2 กล่องพิเศษที่แถวล่างสุด (ใต้คอลัมน์ 9 และ 10)
+  const rowBottomY = startY + (11 * cellH); // แถวที่ 11 (r=10)
 
-  // สร้างฟังก์ชันย่อยภายในเพื่อวาดช่อง จะได้ไม่ต้องเขียนโค้ดซ้ำ
-  function drawCell(r, c, label = null) {
-    const num = label !== null ? label : `${r}${c}`;
-    const val = dataMap[num] !== undefined ? `${dataMap[num]} B` : '-';
-    const x = startX + (c + 1) * cellW;
-    const y = startY + (r + 1) * cellH;
+  // --- กล่องซ้าย (N: จำนวนตัวเลข) ---
+  const xN = startX + 9 * cellW; // ใต้คอลัมน์ที่ 9
+  doc.setDrawColor(0);
+  doc.rect(xN, rowBottomY, cellW, cellH); // กรอบใหญ่
+  doc.line(xN, rowBottomY + cellH / 2, xN + cellW, rowBottomY + cellH / 2); // เส้นแบ่งกลางบน-ล่าง
+  
+  doc.setFont(undefined, 'bold');
+  doc.text("N", xN + cellW / 2, rowBottomY + 6, { align: 'center' }); // ช่องบน
+  doc.setFont(undefined, 'normal');
+  doc.text(countN.toString(), xN + cellW / 2, rowBottomY + 15, { align: 'center' }); // ช่องล่าง
 
-    // ไฮไลต์แดง: ครึ่งบน (เลขอั้น)
-    if (highlightTopList.includes(num)) {
-      doc.setFillColor(255, 200, 200); 
-      doc.rect(x, y, cellW, cellH / 2, 'F');
-    }
-
-    // ไฮไลต์เหลือง: ครึ่งล่าง (ซื้อเอง)
-    if (highlightBottomList.includes(num)) {
-      doc.setFillColor(255, 255, 153); 
-      doc.rect(x, y + cellH / 2, cellW, cellH / 2, 'F');
-    }
-
-    // วาดกรอบและข้อความ
-    doc.setDrawColor(0);
-    doc.rect(x, y, cellW, cellH);
-    doc.setTextColor(0);
-    
-    // ถ้าเป็นช่องพิเศษ อาจจะปรับการแสดงผลตัวเลข
-    doc.text(num, x + 2, y + 7);
-    doc.text(val.toString(), x + cellW - 2, y + 14, { align: 'right' });
-  }
+  // --- กล่องขวา (Total: ยอดเงินรวม) ---
+  const xTotal = startX + 10 * cellW; // ใต้คอลัมน์ที่ 10
+  doc.setDrawColor(0);
+  doc.rect(xTotal, rowBottomY, cellW, cellH); // กรอบใหญ่
+  doc.line(xTotal, rowBottomY + cellH / 2, xTotal + cellW, rowBottomY + cellH / 2); // เส้นแบ่งกลางบน-ล่าง
+  
+  doc.setFont(undefined, 'bold');
+  doc.text("Total", xTotal + cellW / 2, rowBottomY + 6, { align: 'center' }); // ช่องบน
+  doc.setFont(undefined, 'normal');
+  doc.text(grandTotal.toLocaleString(), xTotal + cellW / 2, rowBottomY + 15, { align: 'center' }); // ช่องล่าง
 }
 
 function draw3List(doc, list, startY, drawDate) {
