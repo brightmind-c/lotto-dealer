@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.12
+  Lotto Dealer - v08.13
 </h1>
 
 <div class="form-row">
@@ -736,8 +736,8 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
   const startX = 0;
   doc.setFontSize(10);
 
-  let countN = 0;      // ตัวแปรนับจำนวนหมายเลขที่มีการแทง (ยอด > 0)
-  let grandTotal = 0;  // ตัวแปรสะสมยอดเงินรวมทั้งหมด
+  let countN = 0;      
+  let grandTotal = 0;  
 
   // 1. วาดตาราง 10x10 ปกติ (00-99)
   for (let r = 0; r < 10; r++) {
@@ -767,41 +767,35 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
       doc.setDrawColor(0);
       doc.rect(x, y, cellW, cellH);
       doc.setTextColor(0);
-      doc.text(num, x + 2, y + 7); // ชิดซ้ายบน
-      doc.text(valText, x + cellW - 2, y + 14, { align: 'right' }); // ชิดขวาล่าง
+      doc.text(num, x + 2, y + 7); 
+      doc.text(valText, x + cellW - 2, y + 14, { align: 'right' }); 
     }
   }
 
-  // 2. วาด 2 กล่องพิเศษที่แถวล่างสุด (ใต้คอลัมน์ 9 และ 10)
+  // 2. วาด 2 กล่องพิเศษที่แถวล่างสุด
   const rowBottomY = startY + (11 * cellH); 
 
   // --- กล่องซ้าย (N: จำนวนตัวเลข) ---
   const xN = startX + 9 * cellW; 
   doc.setDrawColor(0);
-  doc.rect(xN, rowBottomY, cellW, cellH); 
-  doc.line(xN, rowBottomY + cellH / 2, xN + cellW, rowBottomY + cellH / 2); // เส้นแบ่งกลาง
+  doc.rect(xN, rowBottomY, cellW, cellH); // วาดเฉพาะกรอบนอก
   
   doc.setFont(undefined, 'bold');
-  // ช่องบน: ตัวอักษร "N" ชิดซ้าย (บวก x ไป 2 เพื่อไม่ให้ติดขอบ)
-  doc.text("N", xN + 2, rowBottomY + 6); 
+  doc.text("N", xN + 2, rowBottomY + 7); // ชิดซ้ายบน
   
   doc.setFont(undefined, 'normal');
-  // ช่องล่าง: ตัวเลข countN ชิดขวา (ลบ x จากขอบขวาไป 2)
-  doc.text(countN.toString(), xN + cellW - 2, rowBottomY + 15, { align: 'right' });
+  doc.text(countN.toString(), xN + cellW - 2, rowBottomY + 14, { align: 'right' }); // ชิดขวาล่าง
 
   // --- กล่องขวา (Total: ยอดเงินรวม) ---
   const xTotal = startX + 10 * cellW; 
   doc.setDrawColor(0);
-  doc.rect(xTotal, rowBottomY, cellW, cellH); 
-  doc.line(xTotal, rowBottomY + cellH / 2, xTotal + cellW, rowBottomY + cellH / 2); // เส้นแบ่งกลาง
+  doc.rect(xTotal, rowBottomY, cellW, cellH); // วาดเฉพาะกรอบนอก
   
   doc.setFont(undefined, 'bold');
-  // ช่องบน: ตัวอักษร "Total" ชิดซ้าย
-  doc.text("Total", xTotal + 2, rowBottomY + 6); 
+  doc.text("Total", xTotal + 2, rowBottomY + 7); // ชิดซ้ายบน
   
   doc.setFont(undefined, 'normal');
-  // ช่องล่าง: ยอดเงินรวม ชิดขวา
-  doc.text(grandTotal.toLocaleString(), xTotal + cellW - 2, rowBottomY + 15, { align: 'right' });
+  doc.text(grandTotal.toLocaleString(), xTotal + cellW - 2, rowBottomY + 14, { align: 'right' }); // ชิดขวาล่าง
 }
 
 function draw3List(doc, list, startY, drawDate) {
