@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.15
+  Lotto Dealer - v08.16
 </h1>
 
 <div class="form-row">
@@ -831,7 +831,7 @@ function draw3List(doc, list, startY, drawDate) {
   // สร้างข้อมูลแถวพิเศษเพื่อนำไปวนลูปวาดต่อจากรายการหลัก
   const summaryRows = [
     { num: "N", topVal: nTop.toString(), todeVal: nTode.toString(), bottomVal: nBottom.toString(), isSummary: true },
-    { num: "Total", topVal: totalTop.toLocaleString(), todeVal: totalTode.toLocaleString(), bottomVal: totalBottom.toLocaleString(), isSummary: true }
+    { num: "Total", topVal: `${totalTop} B`, todeVal: `${totalTode} B`, bottomVal: `${totalBottom} B`, isSummary: true }
   ];
   // ---------------------------------------
 
