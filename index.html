@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.13
+  Lotto Dealer - v08.14
 </h1>
 
 <div class="form-row">
@@ -795,7 +795,7 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
   doc.text("Total", xTotal + 2, rowBottomY + 7); // ชิดซ้ายบน
   
   doc.setFont(undefined, 'normal');
-  doc.text(grandTotal.toLocaleString(), xTotal + cellW - 2, rowBottomY + 14, { align: 'right' }); // ชิดขวาล่าง
+  doc.text(`${grandTotal.toLocaleString()} B`, xTotal + cellW - 2, rowBottomY + 14, { align: 'right' }); // ชิดขวาล่าง
 }
 
 function draw3List(doc, list, startY, drawDate) {
