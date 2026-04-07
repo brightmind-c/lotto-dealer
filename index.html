@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.14
+  Lotto Dealer - v08.15
 </h1>
 
 <div class="form-row">
@@ -800,31 +800,48 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
 
 function draw3List(doc, list, startY, drawDate) {
   const cellH = 7.5;
-  const headers = ["Num", "Top", "Tode", "Bottom"]; //edited
-  const cellWs = [15, 15, 15, 15]; //edited
-  const colGap = 5; //edited
+  const headers = ["Num", "Top", "Tode", "Bottom"];
+  const cellWs = [15, 15, 15, 15];
+  const colGap = 5;
 
   doc.setFontSize(14);
   let pageCount = 1;
 
   const colWidth = cellWs.reduce((a, b) => a + b, 0);
-  const leftX = 10; //edited
-  const middleX = leftX + colWidth + colGap; //created
-  const rightX = middleX + colWidth + colGap; //edited
+  const leftX = 10;
+  const middleX = leftX + colWidth + colGap;
+  const rightX = middleX + colWidth + colGap;
   const colPositions = [leftX, middleX, rightX];
   const maxRowsPerCol = 30;
 
   let rowCount = 0;
-  let colIndex = 0; // 0=left,1=middle,2=right //edited
+  let colIndex = 0;
   let currentY = startY;
+
+  // --- ส่วนที่เพิ่ม: คำนวณค่า N และ Total ---
+  let nTop = 0, nTode = 0, nBottom = 0;
+  let totalTop = 0, totalTode = 0, totalBottom = 0;
+
+  list.forEach(row => {
+    if (row.top > 0) { nTop++; totalTop += row.top; }
+    if (row.tode > 0) { nTode++; totalTode += row.tode; }
+    if (row.bottom > 0) { nBottom++; totalBottom += row.bottom; }
+  });
+
+  // สร้างข้อมูลแถวพิเศษเพื่อนำไปวนลูปวาดต่อจากรายการหลัก
+  const summaryRows = [
+    { num: "N", topVal: nTop.toString(), todeVal: nTode.toString(), bottomVal: nBottom.toString(), isSummary: true },
+    { num: "Total", topVal: totalTop.toLocaleString(), todeVal: totalTode.toLocaleString(), bottomVal: totalBottom.toLocaleString(), isSummary: true }
+  ];
+  // ---------------------------------------
 
   const drawHeader = (x, y) => {
     let xPos = x;
     headers.forEach((text, i) => {
       doc.setFillColor(227, 242, 253);
-      doc.rect(xPos, y, cellWs[i], cellH, 'F'); // วาดพื้นหลัง
+      doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setDrawColor(0);
-      doc.rect(xPos, y, cellWs[i], cellH);      // วาดกรอบทับ
+      doc.rect(xPos, y, cellWs[i], cellH);
       doc.setTextColor(0);
       doc.setFontSize(10);
       doc.text(text, xPos + 2, y + 5);
@@ -834,42 +851,42 @@ function draw3List(doc, list, startY, drawDate) {
 
   const drawRow = (x, y, row) => {
     let xPos = x;
-    const values = [
-      row.num,
-      row.top > 0 ? `${row.top} B` : '',
-      row.tode > 0 ? `${row.tode} B` : '',
-      row.bottom > 0 ? `${row.bottom} B` : '',
-    ];
+    const values = row.isSummary 
+      ? [row.num, row.topVal, row.todeVal, row.bottomVal] // ถ้าเป็นแถวสรุป ใช้ค่าที่คำนวณไว้
+      : [
+          row.num,
+          row.top > 0 ? `${row.top} B` : '',
+          row.tode > 0 ? `${row.tode} B` : '',
+          row.bottom > 0 ? `${row.bottom} B` : '',
+        ];
 
     values.forEach((val, i) => {
-      // วาดพื้นหลังถ้าจำเป็น
-      if (i === 0) {
-        if (row.isBlocked && row.isSelf) {
-          doc.setFillColor(245, 222, 179); // น้ำตาล
-        } else if (row.isBlocked) {
-          doc.setFillColor(255, 192, 192);   // แดง
-        } else if (row.isSelf) {
-          doc.setFillColor(255, 246, 176); // เหลือง
-        } else {
-          doc.setFillColor(255, 255, 255); // ขาว
-        }
+      // จัดสีพื้นหลัง
+      if (row.isSummary) {
+        doc.setFillColor(240, 240, 240); // สีเทาอ่อนสำหรับแถวสรุป
+      } else if (i === 0) {
+        if (row.isBlocked && row.isSelf) doc.setFillColor(245, 222, 179);
+        else if (row.isBlocked) doc.setFillColor(255, 192, 192);
+        else if (row.isSelf) doc.setFillColor(255, 246, 176);
+        else doc.setFillColor(255, 255, 255);
       } else {
-        doc.setFillColor(255, 255, 255); // ไม่ไฮไลต์ = ขาว
+        doc.setFillColor(255, 255, 255);
       }
 
-      doc.rect(xPos, y, cellWs[i], cellH, 'F'); // พื้น
+      doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setDrawColor(0);
-      doc.rect(xPos, y, cellWs[i], cellH); // เส้นตาราง
+      doc.rect(xPos, y, cellWs[i], cellH);
 
-      // วาดข้อความ
       doc.setTextColor(0);
       doc.setFontSize(10);
+      if (row.isSummary) doc.setFont(undefined, 'bold'); // ตัวหนาสำหรับแถวสรุป
 
       if (i === 0) {
-        doc.text(val, xPos + 2, y + cellH * 0.7); // ชิดซ้าย
+        doc.text(val, xPos + 2, y + cellH * 0.7);
       } else {
-        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); // ชิดขวา
+        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
       }
+      doc.setFont(undefined, 'normal'); // คืนค่าฟอนต์ปกติ
       xPos += cellWs[i];
     });
   };
@@ -878,19 +895,15 @@ function draw3List(doc, list, startY, drawDate) {
     doc.setFontSize(14);
     doc.setTextColor(0);
     doc.text(`Date: ${drawDate}`, 15, 20);
-    if (page === 1) {
-      doc.text("3 Number List", 15, 28);
-    } else {
-      doc.text(`3 Number List (page ${page})`, 15, 28);
-    }
+    doc.text(page === 1 ? "3 Number List" : `3 Number List (page ${page})`, 15, 28);
   };
 
-  // เริ่มวาดหน้าแรก
   drawTitle(pageCount);
   drawHeader(colPositions[colIndex], currentY);
   currentY += cellH;
 
-  list.forEach((row) => {
+  // วาดรายการตัวเลขปกติรวมกับแถวสรุปพิเศษ
+  [...list, ...summaryRows].forEach((row) => {
     drawRow(colPositions[colIndex], currentY, row);
     currentY += cellH;
     rowCount++;
@@ -899,7 +912,6 @@ function draw3List(doc, list, startY, drawDate) {
       rowCount = 0;
       colIndex++;
       if (colIndex >= colPositions.length) {
-        // ครบ 3 กล่อง → หน้าใหม่
         doc.addPage();
         pageCount++;
         drawTitle(pageCount);
