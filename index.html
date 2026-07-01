@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.16
+  Lotto Dealer - v08.17
 </h1>
 
 <div class="form-row">
@@ -932,10 +932,9 @@ function draw3List(doc, list, startY, drawDate) {
 function drawOrderList(doc, list, drawDate, startPage) {
   const cellH = 7.5;
   const headers = ["Name", "Order", "Total"];
-  const cellWs = [15, 15, 20]; // 3 คอลัมน์ในแต่ละแถบ
-  const maxRowsPerColumn = 30;
+  const cellWs = [15, 15, 20]; 
+  const maxRowsPerColumn = 30; // จำนวนแถวสูงสุดรวม Header ใน 1 คอลัมน์
 
-  // ตำแหน่งของแถบ: ซ้าย กลาง ขวา
   const columns = [
     { x: 15, y: 35 },
     { x: 80, y: 35 },
@@ -943,7 +942,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
   ];
 
   let colIndex = 0;
-  let rowInCol = 0;
+  let rowInCol = 0; // นับรวม Header เป็นแถวแรก (แถวที่ 0)
   let page = startPage;
 
   const drawTitle = (pageNum) => {
@@ -980,22 +979,24 @@ function drawOrderList(doc, list, drawDate, startPage) {
       doc.setFontSize(10);
       doc.rect(xPos, y, cellWs[i], cellH);
       if (i === 0) {
-        doc.text(val, xPos + 2, y + cellH * 0.7); // ชิดซ้าย
+        doc.text(val, xPos + 2, y + cellH * 0.7); 
       } else {
-        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); // ชิดขวา
+        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); 
       }
       xPos += cellWs[i];
     });
   };
 
-  // วาดหน้าแรก
+  // วาดหน้าแรกและ Header แรกสุด
   drawTitle(page);
   drawHeader(columns[colIndex].x, columns[colIndex].y);
+  rowInCol = 1; // 💡 สำคัญ: ขยับไปแถวที่ 1 ทันทีหลังจากวาด Header เพื่อให้ข้อมูลแถวแรกไม่ทับ
 
   list.forEach((row, idx) => {
+    // 💡 ถ้า rowInCol เท่ากับหรือเกินจำนวนแถวสูงสุด ให้ตัดขึ้นคอลัมน์ใหม่ / หน้าใหม่
     if (rowInCol >= maxRowsPerColumn) {
       colIndex++;
-      rowInCol = 0;
+      rowInCol = 0; // รีเซ็ตเพื่อใช้วาด Header ของคอลัมน์ใหม่
 
       if (colIndex > 2) {
         doc.addPage();
@@ -1004,13 +1005,17 @@ function drawOrderList(doc, list, drawDate, startPage) {
         drawTitle(page);
       }
 
+      // วาด Header ในคอลัมน์ใหม่
       drawHeader(columns[colIndex].x, columns[colIndex].y);
+      rowInCol = 1; // 💡 จองพื้นที่ Header (แถว 0) เสร็จแล้ว ขยับตัวนับไปแถวที่ 1 สำหรับข้อมูล
     }
 
+    // คำนวณพิกัด Y ตามจำนวนแถวปัจจุบัน (rowInCol ตัวนี้จะเริ่มที่ 1, 2, 3...)
     const x = columns[colIndex].x;
-    const y = columns[colIndex].y + cellH * (rowInCol + 1);
+    const y = columns[colIndex].y + (cellH * rowInCol); 
+    
     drawRow(x, y, row);
-    rowInCol++;
+    rowInCol++; // ขยับแถวถัดไป
   });
 }
 
