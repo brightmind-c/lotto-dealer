@@ -442,15 +442,17 @@ function addBet3() {
 
   added.add(number);
 
-  if (reverse && (top || bottom)) { //จุดที่แก้เรื่องกลับทั้งเต็งและล่าง
+  if (reverse && (top || bottom)) {
     const chars = number.split('');
     const perms = new Set();
 
+    // ฟังก์ชัน Recursive สำหรับหาเลขสลับ (Permutation) แบบไม่ซ้ำกัน
     const permute = (arr, m = []) => {
       if (arr.length === 0) {
         const result = m.join('');
         if (!added.has(result)) perms.add(result);
       } else {
+        // ลูปหาคู่สลับ
         for (let i = 0; i < arr.length; i++) {
           let curr = arr.slice();
           let next = curr.splice(i, 1);
@@ -662,6 +664,7 @@ function getSelf3() {
 function getOrderSum() {
   const map = {};
 
+  // Phase 1: ดึงและรวมยอดเงินจากตารางแทง 3 ตัว และ 2 ตัว แยกตามรายชื่อและเลขออร์เดอร์
   // เก็บรายการ 3 ตัว
   document.querySelectorAll('#bet3Table tr').forEach(row => {
     const num = row.children[0]?.innerText.trim();
@@ -691,7 +694,7 @@ function getOrderSum() {
   // แปลงเป็น array
   const entries = Object.values(map);
 
-  // รวมยอดทั้งหมดของแต่ละชื่อ
+  // Phase 2: คำนวณยอดสุทธิรวม (Grand Total) ของลูกค้าแต่ละคนเพื่อเตรียมทำแถวสรุป
   const nameTotalMap = {};
   entries.forEach(e => {
     if (!nameTotalMap[e.name]) nameTotalMap[e.name] = 0;
@@ -705,7 +708,7 @@ function getOrderSum() {
     grouped[e.name].push(e);
   });
 
-  // ✨ เรียงชื่อคนตามตัวอักษร (เว้น Total)
+  // Phase 3: เรียงลำดับชื่อลูกค้าตามตัวอักษร และเรียงหมายเลขโพยจากน้อยไปมาก
   const sortedNames = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
 
   const result = [];
@@ -751,6 +754,8 @@ function draw2Grid(doc, dataMap, startY, highlightTopList = [], highlightBottomL
         grandTotal += amount;
       }
 
+      // คำนวณพิกัด X, Y ใน PDF โดยแปลงจากแถว (r) และคอลัมน์ (c) ของตาราง 10x10
+      // (c + 1) และ (r + 1) เพื่อเว้นขอบกระดาษด้านซ้ายและด้านบน
       const x = startX + (c + 1) * cellW;
       const y = startY + (r + 1) * cellH;
 
@@ -1025,30 +1030,5 @@ function adjustOrderNumber(delta) {
 }
 
 </script>
-
-<!--
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script>
-  // สมมติข้อมูล Array/JSON ที่คุณใช้ทำ PDF
-  const data = [
-    { เลข: "123", บน: 10, ล่าง: 20 },
-    { เลข: "456", บน: 15, ล่าง: 25 },
-    { เลข: "789", บน: 30, ล่าง: 40 }
-  ];
-
-  document.getElementById("downloadExcel").addEventListener("click", () => {
-    // แปลง Array เป็น Worksheet
-    const ws = XLSX.utils.json_to_sheet(data);
-
-    // สร้าง Workbook
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-    // ดาวน์โหลด Excel
-    XLSX.writeFile(wb, "data.xlsx");
-  });
-</script>
--->
-
 </body>
 </html>
