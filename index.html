@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.19
+  Lotto Dealer - v08.20
 </h1>
 
 <div class="form-row">
@@ -139,7 +139,7 @@
     <div class="form-group">
       <strong>เลขอั้น 3 ตัว</strong>
       <input type="text" id="blocked3Input" maxlength="3" placeholder="เลข">
-      <button onclick="addBlocked3()">เพิ่มรายการ</button>
+      <button onclick="addBlocked3()">เพิ่ม</button>
     </div>
   </div>
   <!-- ===== เลขอั้น 2 ตัว ===== -->
@@ -150,7 +150,7 @@
       <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
       <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
       <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
-      <button onclick="addBlocked2()">เพิ่มรายการ</button>
+      <button onclick="addBlocked2()">เพิ่ม</button>
     </div>
   </div>
 </div>
@@ -161,7 +161,7 @@
     <div class="form-group">
       <strong>ซื้อเอง 3 ตัว</strong>
       <input type="text" id="self3Input" maxlength="3" placeholder="เลข">
-      <button onclick="addSelf3()">เพิ่มรายการ</button>
+      <button onclick="addSelf3()">เพิ่ม</button>
     </div>
   </div>
   <!-- ===== ซื้อเอง 2 ตัว ===== -->
@@ -172,7 +172,7 @@
       <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
       <label><input type="checkbox" id="self2Reverse"> กลับ</label>
       <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
-      <button onclick="addSelf2()">เพิ่มรายการ</button>
+      <button onclick="addSelf2()">เพิ่ม</button>
     </div>
   </div>
 </div>
@@ -201,7 +201,7 @@
     <input type="number" id="bet3Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet3Number" maxlength="3" placeholder="เลข">
-    <button onclick="addBet3()">เพิ่มรายการ</button>
+    <button onclick="addBet3()">เพิ่ม</button>
     <button class="clear-btn" onclick="clearBet3()">เคลียร์</button>
   </div>
 </div>
@@ -216,7 +216,7 @@
     <input type="number" id="bet2Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet2Number" maxlength="2" placeholder="เลข">
-    <button onclick="addBet2()">เพิ่มรายการ</button>
+    <button onclick="addBet2()">เพิ่ม</button>
     <button class="clear-btn" onclick="clearBet2()">เคลียร์</button>
   </div>
 </div>
@@ -1019,7 +1019,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
   });
 }
 
-//กด Enter แทน ปุ่มเพิ่มรายการ
+//กด Enter แทน ปุ่มเพิ่ม
 document.getElementById("blocked3Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked3();});
 document.getElementById("self3Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf3()   ;});
 document.getElementById("blocked2Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked2();});
@@ -1050,6 +1050,17 @@ document.getElementById("bet2Amount").addEventListener("keydown", function (e) {
     const numInput = document.getElementById("bet2Number");
     numInput.focus();
     numInput.select();
+  }
+});
+
+// กด Enter ที่ช่อง 'ชื่อ' ให้ตั้งค่าช่อง 'โพยที่' เป็น 1 แล้วย้ายโฟกัสไปทันที
+document.getElementById("buyerName").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const orderInput = document.getElementById("orderNumber");
+    orderInput.value = 1; // ตั้งค่าเป็น 1
+    orderInput.focus();   // ย้ายโฟกัสไปช่องโพยที่
+    orderInput.select();  // ไฮไลต์ตัวเลขไว้
   }
 });
 
