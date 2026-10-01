@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.20
+  Lotto Dealer - v08.21
 </h1>
 
 <div class="form-row">
@@ -335,23 +335,21 @@ function addSelf3() {
   document.getElementById('self3Input').value = '';
 }
 
-function addBlocked2() {
-  const numInput = document.getElementById('blocked2Input');
+function add2DigitItem(prefix, tableId) {
+  const numInput = document.getElementById(prefix + 'Input');
   const num      = numInput.value.trim();
-  const top      = document.getElementById('blocked2Top').checked;
-  const bottom   = document.getElementById('blocked2Bottom').checked;
-  const reverse  = document.getElementById('blocked2Reverse').checked;
+  const top      = document.getElementById(prefix + 'Top').checked;
+  const bottom   = document.getElementById(prefix + 'Bottom').checked;
+  const reverse  = document.getElementById(prefix + 'Reverse').checked;
 
   if (num.length !== 2 || (!top && !bottom)) {
     return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
   }
 
-  const table = document.getElementById('blocked2Table');
+  const table = document.getElementById(tableId);
   const nums = [num];
-
   if (reverse && num[0] !== num[1]) {
-    const reversed = num[1] + num[0];
-    nums.push(reversed);
+    nums.push(num[1] + num[0]);
   }
 
   nums.forEach(n => {
@@ -365,35 +363,9 @@ function addBlocked2() {
   numInput.value = '';
 }
 
-function addSelf2() {
-  const numInput = document.getElementById('self2Input');
-  const num      = numInput.value.trim();
-  const top      = document.getElementById('self2Top').checked;
-  const bottom   = document.getElementById('self2Bottom').checked;
-  const reverse  = document.getElementById('self2Reverse').checked;
-
-  if (num.length !== 2 || (!top && !bottom)) {
-    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
-  }
-
-  const table = document.getElementById('self2Table');
-  const nums = [num];
-
-  if (reverse && num[0] !== num[1]) {
-    const reversed = num[1] + num[0];
-    nums.push(reversed);
-  }
-
-  nums.forEach(n => {
-    const row = table.insertRow();
-    row.insertCell(0).innerText = n;
-    row.insertCell(1).innerText = top ? '✔️' : '';
-    row.insertCell(2).innerText = bottom ? '✔️' : '';
-    row.insertCell(3).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
-  });
-
-  numInput.value = '';
-}
+// เรียกใช้งานสั้นๆ:
+function addBlocked2() { add2DigitItem('blocked2', 'blocked2Table'); }
+function addSelf2()    { add2DigitItem('self2', 'self2Table'); }
 
 function clearBet3() {
   document.getElementById('bet3Number').value = '';
