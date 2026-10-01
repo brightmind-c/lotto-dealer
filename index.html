@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.18
+  Lotto Dealer - v08.19
 </h1>
 
 <div class="form-row">
@@ -146,9 +146,9 @@
   <div class="form-section-2">
     <div class="form-group">
       <strong>เลขอั้น 2 ตัว</strong>
-      <label>บน <input type="text" id="blocked2Top" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-      <label>ล่าง <input type="text" id="blocked2Bottom" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-      <label>กลับ <input type="text" id="blocked2Reverse" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
+      <label><input type="checkbox" id="blocked2Top"> บน</label>
+      <label><input type="checkbox" id="blocked2Bottom"> ล่าง</label>
+      <label><input type="checkbox" id="blocked2Reverse"> กลับ</label>
       <input type="text" id="blocked2Input" maxlength="2" placeholder="เลข">
       <button onclick="addBlocked2()">เพิ่มรายการ</button>
     </div>
@@ -168,9 +168,9 @@
   <div class="form-section-2">
     <div class="form-group">
       <strong>ซื้อเอง 2 ตัว</strong>
-      <label>บน <input type="text" id="self2Top" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-      <label>ล่าง <input type="text" id="self2Bottom" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-      <label>กลับ <input type="text" id="self2Reverse" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
+      <label><input type="checkbox" id="self2Top"> บน</label>
+      <label><input type="checkbox" id="self2Bottom"> ล่าง</label>
+      <label><input type="checkbox" id="self2Reverse"> กลับ</label>
       <input type="text" id="self2Input" maxlength="2" placeholder="เลข">
       <button onclick="addSelf2()">เพิ่มรายการ</button>
     </div>
@@ -194,10 +194,10 @@
 <div class="form-section-0">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
-    <label>เต็ง <input type="text" id="bet3Top" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-    <label>โต๊ด <input type="text" id="bet3Tode" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-    <label>ล่าง <input type="text" id="bet3Bottom" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-    <label>กลับ <input type="text" id="bet3Reverse" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
+    <label><input type="checkbox" id="bet3Top"> เต็ง</label>
+    <label><input type="checkbox" id="bet3Tode"> โต๊ด</label>
+    <label><input type="checkbox" id="bet3Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="bet3Reverse"> กลับ</label>
     <input type="number" id="bet3Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet3Number" maxlength="3" placeholder="เลข">
@@ -210,9 +210,9 @@
 <div class="form-section-0">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
-    <label>บน <input type="text" id="bet2Top" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-    <label>ล่าง <input type="text" id="bet2Bottom" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
-    <label>กลับ <input type="text" id="bet2Reverse" class="toggle-box" maxlength="1" style="width:25px; text-align:center;"></label>
+    <label><input type="checkbox" id="bet2Top"> บน</label>
+    <label><input type="checkbox" id="bet2Bottom"> ล่าง</label>
+    <label><input type="checkbox" id="bet2Reverse"> กลับ</label>
     <input type="number" id="bet2Amount" min="1" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet2Number" maxlength="2" placeholder="เลข">
@@ -294,7 +294,7 @@
 
 <script>
 
-/* function ทั้งหมด v08.17
+/* function ทั้งหมด
 function addBlocked3() {}
 function addSelf3() {}
 function addBlocked2() {}
@@ -314,11 +314,6 @@ function draw3List() {}
 function drawOrderList() {}
 function adjustOrderNumber() {}
 */
-
-function isChecked(id) {
-  const el = document.getElementById(id);
-  return el ? el.value.trim() === '+' : false;
-}
 
 function addBlocked3() {
   const num = document.getElementById('blocked3Input').value.trim();
@@ -343,9 +338,9 @@ function addSelf3() {
 function addBlocked2() {
   const numInput = document.getElementById('blocked2Input');
   const num      = numInput.value.trim();
-  const top      = isChecked('blocked2Top');
-  const bottom   = isChecked('blocked2Bottom');
-  const reverse  = isChecked('blocked2Reverse');
+  const top      = document.getElementById('blocked2Top').checked;
+  const bottom   = document.getElementById('blocked2Bottom').checked;
+  const reverse  = document.getElementById('blocked2Reverse').checked;
 
   if (num.length !== 2 || (!top && !bottom)) {
     return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
@@ -373,9 +368,9 @@ function addBlocked2() {
 function addSelf2() {
   const numInput = document.getElementById('self2Input');
   const num      = numInput.value.trim();
-  const top      = isChecked('self2Top');
-  const bottom   = isChecked('self2Bottom');
-  const reverse  = isChecked('self2Reverse');
+  const top      = document.getElementById('self2Top').checked;
+  const bottom   = document.getElementById('self2Bottom').checked;
+  const reverse  = document.getElementById('self2Reverse').checked;
 
   if (num.length !== 2 || (!top && !bottom)) {
     return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
@@ -403,18 +398,18 @@ function addSelf2() {
 function clearBet3() {
   document.getElementById('bet3Number').value = '';
   document.getElementById('bet3Amount').value = '';
-  document.getElementById('bet3Top').value = '';
-  document.getElementById('bet3Bottom').value = '';
-  document.getElementById('bet3Tode').value = '';
-  document.getElementById('bet3Reverse').value = '';
+  document.getElementById('bet3Top').checked = false;
+  document.getElementById('bet3Bottom').checked = false;
+  document.getElementById('bet3Tode').checked = false;
+  document.getElementById('bet3Reverse').checked = false;
 }
 
 function clearBet2() {
   document.getElementById('bet2Number').value = '';
   document.getElementById('bet2Amount').value = '';
-  document.getElementById('bet2Top').value = '';
-  document.getElementById('bet2Bottom').value = '';
-  document.getElementById('bet2Reverse').value = '';
+  document.getElementById('bet2Top').checked = false;
+  document.getElementById('bet2Bottom').checked = false;
+  document.getElementById('bet2Reverse').checked = false;
 }
 
 function addBet3() {
@@ -422,10 +417,10 @@ function addBet3() {
   const amountInput = document.getElementById('bet3Amount');
   const number  = numberInput.value.trim();
   const amount  = parseInt(amountInput.value.trim());
-  const top     = isChecked('bet3Top');
-  const bottom  = isChecked('bet3Bottom');
-  const tode    = isChecked('bet3Tode');
-  const reverse = isChecked('bet3Reverse');
+  const top     = document.getElementById('bet3Top').checked;
+  const bottom  = document.getElementById('bet3Bottom').checked;
+  const tode    = document.getElementById('bet3Tode').checked;
+  const reverse = document.getElementById('bet3Reverse').checked;
 
   if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tode)) {
     alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
@@ -488,9 +483,9 @@ function addBet2() {
   const amountInput = document.getElementById('bet2Amount');
   const number  = numberInput.value.trim();
   const amount  = parseInt(amountInput.value.trim());
-  const top     = isChecked('bet2Top');
-  const bottom  = isChecked('bet2Bottom');
-  const reverse = isChecked('bet2Reverse');
+  const top     = document.getElementById('bet2Top').checked;
+  const bottom  = document.getElementById('bet2Bottom').checked;
+  const reverse = document.getElementById('bet2Reverse').checked;
 
   if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
     alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
@@ -1039,31 +1034,23 @@ function adjustOrderNumber(delta) {
   input.value = value;
 }
 
-// เพิ่ม Event Listener สำหรับกรอกเฉพาะ + / - และกด Enter เพื่อย้ายไปช่องถัดไป
-document.querySelectorAll('.toggle-box').forEach(input => {
-  // บังคับให้พิมพ์ได้แค่ + หรือ - เท่านั้น
-  input.addEventListener('input', function() {
-    if (this.value !== '+' && this.value !== '-') {
-      this.value = '';
-    }
-  });
+// ===== เพิ่มโค้ดส่วนนี้เข้าไปครับ =====
+document.getElementById("bet3Amount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const numInput = document.getElementById("bet3Number");
+    numInput.focus();
+    numInput.select();
+  }
+});
 
-  // เมื่อกด Enter จะเลื่อน Focus ไปยัง Input ถัดไปในหน้าเว็บ
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const allInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="number"]'));
-      const currentIndex = allInputs.indexOf(this);
-      
-      if (currentIndex > -1 && currentIndex < allInputs.length - 1) {
-        const nextInput = allInputs[currentIndex + 1];
-        nextInput.focus();
-        if (typeof nextInput.select === 'function') {
-          nextInput.select();
-        }
-      }
-    }
-  });
+document.getElementById("bet2Amount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const numInput = document.getElementById("bet2Number");
+    numInput.focus();
+    numInput.select();
+  }
 });
 
 </script>
