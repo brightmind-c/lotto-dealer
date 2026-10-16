@@ -77,7 +77,7 @@
     }
     .form-row {
       display: flex;
-      gap: 15px; /* ระยะห่างระหว่างบล็อก */
+      gap: 15px;
     }
     button {
       padding: 6px 12px;
@@ -104,11 +104,11 @@
     td {background-color: #ffffff;}
     .table-row {
       display: flex;
-      gap: 15px; /* ระยะห่างระหว่างคอลัมน์ */
-      margin-bottom: 20px; /* เว้นระยะระหว่างแถว */
+      gap: 15px;
+      margin-bottom: 20px;
     }
     .table-section-1 {
-      width: 310px; /* same as input block */
+      width: 310px;
       border: 1px solid #ccc;
       padding: 10px;
       border-radius: 5px;
@@ -116,7 +116,7 @@
       overflow-x: auto;
     }
     .table-section-2 {
-      width: 481px; /* same as input block */
+      width: 481px;
       border: 1px solid #ccc;
       padding: 10px;
       border-radius: 5px;
@@ -130,11 +130,10 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.26
+  Lotto Dealer - v08.27
 </h1>
 
 <div class="form-row">
-  <!-- ===== เลขอั้น 3 ตัว ===== -->
   <div class="form-section-1">
     <div class="form-group">
       <strong>เลขอั้น 3 ตัว</strong>
@@ -142,7 +141,6 @@
       <button onclick="addBlocked3()">เพิ่ม</button>
     </div>
   </div>
-  <!-- ===== เลขอั้น 2 ตัว ===== -->
   <div class="form-section-2">
     <div class="form-group">
       <strong>เลขอั้น 2 ตัว</strong>
@@ -156,7 +154,6 @@
 </div>
 
 <div class="form-row">
-    <!-- ===== ซื้อเอง 3 ตัว ===== -->
   <div class="form-section-1">
     <div class="form-group">
       <strong>ซื้อเอง 3 ตัว</strong>
@@ -164,7 +161,6 @@
       <button onclick="addSelf3()">เพิ่ม</button>
     </div>
   </div>
-  <!-- ===== ซื้อเอง 2 ตัว ===== -->
   <div class="form-section-2">
     <div class="form-group">
       <strong>ซื้อเอง 2 ตัว</strong>
@@ -177,20 +173,18 @@
   </div>
 </div>
 
-<!-- ===== ลำดับโพย ===== -->
 <div class="form-section-0">
   <div class="form-group">
     <strong>ลำดับโพย</strong>
     <label>ชื่อ:</label>
     <input type="text" id="buyerName" placeholder="ชื่อ" style="max-width: 100px;">
     <label>โพยที่:</label>
-    <button onclick="adjustOrderNumber(-1)">−</button>
     <input type="number" id="orderNumber" min="1" value="1" style="width: 60px; text-align: center;">
     <button onclick="adjustOrderNumber(1)">+</button>
+    <button onclick="adjustOrderNumber(-1)">−</button>
   </div>
 </div>
 
-<!-- ===== แทง 3 ตัว ===== -->
 <div class="form-section-0">
   <div class="form-group">
     <strong>แทง 3 ตัว</strong>
@@ -198,30 +192,25 @@
     <label><input type="checkbox" id="bet3Tode"> โต๊ด</label>
     <label><input type="checkbox" id="bet3Bottom"> ล่าง</label>
     <label><input type="checkbox" id="bet3Reverse"> กลับ</label>
-    <input type="number" id="bet3Amount" min="1" placeholder="เงิน">
+    <input type="number" id="bet3Amount" min="0" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet3Number" maxlength="3" placeholder="เลข">
     <button onclick="addBet3()">เพิ่ม</button>
-    <button class="clear-btn" onclick="clearBet3()">เคลียร์</button>
   </div>
 </div>
-
-<!-- ===== แทง 2 ตัว ===== -->
 <div class="form-section-0">
   <div class="form-group">
     <strong>แทง 2 ตัว</strong>
     <label><input type="checkbox" id="bet2Top"> บน</label>
     <label><input type="checkbox" id="bet2Bottom"> ล่าง</label>
-    <label><input type="checkbox" id="bet2Reverse"> กลับ</label>
-    <input type="number" id="bet2Amount" min="1" placeholder="เงิน">
+    <label><input type="checkbox" id="bet2Reverse"> กลับ          </label>
+    <input type="number" id="bet2Amount" min="0" placeholder="เงิน">
     <label>บาท</label>
     <input type="text" id="bet2Number" maxlength="2" placeholder="เลข">
     <button onclick="addBet2()">เพิ่ม</button>
-    <button class="clear-btn" onclick="clearBet2()">เคลียร์</button>
   </div>
 </div>
 
-<!-- ===== ตารางรายการ 3 ตัว ===== -->
 <div class="table-row">
   <div class="table-section-1">
     <h2>รายการ เลขอั้น 3 ตัว</h2>
@@ -230,7 +219,6 @@
       <tbody id="blocked3Table"></tbody>
     </table>
   </div>
-
   <div class="table-section-2">
     <h2>รายการ เลขอั้น 2 ตัว</h2>
     <table>
@@ -240,7 +228,6 @@
   </div>
 </div>
 
-<!-- ===== ตารางรายการ 2 ตัว ===== -->
 <div class="table-row">
   <div class="table-section-1">
     <h2>รายการ ซื้อเอง 3 ตัว</h2>
@@ -249,7 +236,6 @@
       <tbody id="self3Table"></tbody>
     </table>
   </div>
-
   <div class="table-section-2">
     <h2>รายการ ซื้อเอง 2 ตัว</h2>
     <table>
@@ -282,10 +268,8 @@
 <div class="form-section-0">
   <div class="form-group">
     <label><strong>งวดที่:</strong></label>
-    <input type="text" id="drawDay" maxlength="2" placeholder="วว">
-    <span>/</span>
-    <input type="text" id="drawMonth" maxlength="2" placeholder="ดด">
-    <span>/</span>
+    <input type="text" id="drawDay" maxlength="2" placeholder="วว"> <span>/</span>
+    <input type="text" id="drawMonth" maxlength="2" placeholder="ดด"> <span>/</span>
     <input type="text" id="drawYear" maxlength="2" placeholder="ปป">
     <button onclick="generatePDF()">สร้างโพย Pdf</button>
     <!-- <button id="downloadExcel">สร้าง Excel</button> -->
@@ -297,10 +281,9 @@
 /* function ทั้งหมด
 function addBlocked3() {}
 function addSelf3() {}
+function add2DigitItem(prefix, tableId) {}
 function addBlocked2() {}
 function addSelf2() {}
-function clearBet3() {}
-function clearBet2() {}
 function addBet3() {}
 function addBet2() {}
 async function generatePDF() {}
@@ -342,15 +325,11 @@ function add2DigitItem(prefix, tableId) {
   const bottom   = document.getElementById(prefix + 'Bottom').checked;
   const reverse  = document.getElementById(prefix + 'Reverse').checked;
 
-  if (num.length !== 2 || (!top && !bottom)) {
-    return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
-  }
+  if (num.length !== 2 || (!top && !bottom)) return alert("ใส่เลข 2 หลักและเลือก บน/ล่าง");
 
   const table = document.getElementById(tableId);
   const nums = [num];
-  if (reverse && num[0] !== num[1]) {
-    nums.push(num[1] + num[0]);
-  }
+  if (reverse && num[0] !== num[1]) nums.push(num[1] + num[0]);
 
   nums.forEach(n => {
     const row = table.insertRow();
@@ -363,26 +342,8 @@ function add2DigitItem(prefix, tableId) {
   numInput.value = '';
 }
 
-// เรียกใช้งานสั้นๆ:
 function addBlocked2() { add2DigitItem('blocked2', 'blocked2Table'); }
 function addSelf2()    { add2DigitItem('self2', 'self2Table'); }
-
-function clearBet3() {
-  document.getElementById('bet3Number').value = '';
-  document.getElementById('bet3Amount').value = '';
-  document.getElementById('bet3Top').checked = false;
-  document.getElementById('bet3Bottom').checked = false;
-  document.getElementById('bet3Tode').checked = false;
-  document.getElementById('bet3Reverse').checked = false;
-}
-
-function clearBet2() {
-  document.getElementById('bet2Number').value = '';
-  document.getElementById('bet2Amount').value = '';
-  document.getElementById('bet2Top').checked = false;
-  document.getElementById('bet2Bottom').checked = false;
-  document.getElementById('bet2Reverse').checked = false;
-}
 
 function addBet3() {
   const numberInput = document.getElementById('bet3Number');
@@ -395,8 +356,7 @@ function addBet3() {
   const reverse = document.getElementById('bet3Reverse').checked;
 
   if (number.length !== 3 || isNaN(amount) || (!top && !bottom && !tode)) {
-    alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด");
-    return;
+    alert("กรอกเลข 3 หลัก, จำนวนเงิน และเลือก เต็ง/ล่าง/โต๊ด"); return;
   }
 
   const table = document.getElementById('bet3Table');
@@ -418,13 +378,11 @@ function addBet3() {
     const chars = number.split('');
     const perms = new Set();
 
-    // ฟังก์ชัน Recursive สำหรับหาเลขสลับ (Permutation) แบบไม่ซ้ำกัน
     const permute = (arr, m = []) => {
       if (arr.length === 0) {
         const result = m.join('');
         if (!added.has(result)) perms.add(result);
       } else {
-        // ลูปหาคู่สลับ
         for (let i = 0; i < arr.length; i++) {
           let curr = arr.slice();
           let next = curr.splice(i, 1);
@@ -447,7 +405,7 @@ function addBet3() {
     });
   }
 
-  numberInput.value = ''; // คง checkbox เดิมไว้
+  numberInput.value = '';
 }
 
 function addBet2() {
@@ -460,8 +418,7 @@ function addBet2() {
   const reverse = document.getElementById('bet2Reverse').checked;
 
   if (number.length !== 2 || isNaN(amount) || (!top && !bottom)) {
-    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง");
-    return;
+    alert("กรอกเลข 2 หลัก, จำนวนเงิน และเลือก บน/ล่าง"); return;
   }
 
   const table = document.getElementById('bet2Table');
@@ -482,7 +439,7 @@ function addBet2() {
     row.insertCell(5).innerHTML = `<button class="delete-btn" onclick="this.parentElement.parentElement.remove()">ลบ</button>`;
   });
 
-  numberInput.value = ''; // คง checkbox เดิมไว้
+  numberInput.value = '';
 }
 
 async function generatePDF() {
@@ -491,19 +448,18 @@ async function generatePDF() {
   doc.setFont("Helvetica");
   doc.setFontSize(14);
 
-  const day = document.getElementById('drawDay').value.padStart(2, '0');
-  const month = document.getElementById('drawMonth').value.padStart(2, '0');
-  const year = '25' + document.getElementById('drawYear').value.padStart(2, '0');
+  const day    =  document.getElementById('drawDay').value.padStart(2, '0');
+  const month  =  document.getElementById('drawMonth').value.padStart(2, '0');
+  const year='25'+document.getElementById('drawYear').value.padStart(2, '0');
   const drawDate = `${day}/${month}/${year}`;
 
-  //สำหรับ 2 ตัว
   const topMap = {}, bottomMap = {};
   document.querySelectorAll('#bet2Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const num    =          row.children[0]?.innerText.trim();
+    const top    = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
     const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
     if (num) {
-      if (top > 0) topMap[num] = (topMap[num] || 0) + top;
+      if (top    > 0)    topMap[num] = (   topMap[num] || 0) + top;
       if (bottom > 0) bottomMap[num] = (bottomMap[num] || 0) + bottom;
     }
   });
@@ -511,21 +467,18 @@ async function generatePDF() {
   const blocked2List = getBlocked2();
   const self2List = getSelf2();
 
-  const highlightTop = blocked2List.filter(x => x.isTop).map(x => x.num);
-  const highlightBottom = blocked2List.filter(x => x.isBottom).map(x => x.num);
-  const highlightTopSelf = self2List.filter(x => x.isTop).map(x => x.num);
+  const highlightTop     = blocked2List.filter(x => x.isTop   ).map(x => x.num);
+  const highlightBottom  = blocked2List.filter(x => x.isBottom).map(x => x.num);
+  const highlightTopSelf    = self2List.filter(x => x.isTop   ).map(x => x.num);
   const highlightBottomSelf = self2List.filter(x => x.isBottom).map(x => x.num);
 
-  //สำหรับ 3 ตัว
   const threeList = [];
   document.querySelectorAll('#bet3Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-  const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-  const tode = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-  const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
-    if (num && (top > 0 || bottom > 0 || tode > 0)) {
-      threeList.push({ num, top, bottom, tode });
-    }
+    const num    =          row.children[0]?.innerText.trim();
+    const top    = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const tode   = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
+    if (num && (top > 0 || bottom > 0 || tode > 0)) threeList.push({ num, top, bottom, tode });
   });
 
   const getPermutations = (str) => {
@@ -561,7 +514,7 @@ async function generatePDF() {
         num,
         ...values,
         isBlocked: isInListWithPermutation(num, getBlocked3()),
-        isSelf: isInListWithPermutation(num, getSelf3())
+        isSelf:    isInListWithPermutation(num, getSelf3())
       };
     });
 
@@ -592,12 +545,10 @@ async function generatePDF() {
 function getBlocked2() {
   const list = [];
   document.querySelectorAll('#blocked2Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const isTop = row.children[1]?.innerText.includes('✔');
+    const num      = row.children[0]?.innerText.trim();
+    const isTop    = row.children[1]?.innerText.includes('✔');
     const isBottom = row.children[2]?.innerText.includes('✔');
-    if (num) {
-      list.push({ num, isTop, isBottom });
-    }
+    if (num) list.push({ num, isTop, isBottom });
   });
   return list;
 }
@@ -605,12 +556,10 @@ function getBlocked2() {
 function getSelf2() {
   const list = [];
   document.querySelectorAll('#self2Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const isTop = row.children[1]?.innerText.includes('✔');
+    const num      = row.children[0]?.innerText.trim();
+    const isTop    = row.children[1]?.innerText.includes('✔');
     const isBottom = row.children[2]?.innerText.includes('✔');
-    if (num) {
-      list.push({ num, isTop, isBottom });
-    }
+    if (num) list.push({ num, isTop, isBottom });
   });
   return list;
 }
@@ -636,15 +585,14 @@ function getSelf3() {
 function getOrderSum() {
   const map = {};
 
-  // Phase 1: ดึงและรวมยอดเงินจากตารางแทง 3 ตัว และ 2 ตัว แยกตามรายชื่อและเลขออร์เดอร์
   // เก็บรายการ 3 ตัว
   document.querySelectorAll('#bet3Table tr').forEach(row => {
-    const num = row.children[0]?.innerText.trim();
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
-    const tode = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
+    const num    =          row.children[0]?.innerText.trim();
+    const top    = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const tode   = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
     const bottom = parseInt(row.children[3]?.innerText.replace(' ฿', '') || '0');
-    const name = row.children[4]?.innerText.trim();
-    const order = row.children[5]?.innerText.trim();
+    const name   =          row.children[4]?.innerText.trim();
+    const order  =          row.children[5]?.innerText.trim();
 
     const key = `${name}__${order}`;
     if (!map[key]) map[key] = { name, order, total: 0 };
@@ -653,10 +601,10 @@ function getOrderSum() {
 
   // เก็บรายการ 2 ตัว
   document.querySelectorAll('#bet2Table tr').forEach(row => {
-    const top = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
+    const top    = parseInt(row.children[1]?.innerText.replace(' ฿', '') || '0');
     const bottom = parseInt(row.children[2]?.innerText.replace(' ฿', '') || '0');
-    const name = row.children[3]?.innerText.trim();
-    const order = row.children[4]?.innerText.trim();
+    const name   =          row.children[3]?.innerText.trim();
+    const order  =          row.children[4]?.innerText.trim();
 
     const key = `${name}__${order}`;
     if (!map[key]) map[key] = { name, order, total: 0 };
@@ -666,7 +614,7 @@ function getOrderSum() {
   // แปลงเป็น array
   const entries = Object.values(map);
 
-  // Phase 2: คำนวณยอดสุทธิรวม (Grand Total) ของลูกค้าแต่ละคนเพื่อเตรียมทำแถวสรุป
+  // คำนวณยอดสุทธิรวม (Grand Total) ของลูกค้าแต่ละคนเพื่อเตรียมทำแถวสรุป
   const nameTotalMap = {};
   entries.forEach(e => {
     if (!nameTotalMap[e.name]) nameTotalMap[e.name] = 0;
@@ -680,7 +628,7 @@ function getOrderSum() {
     grouped[e.name].push(e);
   });
 
-  // Phase 3: เรียงลำดับชื่อลูกค้าตามตัวอักษร และเรียงหมายเลขโพยจากน้อยไปมาก
+  // เรียงลำดับชื่อลูกค้าตามตัวอักษร และเรียงหมายเลขโพยจากน้อยไปมาก
   const sortedNames = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
 
   const result = [];
@@ -839,16 +787,13 @@ function draw3List(doc, list, startY, drawDate) {
 
     values.forEach((val, i) => {
       // จัดสีพื้นหลัง
-      if (row.isSummary) {
-        doc.setFillColor(240, 240, 240); // สีเทาอ่อนสำหรับแถวสรุป
-      } else if (i === 0) {
+      if (row.isSummary) doc.setFillColor(240, 240, 240); // สีเทาอ่อนสำหรับแถวสรุป
+      else if (i === 0) {
         if (row.isBlocked && row.isSelf) doc.setFillColor(245, 222, 179);
         else if (row.isBlocked) doc.setFillColor(255, 192, 192);
         else if (row.isSelf) doc.setFillColor(255, 246, 176);
         else doc.setFillColor(255, 255, 255);
-      } else {
-        doc.setFillColor(255, 255, 255);
-      }
+      } else doc.setFillColor(255, 255, 255);
 
       doc.rect(xPos, y, cellWs[i], cellH, 'F');
       doc.setDrawColor(0);
@@ -858,11 +803,8 @@ function draw3List(doc, list, startY, drawDate) {
       doc.setFontSize(10);
       if (row.isSummary) doc.setFont(undefined, 'bold'); // ตัวหนาสำหรับแถวสรุป
 
-      if (i === 0) {
-        doc.text(val, xPos + 2, y + cellH * 0.7);
-      } else {
-        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
-      }
+      if (i === 0) doc.text(val, xPos + 2, y + cellH * 0.7);
+      else         doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
       doc.setFont(undefined, 'normal'); // คืนค่าฟอนต์ปกติ
       xPos += cellWs[i];
     });
@@ -950,25 +892,20 @@ function drawOrderList(doc, list, drawDate, startPage) {
       doc.setDrawColor(0);
       doc.setFontSize(10);
       doc.rect(xPos, y, cellWs[i], cellH);
-      if (i === 0) {
-        doc.text(val, xPos + 2, y + cellH * 0.7); 
-      } else {
-        doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" }); 
-      }
+      if (i === 0) doc.text(val, xPos + 2, y + cellH * 0.7); 
+      else         doc.text(val, xPos + cellWs[i] - 2, y + cellH * 0.7, { align: "right" });
       xPos += cellWs[i];
     });
   };
 
-  // วาดหน้าแรกและ Header แรกสุด
   drawTitle(page);
   drawHeader(columns[colIndex].x, columns[colIndex].y);
-  rowInCol = 1; // 💡 สำคัญ: ขยับไปแถวที่ 1 ทันทีหลังจากวาด Header เพื่อให้ข้อมูลแถวแรกไม่ทับ
+  rowInCol = 1;
 
   list.forEach((row, idx) => {
-    // 💡 ถ้า rowInCol เท่ากับหรือเกินจำนวนแถวสูงสุด ให้ตัดขึ้นคอลัมน์ใหม่ / หน้าใหม่
     if (rowInCol >= maxRowsPerColumn) {
       colIndex++;
-      rowInCol = 0; // รีเซ็ตเพื่อใช้วาด Header ของคอลัมน์ใหม่
+      rowInCol = 0;
 
       if (colIndex > 2) {
         doc.addPage();
@@ -976,21 +913,18 @@ function drawOrderList(doc, list, drawDate, startPage) {
         colIndex = 0;
         drawTitle(page);
       }
-
-      // วาด Header ในคอลัมน์ใหม่
       drawHeader(columns[colIndex].x, columns[colIndex].y);
-      rowInCol = 1; // 💡 จองพื้นที่ Header (แถว 0) เสร็จแล้ว ขยับตัวนับไปแถวที่ 1 สำหรับข้อมูล
     }
 
-    // คำนวณพิกัด Y ตามจำนวนแถวปัจจุบัน (rowInCol ตัวนี้จะเริ่มที่ 1, 2, 3...)
     const x = columns[colIndex].x;
     const y = columns[colIndex].y + (cellH * rowInCol); 
     
     drawRow(x, y, row);
-    rowInCol++; // ขยับแถวถัดไป
+    rowInCol++;
   });
 }
-// ===== 1. ฟังก์ชันช่วยปรับลำดับโพย =====
+
+// ฟังก์ชันช่วยปรับลำดับโพย
 function adjustOrderNumber(delta) {
   const input = document.getElementById('orderNumber');
   let value = parseInt(input.value) || 1;
@@ -998,7 +932,7 @@ function adjustOrderNumber(delta) {
   input.value = value;
 }
 
-// ===== 2. กด Enter เพื่อเพิ่มรายการลงตาราง =====
+// กด Enter เพื่อเพิ่มรายการลงตาราง
 document.getElementById("blocked3Input").addEventListener("keydown", function (e) { if (e.key === "Enter") addBlocked3(); });
 document.getElementById("self3Input"   ).addEventListener("keydown", function (e) { if (e.key === "Enter") addSelf3(); });
 document.getElementById("blocked2Input").addEventListener("keydown", function (e) { if (e.key === "Enter") addBlocked2(); });
@@ -1024,14 +958,14 @@ document.getElementById("bet2Amount").addEventListener("keydown", function (e) {
   if (e.key === "Enter") { e.preventDefault(); const orderInput = document.getElementById("bet2Number"); orderInput.focus();}
 });
 
-// ===== 3. คลุมดำอัตโนมัติทั้งตอน คลิกเมาส์ และตอน โฟกัส ย้ายช่อง =====
+// คลุมดำอัตโนมัติทั้งตอน คลิกเมาส์ และตอน โฟกัส ย้ายช่อง
 document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
   const autoSelect = function() { this.select(); };
   input.addEventListener('click', autoSelect);
   input.addEventListener('focus', autoSelect);
 });
 
-// ===== 4. ปุ่มลูกศร ซ้าย-ขวา เลื่อน Focus วนลูปในบรรทัดเดียวกัน =====
+// ปุ่มลูกศร ซ้าย-ขวา เลื่อน Focus วนลูปในบรรทัดเดียวกัน
 document.querySelectorAll('.form-group').forEach(group => {
   const inputs = Array.from(group.querySelectorAll('input:not([type="hidden"]):not([disabled])'));
 
@@ -1042,17 +976,14 @@ document.querySelectorAll('.form-group').forEach(group => {
         let targetIndex = e.key === 'ArrowRight' 
           ? (index + 1) % inputs.length 
           : (index - 1 + inputs.length) % inputs.length;
-
         const nextInput = inputs[targetIndex];
-        if (nextInput) {
-          nextInput.focus();
-        }
+        if (nextInput) nextInput.focus();
       }
     });
   });
 });
 
-// ===== 5. ปุ่มลูกศร ขึ้น-ลง เลื่อน Focus วนลูป (orderNumber <-> bet3Number <-> bet2Number) =====
+// ปุ่มลูกศร ขึ้น-ลง เลื่อน Focus วนลูป (orderNumber <-> bet3Number <-> bet2Number)
 (function setupVerticalCircularNav() {
   const targetIds = ['orderNumber', 'bet3Number', 'bet2Number'];
   
@@ -1066,30 +997,23 @@ document.querySelectorAll('.form-group').forEach(group => {
         let nextIndex = e.key === 'ArrowDown' 
           ? (index + 1) % targetIds.length 
           : (index - 1 + targetIds.length) % targetIds.length;
-
         const nextInput = document.getElementById(targetIds[nextIndex]);
-        if (nextInput) {
-          nextInput.focus();
-        }
+        if (nextInput) nextInput.focus();
       }
     });
   });
 })();
 
-// ===== 6. กดปุ่ม + หรือ - ที่ช่อง orderNumber เพื่อเพิ่ม/ลด ค่า =====
+// กดปุ่ม + หรือ - ที่ช่อง orderNumber เพื่อเพิ่ม/ลด ค่า
 document.getElementById('orderNumber').addEventListener('keydown', function(e) {
   if (e.key === '+' || e.key === 'Add' || (e.shiftKey && e.key === '=')) {
-    e.preventDefault();
-    adjustOrderNumber(1);
-    this.select();
+    e.preventDefault(); adjustOrderNumber( 1); this.select();
   } else if (e.key === '-' || e.key === 'Subtract') {
-    e.preventDefault();
-    adjustOrderNumber(-1);
-    this.select();
+    e.preventDefault(); adjustOrderNumber(-1); this.select();
   }
 });
 
-// ===== 7. กด Shift เพื่อ ติ๊ก / เลิกติ๊ก Checkbox =====
+// กด Shift เพื่อ ติ๊ก / เลิกติ๊ก Checkbox
 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
   checkbox.addEventListener('keydown', function(e) {
     if (e.key === 'Shift') {
