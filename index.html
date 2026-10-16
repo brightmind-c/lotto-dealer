@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.24
+  Lotto Dealer - v08.25
 </h1>
 
 <div class="form-row">
@@ -1014,6 +1014,13 @@ document.getElementById("buyerName").addEventListener("keydown", function (e) {
     orderInput.value = 1;
     orderInput.focus();
   }
+});
+
+document.getElementById("bet3Amount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") { e.preventDefault(); const orderInput = document.getElementById("bet3Number"); orderInput.focus();}
+});
+document.getElementById("bet2Amount").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") { e.preventDefault(); const orderInput = document.getElementById("bet2Number"); orderInput.focus();}
 });
 
 // ===== 3. คลุมดำอัตโนมัติทั้งตอน คลิกเมาส์ และตอน โฟกัส ย้ายช่อง =====
