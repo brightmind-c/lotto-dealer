@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.23
+  Lotto Dealer - v08.24
 </h1>
 
 <div class="form-row">
@@ -990,15 +990,7 @@ function drawOrderList(doc, list, drawDate, startPage) {
     rowInCol++; // ขยับแถวถัดไป
   });
 }
-
-//กด Enter แทน ปุ่มเพิ่ม
-document.getElementById("blocked3Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked3();});
-document.getElementById("self3Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf3()   ;});
-document.getElementById("blocked2Input").addEventListener("keydown", function (e) {if (e.key === "Enter") addBlocked2();});
-document.getElementById("self2Input"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addSelf2()   ;});
-document.getElementById("bet3Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet3()    ;});
-document.getElementById("bet2Number"   ).addEventListener("keydown", function (e) {if (e.key === "Enter") addBet2()    ;});
-
+// ===== 1. ฟังก์ชันช่วยปรับลำดับโพย =====
 function adjustOrderNumber(delta) {
   const input = document.getElementById('orderNumber');
   let value = parseInt(input.value) || 1;
@@ -1006,58 +998,54 @@ function adjustOrderNumber(delta) {
   input.value = value;
 }
 
-// กด Enter ที่ช่อง 'ชื่อ' ให้ตั้งค่าช่อง 'โพยที่' เป็น 1 แล้วย้ายโฟกัสไปทันที
+// ===== 2. กด Enter เพื่อเพิ่มรายการลงตาราง =====
+document.getElementById("blocked3Input").addEventListener("keydown", function (e) { if (e.key === "Enter") addBlocked3(); });
+document.getElementById("self3Input"   ).addEventListener("keydown", function (e) { if (e.key === "Enter") addSelf3(); });
+document.getElementById("blocked2Input").addEventListener("keydown", function (e) { if (e.key === "Enter") addBlocked2(); });
+document.getElementById("self2Input"   ).addEventListener("keydown", function (e) { if (e.key === "Enter") addSelf2(); });
+document.getElementById("bet3Number"   ).addEventListener("keydown", function (e) { if (e.key === "Enter") addBet3(); });
+document.getElementById("bet2Number"   ).addEventListener("keydown", function (e) { if (e.key === "Enter") addBet2(); });
+
+// กด Enter ที่ช่อง 'ชื่อ' -> ตั้งค่า 'โพยที่' เป็น 1 แล้วย้ายไป
 document.getElementById("buyerName").addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     e.preventDefault();
     const orderInput = document.getElementById("orderNumber");
-    orderInput.value = 1; // ตั้งค่าเป็น 1
-    orderInput.focus();   // ย้ายโฟกัสไปช่องโพยที่
-    orderInput.select();  // ไฮไลต์ตัวเลขไว้
+    orderInput.value = 1;
+    orderInput.focus();
   }
 });
 
-// เมื่อ คลิก เข้าช่องกรอกตัวเลข/ข้อความทุกช่อง ให้เลือกข้อความทั้งหมดทันที
+// ===== 3. คลุมดำอัตโนมัติทั้งตอน คลิกเมาส์ และตอน โฟกัส ย้ายช่อง =====
 document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-  input.addEventListener('click', function() {
-    this.select();
-  });
+  const autoSelect = function() { this.select(); };
+  input.addEventListener('click', autoSelect);
+  input.addEventListener('focus', autoSelect);
 });
 
-// ดักจับปุ่มลูกศร ซ้าย-ขวา เพื่อเลื่อน Focus วนลูปภายในบรรทัด/บล็อกเดียวกัน
+// ===== 4. ปุ่มลูกศร ซ้าย-ขวา เลื่อน Focus วนลูปในบรรทัดเดียวกัน =====
 document.querySelectorAll('.form-group').forEach(group => {
-  // ดึงช่อง input ทั้งหมดที่เปิดให้พิมพ์ได้ในบรรทัดนั้นๆ
   const inputs = Array.from(group.querySelectorAll('input:not([type="hidden"]):not([disabled])'));
 
   inputs.forEach((input, index) => {
     input.addEventListener('keydown', function(e) {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault(); // ป้องกัน Cursor เคลื่อนที่ในช่องข้อความเดิม
-
-        let targetIndex;
-        if (e.key === 'ArrowRight') {
-          // เลื่อนไปทางขวา ถ้าชนขอบขวาสุดให้วนไปช่องแรกสุด (index 0)
-          targetIndex = (index + 1) % inputs.length;
-        } else if (e.key === 'ArrowLeft') {
-          // เลื่อนไปทางซ้าย ถ้าชนขอบซ้ายสุดให้วนไปช่องท้ายสุด
-          targetIndex = (index - 1 + inputs.length) % inputs.length;
-        }
+        e.preventDefault();
+        let targetIndex = e.key === 'ArrowRight' 
+          ? (index + 1) % inputs.length 
+          : (index - 1 + inputs.length) % inputs.length;
 
         const nextInput = inputs[targetIndex];
         if (nextInput) {
           nextInput.focus();
-          if (typeof nextInput.select === 'function') {
-            nextInput.select(); // คลุมดำข้อความเพื่อให้พิมพ์ทับได้ทันที
-          }
         }
       }
     });
   });
 });
 
-// เลื่อน Focus วนลูประหว่าง orderNumber -> bet3Number -> bet2Number ด้วยปุ่ม ขึ้น/ลง
+// ===== 5. ปุ่มลูกศร ขึ้น-ลง เลื่อน Focus วนลูป (orderNumber <-> bet3Number <-> bet2Number) =====
 (function setupVerticalCircularNav() {
-  // ลิสต์ ID ช่องที่ต้องการให้วนลูป ขึ้น-ลง หากัน
   const targetIds = ['orderNumber', 'bet3Number', 'bet2Number'];
   
   targetIds.forEach((id, index) => {
@@ -1066,43 +1054,42 @@ document.querySelectorAll('.form-group').forEach(group => {
 
     input.addEventListener('keydown', function(e) {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault(); // ป้องกันการเพิ่ม/ลดค่าตัวเลขเดิมในช่อง number
-
-        let nextIndex;
-        if (e.key === 'ArrowDown') {
-          // กดลง: ไปช่องถัดไป ชนล่างสุดวนกลับไปช่องแรก (orderNumber)
-          nextIndex = (index + 1) % targetIds.length;
-        } else if (e.key === 'ArrowUp') {
-          // กดขึ้น: ไปช่องก่อนหน้า ชนบนสุดวนกลับไปช่องสุดท้าย (bet2Number)
-          nextIndex = (index - 1 + targetIds.length) % targetIds.length;
-        }
+        e.preventDefault();
+        let nextIndex = e.key === 'ArrowDown' 
+          ? (index + 1) % targetIds.length 
+          : (index - 1 + targetIds.length) % targetIds.length;
 
         const nextInput = document.getElementById(targetIds[nextIndex]);
         if (nextInput) {
           nextInput.focus();
-          if (typeof nextInput.select === 'function') {
-            nextInput.select(); // คลุมดำตัวเลขเดิมไว้เพื่อให้พิมพ์ทับได้ทันที
-          }
         }
       }
     });
   });
 })();
 
-// กดปุ่ม + หรือ - บนแป้นพิมพ์ที่ช่อง orderNumber เพื่อเพิ่ม/ลด ค่า
+// ===== 6. กดปุ่ม + หรือ - ที่ช่อง orderNumber เพื่อเพิ่ม/ลด ค่า =====
 document.getElementById('orderNumber').addEventListener('keydown', function(e) {
-  // ปุ่ม + (Shift + = หรือ NumpadAdd หรือ +)
   if (e.key === '+' || e.key === 'Add' || (e.shiftKey && e.key === '=')) {
-    e.preventDefault(); // ป้องกันการพิมพ์เครื่องหมาย + ลงในช่อง
+    e.preventDefault();
     adjustOrderNumber(1);
-    this.select(); // คลุมดำตัวเลขใหม่ไว้เพื่อให้พิมพ์ทับหรือกดต่อได้ทันที
-  } 
-  // ปุ่ม - (NumpadSubtract หรือ -)
-  else if (e.key === '-' || e.key === 'Subtract') {
-    e.preventDefault(); // ป้องกันการพิมพ์เครื่องหมาย - ลงในช่อง
+    this.select();
+  } else if (e.key === '-' || e.key === 'Subtract') {
+    e.preventDefault();
     adjustOrderNumber(-1);
-    this.select(); // คลุมดำตัวเลขใหม่ไว้
+    this.select();
   }
+});
+
+// ===== 7. กด Shift เพื่อ ติ๊ก / เลิกติ๊ก Checkbox =====
+document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+  checkbox.addEventListener('keydown', function(e) {
+    if (e.key === 'Shift') {
+      e.preventDefault();
+      this.checked = !this.checked;
+      this.dispatchEvent(new Event('change'));
+    }
+  });
 });
 
 </script>
