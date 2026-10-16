@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.22
+  Lotto Dealer - v08.23
 </h1>
 
 <div class="form-row">
@@ -1053,6 +1053,56 @@ document.querySelectorAll('.form-group').forEach(group => {
       }
     });
   });
+});
+
+// เลื่อน Focus วนลูประหว่าง orderNumber -> bet3Number -> bet2Number ด้วยปุ่ม ขึ้น/ลง
+(function setupVerticalCircularNav() {
+  // ลิสต์ ID ช่องที่ต้องการให้วนลูป ขึ้น-ลง หากัน
+  const targetIds = ['orderNumber', 'bet3Number', 'bet2Number'];
+  
+  targetIds.forEach((id, index) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault(); // ป้องกันการเพิ่ม/ลดค่าตัวเลขเดิมในช่อง number
+
+        let nextIndex;
+        if (e.key === 'ArrowDown') {
+          // กดลง: ไปช่องถัดไป ชนล่างสุดวนกลับไปช่องแรก (orderNumber)
+          nextIndex = (index + 1) % targetIds.length;
+        } else if (e.key === 'ArrowUp') {
+          // กดขึ้น: ไปช่องก่อนหน้า ชนบนสุดวนกลับไปช่องสุดท้าย (bet2Number)
+          nextIndex = (index - 1 + targetIds.length) % targetIds.length;
+        }
+
+        const nextInput = document.getElementById(targetIds[nextIndex]);
+        if (nextInput) {
+          nextInput.focus();
+          if (typeof nextInput.select === 'function') {
+            nextInput.select(); // คลุมดำตัวเลขเดิมไว้เพื่อให้พิมพ์ทับได้ทันที
+          }
+        }
+      }
+    });
+  });
+})();
+
+// กดปุ่ม + หรือ - บนแป้นพิมพ์ที่ช่อง orderNumber เพื่อเพิ่ม/ลด ค่า
+document.getElementById('orderNumber').addEventListener('keydown', function(e) {
+  // ปุ่ม + (Shift + = หรือ NumpadAdd หรือ +)
+  if (e.key === '+' || e.key === 'Add' || (e.shiftKey && e.key === '=')) {
+    e.preventDefault(); // ป้องกันการพิมพ์เครื่องหมาย + ลงในช่อง
+    adjustOrderNumber(1);
+    this.select(); // คลุมดำตัวเลขใหม่ไว้เพื่อให้พิมพ์ทับหรือกดต่อได้ทันที
+  } 
+  // ปุ่ม - (NumpadSubtract หรือ -)
+  else if (e.key === '-' || e.key === 'Subtract') {
+    e.preventDefault(); // ป้องกันการพิมพ์เครื่องหมาย - ลงในช่อง
+    adjustOrderNumber(-1);
+    this.select(); // คลุมดำตัวเลขใหม่ไว้
+  }
 });
 
 </script>
