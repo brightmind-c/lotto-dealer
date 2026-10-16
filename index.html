@@ -130,7 +130,7 @@
 
 <h1>
   <img src="L-D.ico" alt="icon" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-  Lotto Dealer - v08.21
+  Lotto Dealer - v08.22
 </h1>
 
 <div class="form-row">
@@ -1006,25 +1006,6 @@ function adjustOrderNumber(delta) {
   input.value = value;
 }
 
-// ===== เพิ่มโค้ดส่วนนี้เข้าไปครับ =====
-document.getElementById("bet3Amount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    const numInput = document.getElementById("bet3Number");
-    numInput.focus();
-    numInput.select();
-  }
-});
-
-document.getElementById("bet2Amount").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    const numInput = document.getElementById("bet2Number");
-    numInput.focus();
-    numInput.select();
-  }
-});
-
 // กด Enter ที่ช่อง 'ชื่อ' ให้ตั้งค่าช่อง 'โพยที่' เป็น 1 แล้วย้ายโฟกัสไปทันที
 document.getElementById("buyerName").addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
@@ -1034,6 +1015,44 @@ document.getElementById("buyerName").addEventListener("keydown", function (e) {
     orderInput.focus();   // ย้ายโฟกัสไปช่องโพยที่
     orderInput.select();  // ไฮไลต์ตัวเลขไว้
   }
+});
+
+// เมื่อ คลิก เข้าช่องกรอกตัวเลข/ข้อความทุกช่อง ให้เลือกข้อความทั้งหมดทันที
+document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+  input.addEventListener('click', function() {
+    this.select();
+  });
+});
+
+// ดักจับปุ่มลูกศร ซ้าย-ขวา เพื่อเลื่อน Focus วนลูปภายในบรรทัด/บล็อกเดียวกัน
+document.querySelectorAll('.form-group').forEach(group => {
+  // ดึงช่อง input ทั้งหมดที่เปิดให้พิมพ์ได้ในบรรทัดนั้นๆ
+  const inputs = Array.from(group.querySelectorAll('input:not([type="hidden"]):not([disabled])'));
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault(); // ป้องกัน Cursor เคลื่อนที่ในช่องข้อความเดิม
+
+        let targetIndex;
+        if (e.key === 'ArrowRight') {
+          // เลื่อนไปทางขวา ถ้าชนขอบขวาสุดให้วนไปช่องแรกสุด (index 0)
+          targetIndex = (index + 1) % inputs.length;
+        } else if (e.key === 'ArrowLeft') {
+          // เลื่อนไปทางซ้าย ถ้าชนขอบซ้ายสุดให้วนไปช่องท้ายสุด
+          targetIndex = (index - 1 + inputs.length) % inputs.length;
+        }
+
+        const nextInput = inputs[targetIndex];
+        if (nextInput) {
+          nextInput.focus();
+          if (typeof nextInput.select === 'function') {
+            nextInput.select(); // คลุมดำข้อความเพื่อให้พิมพ์ทับได้ทันที
+          }
+        }
+      }
+    });
+  });
 });
 
 </script>
